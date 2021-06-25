@@ -13,7 +13,8 @@
 # *********************************************************
 #
 #
-from flask import *
+from flask import Flask
+from flask import render_template,  request
 from flask_socketio import SocketIO
 import argparse, os, sys
 from sys import argv
