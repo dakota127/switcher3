@@ -1,0 +1,442 @@
+{# braucht layout.html #}
+
+{% extends "layout.html" %}
+{% block title %} Switcher3 Home {% endblock %}
+{% block body %}
+
+<style>
+  .button4 {
+    background-color: #478dbb; /* blue */    
+  }
+  </style>
+<div class="header">
+  <h2>Switcher 3  Home</h2>
+  <div class="topnav">
+    <a href="swlog.html">Log</a>
+    <a href="swwetter.html">Wetter</a>
+    <a href="swinfo.html">Info</a>
+    <a href="swactions.html">Aktionen</a>
+    <a href="index.html">Home</a>
+  </div>
+
+
+</div>
+
+
+
+<!--obere liste------------------------------------>
+<div class="wrapperbutton">
+  <div class="item-list-1">
+
+      {% for item in info_1_list -%}
+      <div class="item">{{ item }}</div>
+  
+      {% endfor %}
+    
+  </div>
+
+</div>
+
+<!--home state------------------------------------>
+<div class="wrapperbutton">
+  <div class="item-list-0">
+    <div class="item">
+      <button class="button4" type='button' id='home_state_toggle'>Toggle</button>
+      <label class="mylabel" id='switch_value' for="home_state_toggle">Home State</label>
+    </div>
+  </div>
+</div>
+
+
+<div class="wrapperbutton">
+
+  {% include html_file2 %}
+
+  <!-- end div wrapperbutton ------------------------------------> 
+</div>
+
+<!-- restliche buttons ------------------------------------>
+  <div class="wrapperbutton">
+
+  <div class="item-list-1">
+    <div class="item">
+      <button class="button4" type='button' id='auto_all'>Toggle</button>
+          <label class="mylabel" for="auto_all"></label> Alle Auto</label>
+    </div>
+    <div class="item">
+      <button class="button4" type='button' id='ON_all'>Toggle</button>
+          <label class="mylabel" for="all_off">Alle ON</label>
+    </div>
+
+    <div class="item">
+      <button class="button4" type='button' id='OFF_all'>Toggle</button>
+          <label class="mylabel" for="all_off">Alle OFF</label>
+    </div>
+
+  </div>
+</div> 
+
+
+<div class="footer">
+    <p>Switcher 3 Application  (Versions: {{ version_sw }} )</p>
+  </div>
+
+
+<script src="//code.jquery.com/jquery-2.2.3.min.js"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/socket.io/3.1.0/socket.io.js"></script>
+
+
+<script>
+  $(document).ready(function () {
+    var myVar;
+
+    // Create SocketIO connect and attach handlers for events from the server.
+  console.log('document ready ');
+  var socket = io.connect();
+
+  // verlange initial data from server (der holt es beim switcher)
+  socket.emit('get_initial', 'abc')
+
+  // function for timeout-------------
+    function myFunction() {
+    myVar = setTimeout(function(){ alert("Keine Antwort von Switcher") }, 4000);
+}
+
+    function myStopFunction() {
+      clearTimeout(myVar);
+}
+
+    // Function to update the switch state on the page.
+    function updateSwitch(switchStateb , switchStatet) {
+        console.log('called updateSwitch state ' + switchStatet);
+        $('#switch_value').text(switchStatet);
+        if (switchStateb === 0) {
+
+          $('#switch_value').removeClass('mylabel-danger');
+          $('#switch_value').addClass('mylabel');
+        }
+        else if (switchStateb === 1) {
+         
+          $('#switch_value').removeClass('mylabel');
+          $('#switch_value').addClass('mylabel-danger');
+        }
+      }
+
+    // Function to update the dosen state on the page.
+    function updateDev1(estatus,statext,modusb,modust,typ,room) {
+      myStopFunction()
+      console.log('called updateDev1 ' + statext);
+        $('#dev1_value').text(statext);
+      if (estatus === 0) {       
+        $('#dev1_value').removeClass('mylabel-danger');
+        $('#dev1_value').addClass('mylabel');
+      
+      }
+      else if (estatus === 1) {
+        $('#dev1_value').removeClass('mylabel');
+        $('#dev1_value').addClass('mylabel-danger');
+      
+        //  $('#dev1_value').toggleClass('label-danger', true);
+      
+      }
+
+      $('#dev1_autovalue').text(modust);
+      if (modusb === 0) {
+        $('#dev1_autovalue').removeClass('mylabel-danger');
+        $('#dev1_autovalue').addClass('mylabel');
+      }
+      else if (modusb === 1) {
+        $('#dev1_autovalue').removeClass('mylabel');
+        $('#dev1_autovalue').addClass('mylabel-danger');
+      }
+      $('#typ1').text(typ);
+      $('#room1').text(room);
+
+    }
+
+    function updateDev2(estatus,statext,modusb,modust,typ,room) {
+      myStopFunction()
+      console.log('called updateDev2 ' + statext);
+        $('#dev2_value').text(statext);
+      if (estatus === 0) {       
+        $('#dev2_value').removeClass('mylabel-danger');
+        $('#dev2_value').addClass('mylabel');
+      
+      }
+      else if (estatus === 1) {
+        $('#dev2_value').removeClass('mylabel');
+        $('#dev2_value').addClass('mylabel-danger');
+      
+        //  $('#dev1_value').toggleClass('label-danger', true);
+      
+      }
+
+      $('#dev2_autovalue').text(modust);
+      if (modusb === 0) {
+        $('#dev2_autovalue').removeClass('mylabel-danger');
+        $('#dev2_autovalue').addClass('mylabel');
+      }
+      else if (modusb === 1) {
+        $('#dev2_autovalue').removeClass('mylabel');
+        $('#dev2_autovalue').addClass('mylabel-danger');
+      }
+      $('#typ2').text(typ);
+      $('#room2').text(room);
+
+    }
+
+    // Function to update the led state on the page.
+    function updateDev3(estatus,statext,modusb,modust,typ,room) {
+      myStopFunction()
+      console.log('called updateDev3 ' + statext);
+        $('#dev3_value').text(statext);
+      if (estatus === 0) {       
+        $('#dev3_value').removeClass('mylabel-danger');
+        $('#dev3_value').addClass('mylabel');
+      
+      }
+      else if (estatus === 1) {
+        $('#dev3_value').removeClass('mylabel');
+        $('#dev3_value').addClass('mylabel-danger');
+      
+        //  $('#dev1_value').toggleClass('label-danger', true);
+      
+      }
+
+      $('#dev3_autovalue').text(modust);
+      if (modusb === 0) {
+        $('#dev3_autovalue').removeClass('mylabel-danger');
+        $('#dev3_autovalue').addClass('mylabel');
+      }
+      else if (modusb === 1) {
+        $('#dev3_autovalue').removeClass('mylabel');
+        $('#dev3_autovalue').addClass('mylabel-danger');
+      }
+      $('#typ3').text(typ);
+      $('#room3').text(room);
+
+    }
+
+
+    function updateDev4(estatus,statext,modusb,modust,typ,room) {
+      myStopFunction()
+      console.log('called updateDev4 ' + statext);
+        $('#dev4_value').text(statext);
+      if (estatus === 0) {       
+        $('#dev4_value').removeClass('mylabel-danger');
+        $('#dev4_value').addClass('mylabel');
+      
+      }
+      else if (estatus === 1) {
+        $('#dev4_value').removeClass('mylabel');
+        $('#dev4_value').addClass('mylabel-danger');
+      
+        //  $('#dev1_value').toggleClass('label-danger', true);
+      
+      }
+
+      $('#dev4_autovalue').text(modust);
+      if (modusb === 0) {
+        $('#dev4_autovalue').removeClass('mylabel-danger');
+        $('#dev4_autovalue').addClass('mylabel');
+      }
+      else if (modusb === 1) {
+        $('#dev4_autovalue').removeClass('mylabel');
+        $('#dev4_autovalue').addClass('mylabel-danger');
+      }
+      $('#typ4').text(typ);
+      $('#room4').text(room);
+
+    }
+    function updateDev5(estatus,statext,modusb,modust,typ,room) {
+      myStopFunction()
+      console.log('called updateDev5 ' + statext);
+        $('#dev5_value').text(statext);
+      if (estatus === 0) {       
+        $('#dev5_value').removeClass('mylabel-danger');
+        $('#dev5_value').addClass('mylabel');
+      
+      }
+      else if (estatus === 1) {
+        $('#dev5_value').removeClass('mylabel');
+        $('#dev5_value').addClass('mylabel-danger');
+      
+        //  $('#dev1_value').toggleClass('label-danger', true);
+      
+      }
+
+      $('#dev5_autovalue').text(modust);
+      if (modusb === 0) {
+        $('#dev5_autovalue').removeClass('mylabel-danger');
+        $('#dev5_autovalue').addClass('mylabel');
+      }
+      else if (modusb === 1) {
+        $('#dev5_autovalue').removeClass('mylabel');
+        $('#dev5_autovalue').addClass('mylabel-danger');
+      }
+      $('#typ5').text(typ);
+      $('#room5').text(room);
+
+    }
+
+
+    
+    // Set the switch based on the value passed to this template.
+  
+
+
+  // Create SocketIO connect and attach handlers for events from the server.
+ // var socket = io.connect();
+ // socket.emit('give_values', 'abc')
+
+
+  // Change Home Switch on message from Server
+  socket.on('change_switch_server', function (e) {
+    console.log('change_switch ' + e.switchb + ' ' + e.switcht);
+    updateSwitch(e.switchb, e.switcht);
+  });
+
+
+
+  // Update device 1 on message from Server
+  socket.on('dev1_change', function (e) {
+    console.log('change: dev1 ' + e.estateb + ' ' + e.estatet + ' ' + e.modust);
+    updateDev1(e.estateb, e.estatet,e.modusb,e.modust, e.typ, e.room);
+
+  });
+  
+
+  // update device 2 on message from Server            
+  socket.on('dev2_change', function (e) {
+    console.log('change: dev2 ' + e.estateb + ' ' + e.estatet + ' ' + e.modust);
+    updateDev2(e.estateb, e.estatet,e.modusb,e.modust, e.typ, e.room);
+  });
+
+  // update device 3 on message from Server            
+  socket.on('dev3_change', function (e) {
+    console.log('change: dev3 ' + e.estateb + ' ' + e.estatet + ' ' + e.modust);
+    updateDev3(e.estateb, e.estatet,e.modusb,e.modust, e.typ, e.room);
+  });
+
+  // update device 4 on message from Server            
+  socket.on('dev4_change', function (e) {
+    console.log('change: dev4 ' + e.estateb + ' ' + e.estatet + ' ' + e.modust);
+    updateDev4(e.estateb, e.estatet,e.modusb,e.modust, e.typ, e.room);
+  });
+
+  // update device 5 on message from Server            
+  socket.on('dev5_change', function (e) {
+    console.log('change: dev15 ' + e.estateb + ' ' + e.estatet + ' ' + e.modust);
+    updateDev5(e.estateb, e.estatet,e.modusb,e.modust, e.typ, e.room);
+  });
+
+
+  // --------------------------------------------------
+  // setup callback for button press -------------------
+  // Setup device 1 toggle button click handlers.
+  $('#dev1_toggle').click(function () {
+    // Use SocketIO to send a LED1 change event.
+    myFunction()
+    console.log('click on dev1_toggle ');
+    socket.emit('dev1_toggle', 'on')
+  });
+
+  // Setup device 2 toggle button click handlers.            
+  $('#dev2_toggle').click(function () {
+    // Use SocketIO to send a LED2 change event.
+    myFunction()
+    console.log('click on dev2_toggle ');
+    socket.emit('dev2_toggle', 'on')
+  });
+
+  // Setup device 3 toggle button click handlers.            
+  $('#dev3_toggle').click(function () {
+    // Use SocketIO to send a LED2 change event.
+    myFunction()
+    console.log('click on dev3_toggle ');
+    socket.emit('dev3_toggle', 'on')
+  });
+
+  // Setup device 4 toggle button click handlers.            
+  $('#dev4_toggle').click(function () {
+    // Use SocketIO to send a LED2 change event.
+    myFunction()
+    console.log('click on dev4_toggle ');
+    socket.emit('dev4_toggle', 'on')
+  });
+
+  // Setup device 5 toggle button click handlers.            
+  $('#dev5_toggle').click(function () {
+    // Use SocketIO to send a LED2 change event.
+    myFunction()
+    console.log('click on dev5_toggle ');
+    socket.emit('dev5_toggle', 'on')
+  });
+
+  // setup auto/manuell button ---------------
+  // Setup device 2 auto button click handlers.
+  $('#dev1_auto').click(function () {
+    // Use SocketIO to send a LED1 change event.
+    console.log('click on dev1_auto ');
+    socket.emit('dev1_auto', 'on')
+  });
+  // Setup device 2 auto button click handlers.
+  $('#dev2_auto').click(function () {
+    // Use SocketIO to send a LED1 change event.
+    console.log('click on dev2_auto ');
+    socket.emit('dev2_auto', 'on')
+  });
+
+  // Setup device 2 auto button click handlers.
+  $('#dev3_auto').click(function () {
+    // Use SocketIO to send a LED1 change event.
+    console.log('click on dev3_auto ');
+    socket.emit('dev3_auto', 'on')
+  });
+  // Setup device 2 auto button click handlers.
+  $('#dev4_auto').click(function () {
+    // Use SocketIO to send a LED1 change event.
+    console.log('click on dev4_auto ');
+    socket.emit('dev4_auto', 'on')
+  });
+  // Setup device 2 auto button click handlers.
+  $('#dev5_auto').click(function () {
+    // Use SocketIO to send a LED1 change event.
+    console.log('click on dev5_auto ');
+    socket.emit('dev5_auto', 'on')
+  });
+
+  // Setup auto all button click handlers.
+  $('#auto_all').click(function () {
+    // Use SocketIO to send a LED1 change event.
+    console.log('click auto_all ');
+    socket.emit('auto_all', 'on')
+  });
+  // Setup auto all button click handlers.
+  $('#OFF_all').click(function () {
+    // Use SocketIO to send a LED1 change event.
+    console.log('click off_all ');
+    socket.emit('off_all', 'on')
+  });
+  // Setup auto all button click handlers.
+  $('#ON_all').click(function () {
+    // Use SocketIO to send a LED1 change event.
+    console.log('click on_all ');
+    socket.emit('on_all', 'on')
+  });
+
+  // Setup home switch toggle button click handlers.
+  $('#home_state_toggle').click(function () {
+    console.log('click home ');
+    socket.emit('change_switch_client', 'off')
+  });
+
+    
+
+    });
+</script>
+
+
+{% endblock %}
+
+</html>

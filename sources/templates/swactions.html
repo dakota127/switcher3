@@ -1,0 +1,49 @@
+{# braucht layout.html    #}
+
+{% extends "layout.html" %}
+{% block title %} Switcher3 Actions {% endblock %}
+{% block body %} 
+<div class="header">
+    <h2>Switcher 3  Schalten</h2>
+    <div class="topnav">
+      <a href="swlog.html">Log</a>
+      <a href="swwetter.html">Wetter</a>
+      <a href="swinfo.html">Info</a>
+      <a href="swactions.html">Aktionen</a>
+      <a href="index.html">Home</a>
+    </div>
+</div>
+  
+<div class="container">
+    <p>Zukünftige Aktionen des Tages (aktuelle Zeit: {{ zeit }})</p>   
+    <div class="wrapperact">
+    
+                 {% for item in futureactzeilen -%}
+                     {{ item }}  </br>
+                      {% endfor %}
+     
+    </div>
+    <p>Vergangene Aktionen des Tages</p>
+    <div class="wrapperact">
+                 {% for item in pastactzeilen -%}
+                     {{ item }}  </br>
+                      {% endfor %}
+  
+    </div>
+  
+    </div>
+
+    <div class="footer">
+        <p>Switcher 3 Application (Adjust: {{adj_info}})
+        </p>
+    </div>
+
+
+  
+  
+  
+
+
+{% endblock %}
+</html>
+

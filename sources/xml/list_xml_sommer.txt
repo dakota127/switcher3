@@ -1,0 +1,430 @@
+Name logfile: /home/pi/switcher3/switcher3.log 
+Name configfile: /home/pi/switcher3/swconfig.ini 
+swlist3: es wurden maximal 7 Devices gefunden
+
+-----------------------------------------------------------------------
+---- Liste aller Aktionen in Steuerfile:  Sommer Test 5 Devices
+-----------------------------------------------------------------------
+Liste 1:  Aktionen pro Wochentag ---------------
+
+Tag: Sonntag - Anzahl Aktionen: 24
+Zeit: 00.15 Device: 1/Wohnzimmer Switch On
+Zeit: 00.15 Device: 2/Wintergarten Switch On
+Zeit: 00.15 Device: 3/Ankleide Switch On
+Zeit: 00.15 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.25 Device: 1/Wohnzimmer Switch On
+Zeit: 00.25 Device: 2/Wintergarten Switch On
+Zeit: 00.25 Device: 3/Ankleide Switch On
+Zeit: 00.25 Device: 4/Arbeitszimmer Switch On
+Zeit: 04.30 Device: 1/Wohnzimmer Switch On
+Zeit: 04.30 Device: 5/Werkstatt Switch On
+Zeit: 04.55 Device: 1/Wohnzimmer Switch On
+Zeit: 04.58 Device: 5/Werkstatt Switch On
+Zeit: 05.10 Device: 3/Ankleide Switch On
+Zeit: 05.35 Device: 3/Ankleide Switch On
+Zeit: 21.25 Device: 1/Wohnzimmer Switch On
+Zeit: 22.05 Device: 1/Wohnzimmer Switch On
+Zeit: 22.05 Device: 2/Wintergarten Switch On
+Zeit: 22.05 Device: 3/Ankleide Switch On
+Zeit: 22.05 Device: 4/Arbeitszimmer Switch On
+Zeit: 22.40 Device: 1/Wohnzimmer Switch On
+Zeit: 23.42 Device: 2/Wintergarten Switch On
+Zeit: 23.42 Device: 3/Ankleide Switch On
+Zeit: 23.42 Device: 4/Arbeitszimmer Switch On
+Zeit: 23.55 Device: 1/Wohnzimmer Switch On
+Tag: Montag - Anzahl Aktionen: 26
+Zeit: 00.05 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.15 Device: 1/Wohnzimmer Switch On
+Zeit: 00.15 Device: 3/Ankleide Switch On
+Zeit: 00.17 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.25 Device: 1/Wohnzimmer Switch On
+Zeit: 00.25 Device: 2/Wintergarten Switch On
+Zeit: 00.45 Device: 2/Wintergarten Switch On
+Zeit: 00.55 Device: 3/Ankleide Switch On
+Zeit: 03.45 Device: 2/Wintergarten Switch On
+Zeit: 03.55 Device: 2/Wintergarten Switch On
+Zeit: 05.30 Device: 5/Werkstatt Switch On
+Zeit: 05.58 Device: 5/Werkstatt Switch On
+Zeit: 21.10 Device: 2/Wintergarten Switch On
+Zeit: 21.23 Device: 3/Ankleide Switch On
+Zeit: 21.30 Device: 2/Wintergarten Switch On
+Zeit: 21.56 Device: 3/Ankleide Switch On
+Zeit: 22.05 Device: 3/Ankleide Switch On
+Zeit: 22.12 Device: 4/Arbeitszimmer Switch On
+Zeit: 22.20 Device: 2/Wintergarten Switch On
+Zeit: 22.35 Device: 1/Wohnzimmer Switch On
+Zeit: 22.58 Device: 1/Wohnzimmer Switch On
+Zeit: 23.09 Device: 4/Arbeitszimmer Switch On
+Zeit: 23.14 Device: 3/Ankleide Switch On
+Zeit: 23.15 Device: 1/Wohnzimmer Switch On
+Zeit: 23.20 Device: 2/Wintergarten Switch On
+Zeit: 23.42 Device: 1/Wohnzimmer Switch On
+Tag: Dienstag - Anzahl Aktionen: 26
+Zeit: 00.05 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.15 Device: 3/Ankleide Switch On
+Zeit: 00.17 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.25 Device: 2/Wintergarten Switch On
+Zeit: 00.45 Device: 2/Wintergarten Switch On
+Zeit: 00.55 Device: 3/Ankleide Switch On
+Zeit: 01.15 Device: 1/Wohnzimmer Switch On
+Zeit: 01.25 Device: 1/Wohnzimmer Switch On
+Zeit: 04.10 Device: 5/Werkstatt Switch On
+Zeit: 04.35 Device: 2/Wintergarten Switch On
+Zeit: 04.35 Device: 5/Werkstatt Switch On
+Zeit: 04.55 Device: 2/Wintergarten Switch On
+Zeit: 21.10 Device: 2/Wintergarten Switch On
+Zeit: 21.23 Device: 3/Ankleide Switch On
+Zeit: 21.30 Device: 2/Wintergarten Switch On
+Zeit: 21.40 Device: 4/Arbeitszimmer Switch On
+Zeit: 21.56 Device: 3/Ankleide Switch On
+Zeit: 21.57 Device: 4/Arbeitszimmer Switch On
+Zeit: 22.05 Device: 3/Ankleide Switch On
+Zeit: 22.05 Device: 1/Wohnzimmer Switch On
+Zeit: 22.12 Device: 4/Arbeitszimmer Switch On
+Zeit: 22.20 Device: 2/Wintergarten Switch On
+Zeit: 23.09 Device: 4/Arbeitszimmer Switch On
+Zeit: 23.14 Device: 3/Ankleide Switch On
+Zeit: 23.20 Device: 2/Wintergarten Switch On
+Zeit: 23.42 Device: 1/Wohnzimmer Switch On
+Tag: Mittwoch - Anzahl Aktionen: 26
+Zeit: 00.05 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.15 Device: 1/Wohnzimmer Switch On
+Zeit: 00.15 Device: 3/Ankleide Switch On
+Zeit: 00.17 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.25 Device: 1/Wohnzimmer Switch On
+Zeit: 00.25 Device: 2/Wintergarten Switch On
+Zeit: 00.45 Device: 2/Wintergarten Switch On
+Zeit: 00.55 Device: 3/Ankleide Switch On
+Zeit: 02.45 Device: 2/Wintergarten Switch On
+Zeit: 02.57 Device: 2/Wintergarten Switch On
+Zeit: 03.30 Device: 5/Werkstatt Switch On
+Zeit: 03.45 Device: 5/Werkstatt Switch On
+Zeit: 04.10 Device: 5/Werkstatt Switch On
+Zeit: 04.25 Device: 5/Werkstatt Switch On
+Zeit: 21.23 Device: 3/Ankleide Switch On
+Zeit: 21.56 Device: 3/Ankleide Switch On
+Zeit: 22.05 Device: 3/Ankleide Switch On
+Zeit: 22.05 Device: 1/Wohnzimmer Switch On
+Zeit: 22.10 Device: 2/Wintergarten Switch On
+Zeit: 22.12 Device: 4/Arbeitszimmer Switch On
+Zeit: 22.30 Device: 2/Wintergarten Switch On
+Zeit: 23.09 Device: 4/Arbeitszimmer Switch On
+Zeit: 23.14 Device: 3/Ankleide Switch On
+Zeit: 23.20 Device: 2/Wintergarten Switch On
+Zeit: 23.42 Device: 1/Wohnzimmer Switch On
+Zeit: 23.56 Device: 2/Wintergarten Switch On
+Tag: Donnerstag - Anzahl Aktionen: 22
+Zeit: 00.05 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.15 Device: 1/Wohnzimmer Switch On
+Zeit: 00.15 Device: 3/Ankleide Switch On
+Zeit: 00.17 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.25 Device: 1/Wohnzimmer Switch On
+Zeit: 00.25 Device: 2/Wintergarten Switch On
+Zeit: 00.45 Device: 2/Wintergarten Switch On
+Zeit: 00.55 Device: 3/Ankleide Switch On
+Zeit: 02.30 Device: 5/Werkstatt Switch On
+Zeit: 03.58 Device: 5/Werkstatt Switch On
+Zeit: 08.30 Device: 1/Wohnzimmer Switch On
+Zeit: 08.58 Device: 1/Wohnzimmer Switch On
+Zeit: 21.23 Device: 3/Ankleide Switch On
+Zeit: 21.56 Device: 3/Ankleide Switch On
+Zeit: 22.05 Device: 3/Ankleide Switch On
+Zeit: 22.05 Device: 1/Wohnzimmer Switch On
+Zeit: 22.12 Device: 4/Arbeitszimmer Switch On
+Zeit: 22.20 Device: 2/Wintergarten Switch On
+Zeit: 23.09 Device: 4/Arbeitszimmer Switch On
+Zeit: 23.14 Device: 3/Ankleide Switch On
+Zeit: 23.20 Device: 2/Wintergarten Switch On
+Zeit: 23.42 Device: 1/Wohnzimmer Switch On
+Tag: Freitag - Anzahl Aktionen: 26
+Zeit: 00.05 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.15 Device: 1/Wohnzimmer Switch On
+Zeit: 00.15 Device: 3/Ankleide Switch On
+Zeit: 00.17 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.25 Device: 1/Wohnzimmer Switch On
+Zeit: 00.25 Device: 2/Wintergarten Switch On
+Zeit: 00.45 Device: 2/Wintergarten Switch On
+Zeit: 00.55 Device: 3/Ankleide Switch On
+Zeit: 05.45 Device: 5/Werkstatt Switch On
+Zeit: 06.14 Device: 5/Werkstatt Switch On
+Zeit: 21.00 Device: 4/Arbeitszimmer Switch On
+Zeit: 21.10 Device: 2/Wintergarten Switch On
+Zeit: 21.18 Device: 4/Arbeitszimmer Switch On
+Zeit: 21.23 Device: 3/Ankleide Switch On
+Zeit: 21.30 Device: 2/Wintergarten Switch On
+Zeit: 21.45 Device: 1/Wohnzimmer Switch On
+Zeit: 21.55 Device: 1/Wohnzimmer Switch On
+Zeit: 21.56 Device: 3/Ankleide Switch On
+Zeit: 22.05 Device: 3/Ankleide Switch On
+Zeit: 22.12 Device: 4/Arbeitszimmer Switch On
+Zeit: 22.20 Device: 2/Wintergarten Switch On
+Zeit: 23.09 Device: 4/Arbeitszimmer Switch On
+Zeit: 23.14 Device: 3/Ankleide Switch On
+Zeit: 23.15 Device: 1/Wohnzimmer Switch On
+Zeit: 23.20 Device: 2/Wintergarten Switch On
+Zeit: 23.44 Device: 1/Wohnzimmer Switch On
+Tag: Samstag - Anzahl Aktionen: 24
+Zeit: 00.05 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.15 Device: 1/Wohnzimmer Switch On
+Zeit: 00.15 Device: 3/Ankleide Switch On
+Zeit: 00.17 Device: 4/Arbeitszimmer Switch On
+Zeit: 00.25 Device: 1/Wohnzimmer Switch On
+Zeit: 00.25 Device: 2/Wintergarten Switch On
+Zeit: 00.45 Device: 2/Wintergarten Switch On
+Zeit: 00.55 Device: 3/Ankleide Switch On
+Zeit: 04.04 Device: 5/Werkstatt Switch On
+Zeit: 04.54 Device: 5/Werkstatt Switch On
+Zeit: 21.05 Device: 1/Wohnzimmer Switch On
+Zeit: 21.10 Device: 2/Wintergarten Switch On
+Zeit: 21.23 Device: 3/Ankleide Switch On
+Zeit: 21.30 Device: 2/Wintergarten Switch On
+Zeit: 21.42 Device: 1/Wohnzimmer Switch On
+Zeit: 21.56 Device: 3/Ankleide Switch On
+Zeit: 22.05 Device: 3/Ankleide Switch On
+Zeit: 22.05 Device: 1/Wohnzimmer Switch On
+Zeit: 22.12 Device: 4/Arbeitszimmer Switch On
+Zeit: 22.20 Device: 2/Wintergarten Switch On
+Zeit: 23.09 Device: 4/Arbeitszimmer Switch On
+Zeit: 23.14 Device: 3/Ankleide Switch On
+Zeit: 23.20 Device: 2/Wintergarten Switch On
+Zeit: 23.42 Device: 1/Wohnzimmer Switch On
+Ende Liste Aktionen pro Wochentag ----------------------
+
+Liste 2: Aktionen pro Device ----------------------
+
+---- Sonntag  ----------------
+---- Device 1, Anzahl Actions 8 
+Zeit: 00.15, Action: ON
+Zeit: 00.25, Action: OFF
+Zeit: 04.30, Action: ON
+Zeit: 04.55, Action: OFF
+Zeit: 21.25, Action: ON
+Zeit: 22.05, Action: OFF
+Zeit: 22.40, Action: ON
+Zeit: 23.55, Action: OFF
+---- Device 2, Anzahl Actions 4 
+Zeit: 00.15, Action: ON
+Zeit: 00.25, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.42, Action: OFF
+---- Device 3, Anzahl Actions 6 
+Zeit: 00.15, Action: ON
+Zeit: 00.25, Action: OFF
+Zeit: 05.10, Action: ON
+Zeit: 05.35, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.42, Action: OFF
+---- Device 4, Anzahl Actions 4 
+Zeit: 00.15, Action: ON
+Zeit: 00.25, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.42, Action: OFF
+---- Device 5, Anzahl Actions 2 
+Zeit: 04.30, Action: ON
+Zeit: 04.58, Action: OFF
+
+---- Montag  ----------------
+---- Device 1, Anzahl Actions 6 
+Zeit: 00.15, Action: ON
+Zeit: 00.25, Action: OFF
+Zeit: 22.35, Action: ON
+Zeit: 22.58, Action: OFF
+Zeit: 23.15, Action: ON
+Zeit: 23.42, Action: OFF
+---- Device 2, Anzahl Actions 8 
+Zeit: 00.25, Action: ON
+Zeit: 00.45, Action: OFF
+Zeit: 03.45, Action: ON
+Zeit: 03.55, Action: OFF
+Zeit: 21.10, Action: ON
+Zeit: 21.30, Action: OFF
+Zeit: 22.20, Action: ON
+Zeit: 23.20, Action: OFF
+---- Device 3, Anzahl Actions 6 
+Zeit: 00.15, Action: ON
+Zeit: 00.55, Action: OFF
+Zeit: 21.23, Action: ON
+Zeit: 21.56, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.14, Action: OFF
+---- Device 4, Anzahl Actions 4 
+Zeit: 00.05, Action: ON
+Zeit: 00.17, Action: OFF
+Zeit: 22.12, Action: ON
+Zeit: 23.09, Action: OFF
+---- Device 5, Anzahl Actions 2 
+Zeit: 05.30, Action: ON
+Zeit: 05.58, Action: OFF
+
+---- Dienstag  ----------------
+---- Device 1, Anzahl Actions 4 
+Zeit: 01.15, Action: ON
+Zeit: 01.25, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.42, Action: OFF
+---- Device 2, Anzahl Actions 8 
+Zeit: 00.25, Action: ON
+Zeit: 00.45, Action: OFF
+Zeit: 04.35, Action: ON
+Zeit: 04.55, Action: OFF
+Zeit: 21.10, Action: ON
+Zeit: 21.30, Action: OFF
+Zeit: 22.20, Action: ON
+Zeit: 23.20, Action: OFF
+---- Device 3, Anzahl Actions 6 
+Zeit: 00.15, Action: ON
+Zeit: 00.55, Action: OFF
+Zeit: 21.23, Action: ON
+Zeit: 21.56, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.14, Action: OFF
+---- Device 4, Anzahl Actions 6 
+Zeit: 00.05, Action: ON
+Zeit: 00.17, Action: OFF
+Zeit: 21.40, Action: ON
+Zeit: 21.57, Action: OFF
+Zeit: 22.12, Action: ON
+Zeit: 23.09, Action: OFF
+---- Device 5, Anzahl Actions 2 
+Zeit: 04.10, Action: ON
+Zeit: 04.35, Action: OFF
+
+---- Mittwoch  ----------------
+---- Device 1, Anzahl Actions 4 
+Zeit: 00.15, Action: ON
+Zeit: 00.25, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.42, Action: OFF
+---- Device 2, Anzahl Actions 8 
+Zeit: 00.25, Action: ON
+Zeit: 00.45, Action: OFF
+Zeit: 02.45, Action: ON
+Zeit: 02.57, Action: OFF
+Zeit: 22.10, Action: ON
+Zeit: 22.30, Action: OFF
+Zeit: 23.20, Action: ON
+Zeit: 23.56, Action: OFF
+---- Device 3, Anzahl Actions 6 
+Zeit: 00.15, Action: ON
+Zeit: 00.55, Action: OFF
+Zeit: 21.23, Action: ON
+Zeit: 21.56, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.14, Action: OFF
+---- Device 4, Anzahl Actions 4 
+Zeit: 00.05, Action: ON
+Zeit: 00.17, Action: OFF
+Zeit: 22.12, Action: ON
+Zeit: 23.09, Action: OFF
+---- Device 5, Anzahl Actions 4 
+Zeit: 03.30, Action: ON
+Zeit: 03.45, Action: OFF
+Zeit: 04.10, Action: ON
+Zeit: 04.25, Action: OFF
+
+---- Donnerstag  ----------------
+---- Device 1, Anzahl Actions 6 
+Zeit: 00.15, Action: ON
+Zeit: 00.25, Action: OFF
+Zeit: 08.30, Action: ON
+Zeit: 08.58, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.42, Action: OFF
+---- Device 2, Anzahl Actions 4 
+Zeit: 00.25, Action: ON
+Zeit: 00.45, Action: OFF
+Zeit: 22.20, Action: ON
+Zeit: 23.20, Action: OFF
+---- Device 3, Anzahl Actions 6 
+Zeit: 00.15, Action: ON
+Zeit: 00.55, Action: OFF
+Zeit: 21.23, Action: ON
+Zeit: 21.56, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.14, Action: OFF
+---- Device 4, Anzahl Actions 4 
+Zeit: 00.05, Action: ON
+Zeit: 00.17, Action: OFF
+Zeit: 22.12, Action: ON
+Zeit: 23.09, Action: OFF
+---- Device 5, Anzahl Actions 2 
+Zeit: 02.30, Action: ON
+Zeit: 03.58, Action: OFF
+
+---- Freitag  ----------------
+---- Device 1, Anzahl Actions 6 
+Zeit: 00.15, Action: ON
+Zeit: 00.25, Action: OFF
+Zeit: 21.45, Action: ON
+Zeit: 21.55, Action: OFF
+Zeit: 23.15, Action: ON
+Zeit: 23.44, Action: OFF
+---- Device 2, Anzahl Actions 6 
+Zeit: 00.25, Action: ON
+Zeit: 00.45, Action: OFF
+Zeit: 21.10, Action: ON
+Zeit: 21.30, Action: OFF
+Zeit: 22.20, Action: ON
+Zeit: 23.20, Action: OFF
+---- Device 3, Anzahl Actions 6 
+Zeit: 00.15, Action: ON
+Zeit: 00.55, Action: OFF
+Zeit: 21.23, Action: ON
+Zeit: 21.56, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.14, Action: OFF
+---- Device 4, Anzahl Actions 6 
+Zeit: 00.05, Action: ON
+Zeit: 00.17, Action: OFF
+Zeit: 21.00, Action: ON
+Zeit: 21.18, Action: OFF
+Zeit: 22.12, Action: ON
+Zeit: 23.09, Action: OFF
+---- Device 5, Anzahl Actions 2 
+Zeit: 05.45, Action: ON
+Zeit: 06.14, Action: OFF
+
+---- Samstag  ----------------
+---- Device 1, Anzahl Actions 6 
+Zeit: 00.15, Action: ON
+Zeit: 00.25, Action: OFF
+Zeit: 21.05, Action: ON
+Zeit: 21.42, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.42, Action: OFF
+---- Device 2, Anzahl Actions 6 
+Zeit: 00.25, Action: ON
+Zeit: 00.45, Action: OFF
+Zeit: 21.10, Action: ON
+Zeit: 21.30, Action: OFF
+Zeit: 22.20, Action: ON
+Zeit: 23.20, Action: OFF
+---- Device 3, Anzahl Actions 6 
+Zeit: 00.15, Action: ON
+Zeit: 00.55, Action: OFF
+Zeit: 21.23, Action: ON
+Zeit: 21.56, Action: OFF
+Zeit: 22.05, Action: ON
+Zeit: 23.14, Action: OFF
+---- Device 4, Anzahl Actions 4 
+Zeit: 00.05, Action: ON
+Zeit: 00.17, Action: OFF
+Zeit: 22.12, Action: ON
+Zeit: 23.09, Action: OFF
+---- Device 5, Anzahl Actions 2 
+Zeit: 04.04, Action: ON
+Zeit: 04.54, Action: OFF
+Ende Liste Aktionen pro Device ------------------------
+
+Liste 3: Gefundene Zimmer -----------------------------
+
+Zimmer: Wohnzimmer
+Zimmer: Wintergarten
+Zimmer: Ankleide
+Zimmer: Arbeitszimmer
+Zimmer: Werkstatt
+-----------------------------------------------------------------------
+---- ENDE Liste aller Aktionen in Steuerfile:  Sommer Test 5 Devices
+-----------------------------------------------------------------------
+
+Program terminated....

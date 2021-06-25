@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!--
+
+    Control Datei für die Funkdevicen-Steuerung, by Peter K. Boxler, August 2014
+     Pro Steckdevice (max 4) sind für jeden Wochentag (0=Sonntag bis 6=Samstag)
+     beliebige Sequenzen definierbar. Eine Sequenz besteht je aus Einschalten/Ausschalten
+     zu bestimmten Zeitpunkten (HHMM)
+     
+     Ist Input-File für die Python Applikation switch-lights.py
+
+ 
+-->
+
+<aktionen >
+<file_id>Sommer text_1.xml</file_id>
+
+
+<!--
+Dose Nummer 1  Wohnzimmer***************************** Dose 1 
+-->
+
+<device name = "Wohnzimmer">
+<device_nr> 1 </device_nr>
+
+<tag nummer = "0">
+ <sequence>
+  	<ON>00.02</ON>
+  	<OFF>00.31</OFF>
+  </sequence>
+  <sequence>
+  	<ON>20.45</ON>
+  	<OFF>23.40</OFF>
+  </sequence>
+    <sequence>
+  	<ON>22.10</ON>
+  	<OFF>22.30</OFF>
+  </sequence>
+</tag>
+
+<tag nummer = "1">
+ <sequence>
+  	<ON>00.11</ON>
+  	<OFF>00.32</OFF>
+  </sequence>
+  <sequence>
+  	<ON>20.46</ON>
+  	<OFF>23.56</OFF>
+  </sequence>
+   <sequence>
+  	<ON>21.45</ON>
+  	<OFF>22.15</OFF>
+  </sequence>
+</tag>  
+
+  <tag nummer = "2">
+   <sequence>
+  	<ON>22.52</ON>
+  	<OFF>23.06</OFF>
+  </sequence>
+</tag>
+
+ <tag nummer = "3">
+   <sequence>
+  	<ON>09.01</ON>
+  	<OFF>10.23</OFF>
+  </sequence>
+  </tag>
+  
+   <tag nummer = "4">
+   <sequence>
+  	<ON>10.01</ON>
+  	<OFF>10.24</OFF>
+  </sequence>
+  </tag>
+
+   <tag nummer = "5">
+   <sequence>
+  	<ON>11.01</ON>
+  	<OFF>11.50</OFF>
+  </sequence>
+  </tag>
+
+  <tag nummer = "6">
+   <sequence>
+  	<ON>08.08</ON>
+  	<OFF>08.26</OFF>
+  </sequence>
+  <sequence>
+  	<ON>20.46</ON>
+  	<OFF>23.56</OFF>
+  </sequence>
+   <sequence>
+  	<ON>21.45</ON>
+  	<OFF>22.15</OFF>
+  </sequence>
+  </tag>
+  
+</device>
+<!--
+Dose Nummer 2  Wintergarten *************************** Dose 2 
+-->
+
+<device name = "Wintergarten">
+<device_nr> 2 </device_nr>
+
+<tag nummer = "0">
+  <sequence>
+  	<ON>21.36</ON>
+  	<OFF>22.16</OFF>
+  </sequence>
+   <sequence>
+  	<ON>23.12</ON>
+  	<OFF>23.47</OFF>
+  </sequence>
+</tag>
+
+<tag nummer = "1">
+  <sequence>
+  	<ON>21.37</ON>
+  	<OFF>22.18</OFF>
+  </sequence>
+   <sequence>
+  	<ON>23.09</ON>
+  	<OFF>23.35</OFF>
+  </sequence>
+</tag>
+  <tag nummer = "2">
+   <sequence>
+  	<ON>22.49</ON>
+  	<OFF>23.14</OFF>
+  </sequence>
+</tag>
+ <tag nummer = "6">
+   <sequence>
+  	<ON>08.02</ON>
+  	<OFF>08.24</OFF>
+  </sequence>
+  </tag>
+</device>
+<!--
+Dose Nummer 3  Wintergarten *********************************** Dose 3
+-->
+
+<device name = "Ankleide">
+<device_nr> 3 </device_nr>
+
+<tag nummer = "0">
+   <sequence>
+  	<ON>21.41</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+ </tag>
+
+<tag nummer = "1">
+   <sequence>
+  	<ON>21.05</ON>
+  	<OFF>23.12</OFF>
+  </sequence>
+ </tag>
+
+  <tag nummer = "2">
+   <sequence>
+  	<ON>23.01</ON>
+  	<OFF>23.09</OFF>
+  </sequence>
+</tag>
+</device>
+<!--
+Dose Nummer 4  Büro******************************* Dose 4
+-->
+
+<device name = "Arbeitszimmer">
+<device_nr> 4 </device_nr>
+
+<tag nummer = "0">
+   <sequence>
+  	<ON>22.55</ON>
+  	<OFF>23.00</OFF>
+  </sequence>
+</tag>
+  
+  <tag nummer = "1">
+   <sequence>
+  	<ON>22.02</ON>
+  	<OFF>22.56</OFF>
+  </sequence>
+</tag>
+
+  <tag nummer = "2">
+   <sequence>
+  	<ON>22.03</ON>
+  	<OFF>22.59</OFF>
+  </sequence>
+  </tag>
+  
+ 
+
+
+
+</device>
+<!--
+Dose Nummer 5  Werkstatt ******************************* Dose 4
+-->
+
+<device name = "Werkstatt">
+<device_nr> 5 </device_nr>
+
+<tag nummer = "0">
+   <sequence>
+  	<ON>20.47</ON>
+  	<OFF>23.19</OFF>
+  </sequence>
+</tag>
+  
+<tag nummer = "1">
+   <sequence>
+  	<ON>21.52</ON>
+  	<OFF>23.20</OFF>
+  </sequence>
+</tag>
+
+<tag nummer = "2">
+   <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.23</OFF>
+  </sequence>
+</tag>
+
+<tag nummer = "3">
+   <sequence>
+  	<ON>21.21</ON>
+  	<OFF>21.23</OFF>
+  </sequence>
+</tag>
+
+</device>
+
+
+</aktionen>

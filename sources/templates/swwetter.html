@@ -1,0 +1,47 @@
+{# braucht layout.html    #}
+
+{% extends "layout.html" %}
+{% block title %} Switcher3 Wetter {% endblock %}
+{% block body %} 
+
+<div class="header">
+  <h2>Switcher 3  Wetter</h2>
+  <div class="topnav">
+    <a href="swlog.html">Log</a>
+    <a href="swwetter.html">Wetter</a>
+    <a href="swinfo.html">Info</a>
+    <a href="swactions.html">Aktionen</a>
+    <a href="index.html">Home</a>
+  </div>
+</div>
+
+
+<div class="wrapperbutton">
+  <div class="item-list-1">
+
+      {% for item in indoor_list -%}
+      <div class="item">{{ item }}</div>
+      {% endfor %}
+      </div>
+  </div>
+</div>
+
+<div class="wrapperbutton">
+  <div class="item-list-1">
+
+      {% for item in outdoor_list -%}
+      <div class="item">{{ item }}</div>
+      {% endfor %}
+      </div>
+  </div>
+</div>
+
+
+
+<div class="footer">
+  <p>Switcher 3 Application
+  </p>
+</div>
+
+{% endblock %}
+</html>

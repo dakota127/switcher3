@@ -1,0 +1,58 @@
+{# braucht layout.html    #}
+
+{% extends "layout.html" %}
+{% block title %} Switcher3 Dosen {% endblock %}
+{% block body %} 
+
+<style>
+  .button4 {
+    background-color: #478dbb; /* blue */    
+  }
+  </style>
+
+   <!-- Navigation -->
+ <div class="header">
+	<h2>Switcher 3  Anzahl Dosen</h2>
+	<div class="topnav">
+		<a href="swlog.html">Log</a>
+		<a href="swwetter.html">Wetter</a>
+		<a href="swinfo.html">Info</a>
+		<a href="swactions.html">Aktionen</a>
+		<a href="index.html">Home</a>
+	  </div>
+  </div>
+
+  <div class="container">
+
+    <div class="wrapperbutton">
+  
+      <form id="my-form" method="post" action="{{ url_for('set_dosen') }}">
+    <fieldset> 
+      <label>Aktuell sind {{anzahl_dosen}} Dosen definiert, neue Anzahl hier wählen</label><br>
+    </br>
+      <select name="anzahl_dosen"> 
+        <option value=1>eine Dose</option>
+        <option value=2>zwei Dosen</option>
+        <option value=3>drei Dosen</option>
+        <option value=4 selected>vier Dosen</option>
+        <option value=5>fünf Dosen</option>
+      </select>
+  
+      <input class="button" name="doit" type="submit" value="Uebernehmen"></span><br />  
+        <p class="red">Achtung: Uebernehmen führt zu Reboot des Switchers </p>
+    </fieldset> 
+  </form>
+  </div>
+
+
+  </div>  
+  
+    <div class="footer">
+      <p>Switcher 3 Application</p>
+    </div>
+
+ 
+
+
+   {% endblock %}
+</html>

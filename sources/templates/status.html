@@ -1,0 +1,54 @@
+{# braucht layout.html    #}
+
+{% extends "layout.html" %}
+{% block title %} Switcher3 Status {% endblock %}
+{% block body %} 
+
+<style>
+  .button4 {
+    background-color: #478dbb; /* blue */    
+  }
+  </style>
+
+   <!-- Navigation -->
+ <div class="header">
+	<h2>Switcher 3  Status</h2>
+	<div class="topnav">
+		<a href="swlog.html">Log</a>
+		<a href="swwetter.html">Wetter</a>
+		<a href="swinfo.html">Info</a>
+		<a href="swactions.html">Aktionen</a>
+		<a href="index.html">Home</a>
+	  </div>
+  </div>
+
+  <div class="container">
+
+    </br>
+    </br>
+  <p class=red> {{error_text_1}}</p>  
+  <p class=red> {{error_text_2}} </p>
+ 
+ 
+  {% if show_reboot == True %}
+    
+   <p class=red> {{textfeld_3}} </p>
+ <form id="my-form" method="post" action="{{ url_for('reboot') }}">
+
+     <input class="button4" name="anzdosen" type="submit" value="Reboot Pi"></span><br />  
+ 
+</form>   
+
+    {% endif %}  
+
+  </div>  
+  
+    <div class="footer">
+      <p>Switcher 3 Application</p>
+    </div>
+
+ 
+
+
+   {% endblock %}
+</html>
