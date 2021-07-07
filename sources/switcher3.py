@@ -6,7 +6,7 @@
 # This is program ONE of a suite of two programs for the Switcher3 System
 #  
 # This Programm is the MAIN programm 
-# it uses two main classes (instances of classes) to do its thing 
+# it uses several objects (instances of classes) to do its thing 
 #
 # Object swHome contains everything in a home (Dosen, Stati)
 # Object Sequencer creates events based on the switching actions defined in the XML Control file
@@ -17,6 +17,7 @@
 # This programm creates two threads:
 #       the sequencer runs as a thread
 #       the blink thread simply binks an LED
+#       and: function notifySwitcher() is a mqtt callback and runs as a thread
 # 
 # Peter Boxler (March 2020)
 # *********************************************************
@@ -44,7 +45,7 @@ import signal
 # ---------------------------------------------------------
 # Change Version of switcher3 here 
 # 
-switcher_version = "0.98"
+switcher_version = "3.0"
 #---------------------------------------------------------
 #--------------------------------------------------------
 
@@ -350,6 +351,31 @@ def get_Host_name_IP():
     return (host, ip)
 
 
+# --- handle messages from frontend
+# this is a callback handler and therefor runs in a seperate thread
+# we need to do a try/except to catch errors in the thread
+#-------------------------------------------------------------       
+def notifySwitcher (art , message):
+    
+    myprint.myprint (DEBUG_LEVEL1,   progname + "notifySwitcher called, art:{}, msg:{}".format(MSGART[art], message))	
+    #if isinstance(message, str) == True:
+       # print ("message is string")
+
+    # do this and call the function that does the stuff
+    try:
+        do_notifySwitcher (art , message)
+    except Exception:
+        myprint.myprint_exc  ("switcher3: notifySwitcher() etwas Schlimmes ist passiert.... !")
+    finally:
+        pass
+    #  print ("notifySwitcher finally reached") 
+    # terminate Thread by returning 
+    # will be restarted with the next request 
+        return
+
+
+
+
 #---------------------------------------------------------------       
 # --- handle messages from frontend
 # this is a callback handler and therefor runs in a seperate thread
@@ -362,15 +388,10 @@ def get_Host_name_IP():
 #           'wetter'    server requests wetter data
 #           'info'      server requests switcher Info
 #           'other..'   this commands are routed to the class swhome (mostle manual switching on the GUI)
-#-------------------------------------------------------------       
-def notifySwitcher (art , message):
+#--------------------------------------------------------
+def do_notifySwitcher (art , message):
     global debug, days_str
-
-    myprint.myprint (DEBUG_LEVEL1,   progname + "notifySwitcher called, art:{}, msg:{}".format(MSGART[art], message))	
-    #if isinstance(message, str) == True:
-       # print ("message is string")
-
-    #-------------------------------------------------
+#-------------------------------------------------
     # handle SYNC requests  -------------------------
     # they require an answer message with the topic supplied in the incoming message !
     # requests can be aliste, home, info, wetter 
@@ -408,7 +429,7 @@ def notifySwitcher (art , message):
     # -----------aliste ----------------------- aliste --------------------------------------
         if (request.find("aliste") == 0):       # request for list of actions
             myprint.myprint (DEBUG_LEVEL1,   progname + "request aliste gekommen")
-            if (sequencer != None):
+            if (sequencer != None):         # wenn object da ist
                 pastl ,futurl = sequencer.show_dayactions()   # call a method of the squencer Class, it will provide two lists
                 if debug > 2:
                     print ("past_actions: ")
@@ -420,6 +441,9 @@ def notifySwitcher (art , message):
 
             send_list =[]      # assemble list
             minfo_list = assemble_info()     #request data from sequencer
+
+        # this statement used to produce an error to test try/except  
+        #    a= e                # xxx
 
             # print (minfo_list)
             # we send response that has this format:
@@ -569,6 +593,7 @@ def notifySwitcher (art , message):
 
     pass
 
+    
 
 #---------------------------------------------------------------
 # Setup routine setup all stuff needed on the switcher side
@@ -577,7 +602,7 @@ def setup():
     global mymqtt, myprint, mqtt_connect, swhome, swinterface, sequencer, swconnector,my_wetter
     global start_switcher , setup_fortschritt, gpio_blink, wetter, testmode, host_name, host_ip, debug
 
-    debug_konf = 0
+    debug_konf = 0      # debug aus swconfig.ini  0() oder 1)
 
     print(progname + "started: {}".format(time.strftime('%X')))   
     argu()                          # get commandline argumants
@@ -643,7 +668,7 @@ def setup():
 
     if debug_konf > 0:
         myprint.myprint (DEBUG_LEVEL0, progname + "debug verlangt in configfile, wert:{}".format(debug_konf))
-    if debug == 0: 
+    if debug == 0:                  # debug von Commendline param
         debug = debug_konf
     myprint.set_debug_level(debug)          # set level in the myPrint object
 
