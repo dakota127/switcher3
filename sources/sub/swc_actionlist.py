@@ -99,6 +99,7 @@ class ActionList(MyPrint):
         print (  "---- Liste aller Aktionen in Steuerfile:  %s" % (self.file_id) )
         print (  "-----------------------------------------------------------------------")
    
+        switch = " "
     
     #
     #  Liste 1 *********************************************
@@ -112,10 +113,10 @@ class ActionList(MyPrint):
                 for aktion in tag:      # loop über alle Aktionen eines Tages
                     switch = "On"
 	# hole ein/aus für action j am tag i			
-                    if aktion[4] == 0:
+                    if aktion[5] == 0:
                         switch = "Off"
                #     print ( "Zeit: %s Device: %s/%15s Switch %s" % (aktion[0],aktion[1], li_zimmer[aktion[1]-1], switch))
-                    print ( "Zeit: {zeit} Device: {device}/{wtag} Switch {aktion}".format (zeit=aktion[0],device=aktion[4], wtag=li_zimmer[aktion[4]-1], aktion=switch))
+                    print ( "Zeit: {zeit} Device: {device}/{wtag} {aktion}".format (zeit=aktion[0],device=aktion[4], wtag=li_zimmer[aktion[4]-1], aktion=switch))
         print (  "Ende Liste Aktionen pro Wochentag ----------------------\n")
     
     #
@@ -225,19 +226,18 @@ class ActionList(MyPrint):
 
 #   Eine Liste von 7 Elementen Weekday (eines für jeden Wochentag 0-7) 
 #   Jedes Element Weekday ist eine Liste von Schaltaktionen (actions) für den Wochentag
-#   Jede Schaltaktion (action) ist ebenfalls einen Liste (Zeit, Dose, On/Off)
+#   Jede Schaltaktion (action) ist ebenfalls einen Liste (mit 6 Elemente))
 #
 #----------------------------------------------------------
     #   Eine Aktion sieht so aus:
     #   Element action = ("HH.MM", Zeit in Min, Dauer in Min, "HH.MM", Dose, ON/OFF)
     #   elemente:
-    #   erstes "HH.MM" element ist ev. korrigierte Schaltezeit
-    #   selbe Schaltzeit aner in Minuten des Tages
-    #   Dauer eingeschaltet in Minuten
-    #   zweites "HH.MM" element ist originale Schaltzeit
-    #   Dosennummer
-    #   1 = einschalten
-    #   0 = ausschalten
+    #   0: erstes "HH.MM" element ist ev. korrigierte Schaltezeit
+    #   1: selbe Schaltzeit aber in Minuten des Tages
+    #   2: Dauer eingeschaltet in Minuten
+    #   3: zweites "HH.MM" element ist originale Schaltzeit (vor adjust)
+    #   4: Dosennummer
+    #   5: 1 = einschalten / 0 = ausschalten
     #-------------------------------------------------------------
 #
 #           

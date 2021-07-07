@@ -51,7 +51,7 @@ ONOFF={1:'EIN', 0:'AUS'}
 wochentage=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"]
 reset_man=["Nie","Mitternacht"]
 SLEEPTIME=2			            # default sleeptime normaler Lauf
-SLEEPTIME_DONE = 5              # sleeptime vor Mitternacht (alle Aktionen gemacht)
+SLEEPTIME_DONE = 30             # sleeptime vor Mitternacht (alle Aktionen gemacht)
 # variablen, die für die Status Abfrage geführt/verwendet werden
 
 swdosconf = None            # object (Instanz von Klasse)
@@ -155,6 +155,7 @@ class MySequencer(threading.Thread, MyPrint):
         self.anz_dosen_config = 0
         self.anz_dosen_xml = 0
         self.file_id = ""
+        self.start_tag = 0  # mit diesem Wochentag starten wir (wird später auf aktuelen Tag gesetzt nach Start)
 
     
         self.weekyear = ""
@@ -223,7 +224,7 @@ class MySequencer(threading.Thread, MyPrint):
 #  ---------------------------------------------------------------------------------------
     def warte_bis_tag_da(self,weekday):
    #
-        self.myprint (DEBUG_LEVEL2,   "\t" + progname + "warte_bis_tag_da() called. Es ist tag: {}".format(weekday))
+        self.myprint (DEBUG_LEVEL0,   "\t" + progname + "warte_bis_tag_da() called. Es ist tag: {}".format(weekday))
 
         # loop bis condition is erfüllt, alo neuer Tag ist gekommen...
         while True:
@@ -232,12 +233,12 @@ class MySequencer(threading.Thread, MyPrint):
 
             wochentag_neu = int(hhmm_tag[1])            # get new weekday
             if wochentag_neu != weekday:              #  ist neuer Tag ?
-                self.myprint (DEBUG_LEVEL1,   "\t" + progname + "Neuer Tag ist da: {}".format(wochentag_neu))
+                self.myprint (DEBUG_LEVEL0,   "\t" + progname + "Neuer Tag ist da: {}".format(wochentag_neu))
                 return (wochentag_neu)                 # we have reached a new day hurray
 
             # no new day yet, continue...    
             time.sleep(SLEEPTIME_DONE)
-            self.myprint (DEBUG_LEVEL2,   "\t" + progname + "Timemarching warte auf neuen tag, immer noch tag {} / {}".format(hhmm_tag[1], hhmm_tag[0]))
+            self.myprint (DEBUG_LEVEL1,   "\t" + progname + "Timemarching warte auf neuen tag, immer noch tag {} / {}".format(hhmm_tag[1], hhmm_tag[0]))
 
             self.do_stuff_regular()              # do regular stuff
 
@@ -301,7 +302,7 @@ class MySequencer(threading.Thread, MyPrint):
 
         #---------------------------------------------------------------------------
         # now let us iterate over all days and over all devices and over all actions per day  in list_in 
-        for wochentag, tag in enumerate (list_in):                    # loop über alle 8 Tage
+        for wochentag, tag in enumerate (list_in):            # loop über alle 8 Tage
      
         
         
@@ -389,7 +390,7 @@ class MySequencer(threading.Thread, MyPrint):
     
         time_old = datetime.now()                           # fuer Zeitmessung
 
-        start_tag = int(hhmm_tag[1])                        # heutiger wochentag, starte damit, loop bis tag 6
+        self.start_tag = int(hhmm_tag[1])                        # heutiger wochentag, starte damit, loop bis tag 6
 
         # wenn Anpassung der Schaltzeiten verlangt ist (im Configfile), so machen wir das hier
         if self.adjustTimeNeeded > 0:
@@ -397,16 +398,27 @@ class MySequencer(threading.Thread, MyPrint):
             
             # Nun extrahieren von vergangenen und zukünftigen Aktionen (gemessen an der Startzeit des Switchers) für den aktuellen Tag
             # aber nur für dosen kleiner/gleich der anzahl konfigurierten dosen !
-            self.list_aktionen_past, self.list_aktionen_zukunft = self._aktionen_pro_tag (self.list_tage_new, start_tag , self.anz_dosen_config )
+            self.list_aktionen_past, self.list_aktionen_zukunft = self._aktionen_pro_tag (self.list_tage_new, self.start_tag , self.anz_dosen_config )
         else:
-            self.list_aktionen_past, self.list_aktionen_zukunft = self._aktionen_pro_tag (self.list_tage, start_tag , self.anz_dosen_config )    
+            self.list_aktionen_past, self.list_aktionen_zukunft = self._aktionen_pro_tag (self.list_tage, self.start_tag , self.anz_dosen_config )    
         
     
     # Vorbereitung ist nun fertig--------------------------------------------------------------------
     # nun haben wir also zwei Listen aller verlangten Aktionen des heutigen Tages, die müssen wir nun abarbeiten
     # Liste 1: alle Aktionen, die schon (gemessen an der aktuellen Zeit) in der Vergangenheit liegen
     # Liste 2: alle zukünftigen Aktionen des Tages
-
+    #----------------------------------------------------------
+    #   Eine Aktion sieht so aus (aus swactionlist.py kopiert)  :
+    #   Element action = ("HH.MM", Zeit in Min, Dauer in Min, "HH.MM", Dose, ON/OFF)
+    #   elemente:
+    #   0: erstes "HH.MM" element ist ev. korrigierte Schaltezeit
+    #   1: selbe Schaltzeit aber in Minuten des Tages
+    #   2: Dauer eingeschaltet in Minuten
+    #   3: zweites "HH.MM" element ist originale Schaltzeit (vor adjust)
+    #   4: Dosennummer
+    #   5: 1 = einschalten / 0 = ausschalten
+    #-------------------------------------------------------------
+    #
     # --  Zuerst die vergagenen Aktionen des Tages behandeln ---
     #     dies, falls der Switcher in Laufe des Tages gestartet wird  - damit Status der Dosen aktuell ist
     #     gibt es also nur bei Neustart innerhalb des Tages !!!
@@ -457,7 +469,7 @@ class MySequencer(threading.Thread, MyPrint):
                             self.status_currtime,
         ])                      #   <<<<----Time of day event    Time actual reached    uni2018     
         
-        self.myprint (DEBUG_LEVEL1,   "\t" + progname + "vergangene aktionen sind erledigt")
+        self.myprint (DEBUG_LEVEL0,   "\t" + progname + "vergangene aktionen sind erledigt")
 
 # ---- Alle vergangenen Aktionen des Tages erledigt. Nun gehts ans Schalten..
     
@@ -471,10 +483,10 @@ class MySequencer(threading.Thread, MyPrint):
         while True:                                     # MAIN-LOOP  run forever
                                                     # check termination from daemon - signalled via global variable    
             if  (self.term_verlangt == 1): break                 # break from main Loop
-            self.myprint (DEBUG_LEVEL1,   "\t" + progname + "MAIN-LOOP: starte mit wochentag: {}".format(start_tag))
+            self.myprint (DEBUG_LEVEL1,   "\t" + progname + "MAIN-LOOP: starte mit wochentag: {}".format(self.start_tag))
         
  # LOOP----------  Loop ueber alle Tage der Woche ab start_tag ---------------           
-            for self.wochentag in range(start_tag, 7):
+            for self.wochentag in range(self.start_tag, 7):
             
                 self.total_aktionen_protag = len (self.list_aktionen_past) + len(self.list_aktionen_zukunft)   # total number of actions for current day
                 if self.debug:  
@@ -532,28 +544,28 @@ class MySequencer(threading.Thread, MyPrint):
                         self.myprint (DEBUG_LEVEL2,   "\t" + progname + "inner Loop finds self.term_verlangt=1")
                         break                       
                     self.current_action = None           # make empty  , no current action, all done
-#----- ELOOP-2 ueber alle restlichen Actions eines Tages --------------------------------------------------
+            
                      
                 pass
-            # hier kommt man, wenn alle Aktionen des aktuellen tages gemacht sind
+        #-----  # hier kommt man, wenn alle Aktionen des aktuellen tages gemacht sind -----------------------------------------------       
             # Der Tag ist aber noch nichht vorbei...
-                self.myprint (DEBUG_LEVEL1,  "\t" + progname + "All Actions done for day %d , waiting for new day" % self.wochentag)
+                self.myprint (DEBUG_LEVEL0,  "\t" + progname + "Alle Aktionen gemacht für Tag %d, nun warten auf neuen Tag " % self.wochentag)
                 time.sleep(SLEEPTIME)
-#   backthe Main Loop again  
-#   hierd alle aktionen eines Tages abgearbeitet und und der Tag hat geaendert
-#   wir en bis der Tag wirklich wechselt.
+
+#  
 #   fuer aktuellen Tag gibt es nichts mehr zu tun.....
 #   das  im Status angegeben werden - ueber den naechsten Tag wissen wir nichts
                 if  self.term_verlangt == 1:  
                     self.myprint (DEBUG_LEVEL2,   "\t" + progname + "LOOP-1 finds self.term_verlangt=1")
                     break                                   # break loop ueber alle actions des Tages
 
-
-        #r warten auf den neuen Tag und es gibt keine Aktionen mehr fuer den aktuellen Tag
-        #tzen angaben fuer statusabfrage. Wir wissen noch nicht, welche Aktion dann im neuen Tag kommen wird
+        #wir warten auf den neuen Tag und es gibt keine Aktionen mehr fuer den aktuellen Tag
+        #Daten ablegen fuer statusabfrage. Wir wissen noch nicht, welche Aktion dann im neuen Tag kommen wird
                 self.status_waitfor = "Neuer Tag"                     
                 self.status_nextaction[1] = "Vorlaeufig unbekannt"      
                 self.status_nextaction[0] = 99                   # damit zimmer unbekannt gesetzt wird    
+     
+                # warten bis Tag wechselt
                 self.wochentag = self.warte_bis_tag_da(self.wochentag)     # hierin wird gewartet, bis der neue tag kommt (mitternacht)
 
                 if  self.term_verlangt == 1:  
@@ -568,7 +580,7 @@ class MySequencer(threading.Thread, MyPrint):
                                    
                                                         # manuell im configfile: 0= forever, 1=nur bis Mitternacht)                                          
         
-                self.myprint (DEBUG_LEVEL1,   "\t" + progname + "Neuer Tag, send midnight event")
+                self.myprint (DEBUG_LEVEL0,   "\t" + progname + "Neuer Tag, send midnight event")
                     
         
                 self.callback.handle_sequencer_event ( [   TIME_OFDAY_EVENT, 
@@ -584,7 +596,7 @@ class MySequencer(threading.Thread, MyPrint):
          
 # Ende L1-----------------------  alle Tage vorbei
     
-        start_tag = 0           # fuer neuen durchlauf Main Loop , wir starten dann bei wochentag = 0 (Sonntag)
+        self.start_tag = 0           # fuer neuen durchlauf Main Loop , wir starten dann bei wochentag = 0 (Sonntag)
 # Ende MLoop 
 #------------------------------------
 #  Diesein Loop wird nur beendet, wenn variable self.term_verlangt=1 ist oder
