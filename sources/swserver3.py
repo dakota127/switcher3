@@ -25,7 +25,7 @@ from sub.myprint import MyPrint             # Class MyPrint replace print, debug
 from sub.swc_connector import SwConnector           # Class SwConnector
 from sub.swc_dosconf import SWDos_conf
 from sub.myconfig import ConfigRead
-
+import json
 import subprocess
 import threading
 import socket
@@ -35,7 +35,7 @@ import socket
 # ---------------------------------------------------------
 # Change Version of swserver3 here 
 # 
-server_version = "0.91"
+server_version = "3.1"
 #---------------------------------------------------------
 #--------------------------------------------------------
 
@@ -51,7 +51,7 @@ home_state_t = ""
 home_state_b = 0
 
 
-debug = 0
+debug = 0           # debug flag, wird durch commandline parm verändert
 
 
 # Define Variables
@@ -74,8 +74,6 @@ mqtt_error = 0
 myprint     = None
 swconnector = None
 swdosconf = None
-wait_time = 10
-what_to_do = 0
 path = 0
 TRUEFALSE=[False,True]
 progname = "swserver3 "
@@ -93,8 +91,8 @@ host_name   = ""
 host_ip     = ""
 switcher_version = ""
 general_error = 0
-swi_pid = 0
-swser_pid = 0
+swi_pid = 0             # pid process switcher
+swser_pid = 0           # pid process swserver
 
 
 anzahl_dosen_definiert = 0
@@ -152,6 +150,7 @@ def argu():
        mqtt_broker_ip_cmdline = args.i
  
     return(args)
+
 #----------------------------------------------------------
 # ***** Function reboot läuft als Thread **************************
 def reboot_function():  #   --> in eigenem Thread !!
@@ -242,12 +241,12 @@ def find_procs_by_name(name):
                 swser_thr = pr[3]
         # return list
 
-    if swi_pid > 0:
+    if swser_pid > 0:
         myprint.myprint (DEBUG_LEVEL0, progname +  "swserver3 running pid:{}, threads:{}".format(swser_pid, swser_thr))  
     else:
         myprint.myprint (DEBUG_LEVEL0,  progname +  "swserver3 prozess nicht gefunden")  
     
-    if swser_pid > 0:
+    if swi_pid > 0:
         myprint.myprint (DEBUG_LEVEL0, progname +  "switcher3 running pid:{}, threads:{}".format(swi_pid, swi_thr))
     else:
         myprint.myprint (DEBUG_LEVEL0,  progname +  "switcher3 prozess nicht gefunden")  
@@ -352,21 +351,7 @@ def notifyServer (art,message_in):
     else:
         myprint.myprint (DEBUG_LEVEL0, progname +  ": invalid message_in received: {}". format(message))
 
-#
-#- do subscribe and publish
-# --- needs to be called after initial connection and after reconnect
-#-------------------------------------------------------------       
-#def do_sub():
-#    
-#    # subscribe to topic MQTT_TOPIC_SUBSERV (Messages from switcher3)
-#    res = mqttc.subscribe_topic (MQTT_TOPIC_SUBSERV , message_from_switcher)     # subscribe to topic
-#    if (res > 0):
-#        myprint.myprint (DEBUG_LEVEL0, progname +  ": subscribe returns errorcode: {}".format(res)) 
-#        myprint.myprint (DEBUG_LEVEL0, progname +  ": terminating")       
-#        sys.exit(2)                     # cannot proceed
-#    myprint.myprint (DEBUG_LEVEL0, progname +  ": subscribed to topic: {} ".format(MQTT_TOPIC_SUBSERV))
-
-
+#-------------------------------------------------------------  
 #- do publish  to switcher3
 #-------------------------------------------------------------       
 def messageOut (meldung):
@@ -382,6 +367,10 @@ def messageOut (meldung):
 #--------------------------------------------
 #   tue etwas und gebe dann output zurück 
 #   dies wird dann in html code eingesetzt
+
+#-------------------------------------------------------------  
+#  set anzahl dosen 
+#-------------------------------------------------------------  
 def set_anzdosen (anzahl):
     meld2 = []
     retco = []

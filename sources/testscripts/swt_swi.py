@@ -137,7 +137,13 @@ def argu():
 
 #--------------------------------------------
 # get pid für switcher3 programme
+#---------------------------------------------
 def find_procs_by_name(name):
+
+    swi_pid = 0
+    swser_pid = 0
+    swser_thr = 0
+    swi_thr = 0
 
     "Return a list of processes matching 'name'."
     ls = []         # set list
@@ -153,7 +159,7 @@ def find_procs_by_name(name):
         # print (pr)
         for i, item in enumerate(pr):
         
-        #    print ("item[{}]:{}".format(i,item))
+            print ("item[{}]:{}".format(i,item))
             if type(item) == str and item.find("switcher3.py") != -1:
             #    print ("switcher3 pid:{}, threads:{}".format(pr[0], pr[3]))
                 swi_pid = pr[0]
@@ -163,6 +169,17 @@ def find_procs_by_name(name):
                 swser_pid = pr[0]
                 swser_thr = pr[3]
         # return list
+
+    if swser_pid > 0:
+        myprint.myprint (DEBUG_LEVEL0, progname +  "swserver3 running pid:{}, threads:{}".format(swser_pid, swser_thr))  
+    else:
+        myprint.myprint (DEBUG_LEVEL0,  progname +  "swserver3 prozess nicht gefunden")  
+    
+    if swi_pid > 0:
+        myprint.myprint (DEBUG_LEVEL0, progname +  "switcher3 running pid:{}, threads:{}".format(swi_pid, swi_thr))
+    else:
+        myprint.myprint (DEBUG_LEVEL0,  progname +  "switcher3 prozess nicht gefunden")  
+
     return ([swi_pid,swi_thr,swser_pid,swser_thr])
 
 
@@ -193,11 +210,14 @@ def setup():
     # find switcher processes and their pid
     # returns list with 4 items
     procli = find_procs_by_name ("python3")
+
     
-    if procli[0] > 0:
-        myprint.myprint (DEBUG_LEVEL0, "Pid des switcher3 Prozesses:{}".format(procli[0]))
     if procli[2] > 0:
         myprint.myprint (DEBUG_LEVEL0, "Pid des swserver3 Prozesses:{}".format(procli[2]))
+
+    if procli[0] > 0:
+        myprint.myprint (DEBUG_LEVEL0, "Pid des switcher3 Prozesses:{}".format(procli[0]))
+    
     else:
         myprint.myprint (DEBUG_LEVEL0, "Kein Switcher3 Prozess gefunden")
         myprint.myprint (DEBUG_LEVEL0, "Kann nicht weiterfahren, ist sinnlos")
