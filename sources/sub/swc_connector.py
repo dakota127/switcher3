@@ -6,6 +6,8 @@
 #   
 #   Diese Class kapselt die Kommunikation zwischen zwei Endpoints
 #   Hier also switcher3 und swserver3
+#   Switcher hat Endpoint 1
+#   Swserver hat Endpoint 2
 #
 #   diese Class erbt von der MyPrint Class
 #   diese Class benutzt die MQtt Class (only if needed)
@@ -42,8 +44,8 @@ FROMFE_ALLON   = 6
 FROMFE_STAT     = 7
 
 
-MQTT_TOPIC_SERVPUB      =     "swi/as"          # In Switcher:  SUB receiving from server
-                                                # In Server:    PUB sending to switcher
+MQTT_TOPIC_SERVPUB      =     "swi/as"          # In Switcher:  SUBSCRIBE receiving from server
+                                                # In Server:    PUBLISH sending to switcher
 
 MQTT_TOPIC_SERVPUB_SY   =     "swi/snyc"        # In Switcher:  SUB receiving froms server
                                                 # In Server :   PUB sending to Switcher
@@ -156,24 +158,33 @@ class SwConnector (MyPrint):
 #-------------------------------------------------------------       
     def do_subscribe(self):
 
-        if (self.endpoint == 1):                # endpoint 1 is switcher program, sub to swi/as
+        # endpoint 1 is switcher program
+        #   
+        if (self.endpoint == 1):    
+            # switcher subscribes to 2 topics:
+            # subcribe to topic swi/as (async Message sent from server to switcher)            
             res = self.mqttc.subscribe_topic (MQTT_TOPIC_SERVPUB , self.handle_incoming_asyncmsg)     # subscribe to async messages
             if (res > 0):
-                self.myprint (DEBUG_LEVEL0,  "\t\t" + progname + " subscribe returns errorcode: {}".format(res)) 
+                self.myprint (DEBUG_LEVEL0,  "\t\t" + progname + " subscribe async returns errorcode: {}".format(res)) 
                 self.myprint (DEBUG_LEVEL0,  "\t\t" + progname + " terminating")       
                 sys.exit(2)                     # cannot proceed
 
+            # subcribe to topic swi/sync (sync Message sent from server to switcher)  
             res = self.mqttc.subscribe_topic (MQTT_TOPIC_SERVPUB_SY , self.handle_incoming_syncmsg)     # subscribe to 'sync messages'
             if (res > 0):
-                self.myprint (DEBUG_LEVEL0,  "\t\t" + progname + " subscribe returns errorcode: {}".format(res)) 
+                self.myprint (DEBUG_LEVEL0,  "\t\t" + progname + " subscribe sync returns errorcode: {}".format(res)) 
                 self.myprint (DEBUG_LEVEL0,  "\t\t" + progname + " terminating")       
                 sys.exit(2)                     # cannot proceed
 
             return
-        else:                                      # endpoint2 ist swserver program, sub to serv/as
+
+        # endpoint2 ist swserver program, subscribe to topic serv/as
+        else:   
+            # server subscribes to one topic only
+            # subcribe to topic serv/as (async Message sent from switcher to server)           
             res = self.mqttc.subscribe_topic (MQTT_TOPIC_SWIPUB , self.handle_incoming_asyncmsg)     # subscribe to topic
             if (res > 0):
-                self.myprint (DEBUG_LEVEL0,  "\t\t" + progname + " subscribe returns errorcode: {}".format(res)) 
+                self.myprint (DEBUG_LEVEL0,  "\t\t" + progname + " subscribe async returns errorcode: {}".format(res)) 
                 self.myprint (DEBUG_LEVEL0,  "\t\t" + progname + " terminating")       
                 sys.exit(2)     
             return
@@ -197,7 +208,9 @@ class SwConnector (MyPrint):
             print ("Json error")
             self.data = [self.data,0,0,0]    # error only
 
-        self.callback (MSG_ASYNC , self.data)               # goes to notifySwitcher or notifyServer (either switcher3 or swserver3 )
+        # callback is set at creation of object (it points to a function in switcher if endpoint is 1)
+        #                                       (or to a function in swserver if endpoint is 2)
+        self.callback (MSG_ASYNC , self.data)   # goes to notifySwitcher or notifyServer (either switcher3 or swserver3 )
         return
 
 #---------------------------------------------------------------        
@@ -214,7 +227,7 @@ class SwConnector (MyPrint):
          #   self.data = json.loads(self.data)   # JSON Object wird in Python List of List gewandeltmessage.payload.decode()
             self.myprint (DEBUG_LEVEL2, "\t\t" + progname + " handle_incoming_syncmsg2:{}". format(self.data))
         except:
-            print ("Json error")
+            self.myprint (DEBUG_LEVEL0, "\t\t" + progname + "Json error in handle_incoming_syncmsg()")
 
         self.callback (MSG_SYNC , self.data)               # goes to notifySwitcher 
         return
@@ -359,7 +372,7 @@ class SwConnector (MyPrint):
                 data1 = json.loads(synch_msg_in[10:])   # JSON Object wird in Python List of List gewandeltmessage.payload.decode()
             #    self.myprint (DEBUG_LEVEL1, "\t\t" + progname + " callback_msg_async_223:{}". format(data1))
             except:
-                print ("Json error")
+                self.myprint (DEBUG_LEVEL0, "\t\t" + progname + "Json error in transmit_sync()")
                
 
             return (0,request, data1)             # return request and message
@@ -393,4 +406,7 @@ class SwConnector (MyPrint):
 if __name__ == "__main__":
     print ("swc_connector.py ist nicht aufrufbar auf commandline")
     sys.exit(2)
+
+#  end of code -----------------------
+
     

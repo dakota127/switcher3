@@ -57,10 +57,8 @@ DEBUG_LEVEL2=2
 DEBUG_LEVEL3=3
 debug=0
 terminate = False
-what_to_do = 1                  # action 1
 
-
-
+# MQTT Topics
 MQTT_TOPIC_SERVPUB      =     "swi/as"           # PUB sending to flask server
 MQTT_TOPIC_SERVPUB_AS   =     "swi/snyc"           # PUB sending to flask server
 MQTT_TOPIC_SWIPUB       =     "serv/as"           # PUB sending to flask server

@@ -9,7 +9,7 @@
 # 
 # This version of the program uses the  MQTT_Conn class tha encapsulates MQTT
 
-# Peter Boxler (Feb 2021)
+# Peter Boxler (last change Juni 2021)
 # *********************************************************
 #
 #
@@ -387,6 +387,7 @@ def set_anzdosen (anzahl):
 
 #-----------------------------------------------------
 # Setup function
+# setup the Server
 # -----------------------------------------------------
 def setup_server():
     global mqttc, myprint, mqtt_connect, path
@@ -586,7 +587,9 @@ def home():
         return render_template('index.html', statklein = a_list, html_file2 = select_dosenanz_htmlfiles [anzahl_dosen_definiert])  
 
 #----------------------------------------------
-# Callback für log.html     
+# Callback für log.html   
+# die Log Seite wird verlangt
+# ACHTUNG: dies wird im server erledigt, switcher braucht man dazu nicht  
 #--------------------------------------------
 @app.route('/swlog.html')
 def log():
@@ -621,6 +624,7 @@ def log():
 
 #----------------------------------------------
 # Callback für swactionlist.html     
+# die Seite mit allen Aktionen wird verlangt
 #--------------------------------------------
 @app.route('/swactions.html')
 def actions():
@@ -685,6 +689,7 @@ def actions():
 
 #----------------------------------------------
 # Callback für swwetter.html     
+# die Wetter Seite wird verlangt
 #--------------------------------------------
 @app.route('/swwetter.html')
 def wetter():
@@ -758,7 +763,8 @@ def wetter():
     
 
  #----------------------------------------------
-# Callback für swinfo.html     
+# Callback für swinfo.html    
+# Die Info Seite wird verlangt 
 #--------------------------------------------
 @app.route('/swinfo.html')
 def info():
@@ -817,10 +823,9 @@ def info():
     
       
 
-    
-
 #----------------------------------------------
-# Callback für reboot     
+# Callback für reboot  
+# Reboot Button wurde geklickt   
 #--------------------------------------------
 @app.route('/reboot.html', methods=['GET', 'POST'])
 def reboot():
@@ -840,6 +845,7 @@ def reboot():
 
 #----------------------------------------------
 # Callback für shutdown     
+# Shut Down Button wurde geklickt
 #--------------------------------------------
 @app.route('/shutdown.html', methods=['GET', 'POST'])
 def shutdown():
@@ -859,6 +865,7 @@ def shutdown():
 
 #----------------------------------------------
 # Callback für swdosen.html     
+# Es wird eine Html Seite mit der aktuellen Anzahl Dosen verlangt
 #--------------------------------------------
 @app.route('/swdosen.html', methods=['GET', 'POST'])
 def swdosen():
@@ -875,6 +882,9 @@ def swdosen():
 
 #----------------------------------------------
 # Callback für set_dosem.html     
+# Der benutzer hat eine neue Anzahl Dosen ausgewählt
+# diese Anzahl wird im Config File der Dosen abgelegt.
+# File: swdosen.ini  (in Klasse SWDos_conf erledigt)
 #--------------------------------------------
 @app.route('/set_dosen.html', methods=['GET', 'POST'])
 def set_dosen():
@@ -924,13 +934,15 @@ def set_dosen():
 
 # --------------------------------------------------------
 # socket io events coming in from client (webpage in browser)
+# diese Event werden gesendet, wenn der Benutzer einen Button au der Webseite klickt
+# es gibt verschiedene Buttons und deshalb auch verschiedene Events
 #---------------------------------------------------------
-
-
-
 
 #-----------------------------------------------------
 # Listen for SocketIO event that requests initial data
+# wird gesendet, wenn die Home Page neu geladen worden ist
+# alle aktuellen Schaltzustände werden an den Browser gesendet
+#--------------------------------------------------------
 @socketio.on('get_initial')
 def get_initial(p1):
 
@@ -967,6 +979,7 @@ def get_initial(p1):
 # Eventhandler für socket.io
 #----------------------------------------------------------------------
 # Listen for SocketIO event that will toggle device 1
+# Benutzer hat Button für dose 1 geklickt
 @socketio.on('dev1_toggle')
 def toggle_dev1(led):
     global device_1
@@ -978,6 +991,7 @@ def toggle_dev1(led):
 
 #-----------------------------------------------------
 # Listen for SocketIO event that will toggle the device_2
+# Benutzer hat Button für dose 2 geklickt
 @socketio.on('dev2_toggle')
 def toggle_dev2(led):
     global device_2
@@ -988,7 +1002,8 @@ def toggle_dev2(led):
     messageOut ( meldung )
 
 #-----------------------------------------------------
-# Listen for SocketIO event that will toggle the device_2
+# Listen for SocketIO event that will toggle the device_3
+# Benutzer hat Button für dose 3 geklickt
 @socketio.on('dev3_toggle')
 def toggle_dev3(led):
     global device_3
@@ -999,7 +1014,8 @@ def toggle_dev3(led):
     messageOut ( meldung )
 
  #-----------------------------------------------------
-# Listen for SocketIO event that will toggle the device_2
+# Listen for SocketIO event that will toggle the device_4
+# Benutzer hat Button für dose 4 geklickt
 @socketio.on('dev4_toggle')
 def toggle_dev4(led):
     global device_4
@@ -1010,7 +1026,8 @@ def toggle_dev4(led):
     messageOut ( meldung )   
 
 #-----------------------------------------------------
-# Listen for SocketIO event that will toggle the device_2
+# Listen for SocketIO event that will toggle the device_5
+# Benutzer hat Button für dose 5 geklickt
 @socketio.on('dev5_toggle')
 def toggle_dev5(led):
     global device_5
@@ -1022,7 +1039,8 @@ def toggle_dev5(led):
 
 
 #-----------------------------------------------------
-# Listen for SocketIO event that will toggle the device_2
+# Listen for SocketIO event that will toggle the device_1
+# Benutzer hat Toggle auto Button für dose 1 geklickt
 @socketio.on('dev1_auto')
 def dev5_auto(led):
     global device_1
@@ -1032,6 +1050,7 @@ def dev5_auto(led):
 
 #-----------------------------------------------------
 # Listen for SocketIO event that will toggle the device_2
+# Benutzer hat Toggle auto Button für dose 2 geklickt
 @socketio.on('dev2_auto')
 def dev5_auto(led):
     global device_2
@@ -1040,7 +1059,8 @@ def dev5_auto(led):
     messageOut ( meldung )
 
 #-----------------------------------------------------
-# Listen for SocketIO event that will toggle the device_2
+# Listen for SocketIO event that will toggle the device_3
+# Benutzer hat Toggle auto Button für dose 3 geklickt
 @socketio.on('dev3_auto')
 def dev5_auto(led):
     global device_3
@@ -1049,7 +1069,8 @@ def dev5_auto(led):
     messageOut ( meldung )    
 
 #-----------------------------------------------------
-# Listen for SocketIO event that will toggle the device_2
+# Listen for SocketIO event that will toggle the device_4
+# Benutzer hat Toggle auto Button für dose 4 geklickt
 @socketio.on('dev4_auto')
 def dev5_auto(led):
     global device_4
@@ -1058,7 +1079,8 @@ def dev5_auto(led):
     messageOut ( meldung )    
 
 #-----------------------------------------------------
-# Listen for SocketIO event that will toggle the device_2
+# Listen for SocketIO event that will toggle the device_5
+# Benutzer hat Toggle auto Button für dose 5 geklickt
 @socketio.on('dev5_auto')
 def dev5_auto(led):
     global device_5
@@ -1069,6 +1091,7 @@ def dev5_auto(led):
 
 #-----------------------------------------------------
 # Listen for SocketIO event that will set auto_all
+# Benutzer hat Toggle auto all button geklickt
 @socketio.on('auto_all')
 def auto_all(led):
     global device_2
@@ -1077,7 +1100,8 @@ def auto_all(led):
     messageOut ( meldung )
 
 #-----------------------------------------------------
-# Listen for SocketIO event that will set auto_all
+# Listen for SocketIO event that will set all to ON
+# Benutzer hat Toggle All ON Button geklickt
 @socketio.on('on_all')
 def on_all(led):
     global device_2
@@ -1086,7 +1110,8 @@ def on_all(led):
     messageOut ( meldung )
 
 #-----------------------------------------------------
-# Listen for SocketIO event that will set auto_all
+# Listen for SocketIO event that will set all OFF
+# Benutzer hat Toggle All OFF Button geklickt
 @socketio.on('off_all')
 def off_all(led):
     global device_2
@@ -1096,6 +1121,7 @@ def off_all(led):
 #-----------------------------------------------------
 # Listen for SocketIO event that will change the home switch
 # comes from webpage
+# Benutzer hat Toggle Daheim Button geklickt
 @socketio.on('change_switch_client')
 def change_switch(switch):
     myprint.myprint (DEBUG_LEVEL1, progname + ": change switch on socket from client")
@@ -1113,7 +1139,6 @@ def change_switch(switch):
 if __name__ == "__main__":
 
 
-  
     # do setup fuction
     general_error = setup_server()
     myprint.myprint (DEBUG_LEVEL1 ,progname +  "Setup returns:{}".format (general_error))
@@ -1121,8 +1146,6 @@ if __name__ == "__main__":
    # general_error is later used if html pages are requested
     
   
-  
-
     # Run the flask development web server with SocketIO.
     if (debug > 0):
         myprint.myprint (DEBUG_LEVEL0, progname + ": start flask with debug")
@@ -1130,3 +1153,5 @@ if __name__ == "__main__":
     else:
         myprint.myprint (DEBUG_LEVEL0, progname + ": start flask WITHOUT debug")
         socketio.run(app, host='0.0.0.0', debug=False, port=4000)
+
+#  end of code --------------------------------
