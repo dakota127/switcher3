@@ -29,6 +29,11 @@ DEBUG_LEVEL1=1
 DEBUG_LEVEL2=2
 DEBUG_LEVEL3=3
 
+#------------
+# -------------------------------------------------------------------------
+FAKTOR = 0.17               # <------------------ FAKTOR für Berechnung ---------------
+#-------------------------------------------------------------------------------------
+
 progname = "CalcAdjust "
 configfile_name = "swconfig.ini"
 config_section = "sequencer"                # look up values in this section
@@ -47,7 +52,8 @@ cfglist_seq = {
         "evening_start_limit"   : 23.00,
         "evening_ontime"        : 15,
         "morning_start_limit"   : 04.00,
-        "morning_ontime"        : 30
+        "morning_ontime"        : 30,
+        "faktor"                : 17
 }
 
 #----------------------------------------------------
@@ -69,6 +75,7 @@ class CalcAdjust (MyPrint):
         self.evening_ontime = 0
         self.morning_ontime = 0
         self.counter = 0
+        self.faktor = FAKTOR
 
 
         self.myconfig = ConfigRead(debug_level = self.debug)     # Create Instance of the ConfigRead Class
@@ -90,6 +97,7 @@ class CalcAdjust (MyPrint):
             hhmm_e = cfglist_seq ["morning_start_limit"].split(".")
             self.evening_ontime = int(cfglist_seq ["evening_ontime"])
             self.morning_ontime = int(cfglist_seq ["morning_ontime"])
+            self.faktor = int(cfglist_seq ["faktor"]) / 100
         except KeyError :
             myprint.myprint (DEBUG_LEVEL0, progname + "KeyError in cfglist_seq, check values!")   
 
@@ -98,10 +106,11 @@ class CalcAdjust (MyPrint):
     #    print (hhmm_e)
         self.evening_start_limit = (60 * int(hhmm_s[0])) + int(hhmm_s[1])       # minuten des Tages
         self.morning_start_limit  =   (60 * int(hhmm_e[0])) + int(hhmm_e[1])       # minuten des Tages
-        self.myprint (DEBUG_LEVEL0, progname + "evstart:{} evon:{} mostart:{} moon:{}".format(self.evening_start_limit, \
+        self.myprint (DEBUG_LEVEL0, progname + "evstart:{} evon:{} mostart:{} moon:{} faktor:{}".format(self.evening_start_limit, \
                                                         self.evening_ontime,  \
                                                         self.morning_start_limit,  \
-                                                        self.morning_ontime ))
+                                                        self.morning_ontime ,   \
+                                                        self.faktor))
 
 
 #-------------------------------------------
@@ -147,7 +156,7 @@ class CalcAdjust (MyPrint):
         else:
             self.weekyear = weeks
 
-        self.adjust_time = int(abs( 60 * ((self.weekyear - 27) * (.15)) ))  # number of minutes we need to adjust, based on week of the year
+        self.adjust_time = int(abs( 60 * ((self.weekyear - 27) * (self.faktor)) ))  # number of minutes we need to adjust, based on week of the year
 
         #  evening and morning limits (hour/min and ontime)
         #  only adjust actions that are outside this boundary
