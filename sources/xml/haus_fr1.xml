@@ -25,107 +25,86 @@ device Nummer 1  Wohnzimmer***************************** device 1
 
 <tag nummer = "0">
  <sequence>
-  	<ON>00.05</ON>
+  	<ON>00.02</ON>
   	<OFF>00.25</OFF>
   </sequence>
-  <sequence>
-  	<ON>04.30</ON>
-  	<OFF>04.55</OFF>
-  </sequence> 
+
    <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.55</OFF>
+  	<ON>21.45</ON>
+  	<OFF>23.57</OFF>
   </sequence>
    
    </tag>
    
 <tag nummer = "1">
  <sequence>
-  	<ON>00.05</ON>
+  	<ON>00.02</ON>
   	<OFF>00.25</OFF>
   </sequence>
-  <sequence>
-  	<ON>04.30</ON>
-  	<OFF>04.55</OFF>
-  </sequence> 
+  
    <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.55</OFF>
+  	<ON>21.45</ON>
+  	<OFF>23.57</OFF>
   </sequence>
   </tag>
   
 <tag nummer = "2">
  <sequence>
-  	<ON>00.05</ON>
+  	<ON>00.02</ON>
   	<OFF>00.25</OFF>
   </sequence>
-  <sequence>
-  	<ON>04.30</ON>
-  	<OFF>04.55</OFF>
-  </sequence> 
+  
    <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.55</OFF>
+  	<ON>21.45</ON>
+  	<OFF>23.57</OFF>
   </sequence>
   </tag>
   
 <tag nummer = "3">
  <sequence>
-  	<ON>00.05</ON>
+  	<ON>00.02</ON>
   	<OFF>00.25</OFF>
   </sequence>
-  <sequence>
-  	<ON>04.30</ON>
-  	<OFF>04.55</OFF>
-  </sequence> 
+  
    <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.55</OFF>
+  	<ON>21.45</ON>
+  	<OFF>23.57</OFF>
   </sequence>
    </tag>
    
 <tag nummer = "4">
  <sequence>
-  	<ON>00.05</ON>
+  	<ON>00.02</ON>
   	<OFF>00.25</OFF>
   </sequence>
-  <sequence>
-  	<ON>04.30</ON>
-  	<OFF>04.55</OFF>
-  </sequence> 
+  
    <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.55</OFF>
+  	<ON>21.45</ON>
+  	<OFF>23.57</OFF>
   </sequence>
   </tag>
 
 <tag nummer = "5">
  <sequence>
-  	<ON>00.05</ON>
+  	<ON>00.02</ON>
   	<OFF>00.25</OFF>
   </sequence>
-  <sequence>
-  	<ON>04.30</ON>
-  	<OFF>04.55</OFF>
-  </sequence> 
+  
    <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.55</OFF>
+  	<ON>21.45</ON>
+  	<OFF>23.57</OFF>
   </sequence>
   </tag>
   
 <tag nummer = "6">
  <sequence>
-  	<ON>00.05</ON>
+  	<ON>00.02</ON>
   	<OFF>00.25</OFF>
   </sequence>
-  <sequence>
-  	<ON>04.30</ON>
-  	<OFF>04.55</OFF>
-  </sequence> 
+  
    <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.55</OFF>
+  	<ON>21.45</ON>
+  	<OFF>23.57</OFF>
   </sequence>
   </tag>
 
