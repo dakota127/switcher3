@@ -40,7 +40,7 @@ DEBUG_LEVEL3 = 3
 
 configfile_name = "swconfig.ini"
 config_section = "sequencer"                # look up values in this section
-progname = "sequencer "
+progname = "swc_sequencer "
 dosenconfig = "swdosen.ini"
 hhmm_tag = 0
 status_currtime = 0

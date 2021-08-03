@@ -76,7 +76,7 @@ DEVOFF              = 0
 HOMESTATE={0:'Niemand daheim', 1:'Jemand zuhause'} 
 MANRESET={0:'Nie', 1:'Um Mitternacht'} 
 
-progname = "swhome "
+progname = "swc_home "
 configfile_name = "swconfig.ini"
 config_section = "home"                # look up values in this section
 
@@ -158,7 +158,7 @@ class SwHome (MyPrint):
 
     # we use the configfile given by switcher, could also use our own
         ret = myconfig.config_read (self.configfile ,config_section, cfglist_home)  # call method config_read()
-        self.myprint (DEBUG_LEVEL1,  "config_read() returnvalue: {}".format (ret))	# für log und debug
+        self.myprint (DEBUG_LEVEL1,  "config_read() returnvalue:{}".format (ret))	# für log und debug
  
         self.myprint (DEBUG_LEVEL3, "\nswhome:Configdictionary after reading:")
         if (self.debug > 2):
@@ -187,7 +187,7 @@ class SwHome (MyPrint):
        
         swdosconf = SWDos_conf (debug = self.debug, path = self.path)   # instanz der Klasse erstellen
 
-        self.myprint (DEBUG_LEVEL0 ,progname +  "object created: {}".format(swdosconf))
+        self.myprint (DEBUG_LEVEL0 ,progname +  "object created:{}".format(swdosconf))
         self.anz_dosen_config = swdosconf.read_dosenconfig()
         self.myprint (DEBUG_LEVEL1, "\t" + progname +  "Anzahl Dosen in swdosen.ini:{}".format( self.anz_dosen_config))
 
@@ -195,13 +195,13 @@ class SwHome (MyPrint):
         for i in range(self.anz_dosen_config):
             self.dos = Dose(i, self.testmode, self.debug, self.configfile, self.mqtt_connect, self.mqttc, self.handle_device_event)
             if self.dos.errorcode == 99:
-                self.myprint (DEBUG_LEVEL1, "\t" + progname +  "Dose: {} meldet Fehler {}".format (i+1, self.dos.errocode))	 
+                self.myprint (DEBUG_LEVEL1, "\t" + progname +  "Dose{} meldet Fehler:{}".format (i+1, self.dos.errocode))	 
                 raise RuntimeError("\t" + progname + 'ernsthafter Fehler, check switcher2.log <----')
             else:
                 self.dosenlist.append(self.dos)           # es wird dose 1 bis anz_dosen 
         
         for dose in self.dosenlist:
-            self.myprint (DEBUG_LEVEL0 ,progname +  "object created: {}".format(dose))
+            self.myprint (DEBUG_LEVEL0 ,progname +  "object created:{}".format(dose))
     
 
         self.test_dosen()
@@ -217,7 +217,7 @@ class SwHome (MyPrint):
         
     # alle dosen ausschalten
         for dose in self.dosenlist:
-                dose.set_manuell(0)
+                dose.schalten_manuell(0)
         
         self.connector.terminate()              # do terminate in the connector
 
@@ -278,7 +278,7 @@ class SwHome (MyPrint):
 
         self.ret = self.connector.transmit (self.payl)      # <------------------  transmit to frontend --------
         if (self.ret > 0):
-            self.myprint (DEBUG_LEVEL0,  "\t" + progname + "transmit returns: {} ".format(self.ret))
+            self.myprint (DEBUG_LEVEL0,  "\t" + progname + "transmit returns:{} ".format(self.ret))
 
 
 #---------------------------------------------------------------        
@@ -295,41 +295,41 @@ class SwHome (MyPrint):
 #---------------------------------------------------------------
     def messageIn (self, message):              # message from Frontend via switcher3
 
-        self.myprint (DEBUG_LEVEL2,  "\t" + progname + "messageIn called, msg: {}". format(message))  
+        self.myprint (DEBUG_LEVEL2,  "\t" + progname + "messageIn called, msg:{}". format(message))  
 
 
         if (message[0] == "tog_dev"):  
             dos = message[1]
             print (dos)
             if dos <= self.anz_dosen_config:            # check device nummer, must in range
-                self.dosenlist[dos-1].set_toggle() 
+                self.dosenlist[dos-1].umschalten()      # schalte dose um
             else :
                 self.myprint (DEBUG_LEVEL0,  "\t" + progname + "tog_dev, device ungültig:{}". format(dos)  )
       
         elif (message[0] == "tog_home"):  
-            self.do_zuhause()
+            self.do_zuhause()                       # wechsel von jemand daheim zu niemand daheim oder vice versa
        
-        elif (message[0] == "auto"):                # set dev1 to auto mode
-            self.dosenlist[message[1]-1].reset_manuell()  
+        elif (message[0] == "auto"):                # diese dose auf modus auto setzen (und ev. schalten)
+            self.dosenlist[message[1]-1].set_mod_auto()  
     
         elif (message[0] == "all_auto"):
             for dose in self.dosenlist:
-                dose.reset_manuell()
+                dose.set_mod_auto()                 # alle dosen set modus auf auto (und ev. schalten)
     
             
         elif (message[0] == "all_on"):
             for dose in self.dosenlist:
-                dose.set_manuell(1)
+                dose.schalten_manuell(1)                 # alle dosen einschalten und modus auf manuell setzen
      
 
         elif (message[0] == "all_off"):
             for dose in self.dosenlist:
-                dose.set_manuell(0)
+                dose.schalten_manuell(0)                 # alle dosen ausschalten und modus auf manuell setzen
      
      #       
         else:
 
-            self.myprint (DEBUG_LEVEL0, "\t" + progname + "invalid message received: {}". format(message))
+            self.myprint (DEBUG_LEVEL0, "\t" + progname + "invalid message received:{}". format(message))
 
 #---------------------------------------------------------------        
 # function handle event from sequencer
@@ -339,7 +339,7 @@ class SwHome (MyPrint):
 #  3. ACTION_EVENT      : a device has switched its state from ON to OFF or from OFF to ON
 #---------------------------------------------------------------
     def handle_sequencer_event (self, command):
-        self.myprint (DEBUG_LEVEL2, "\t" + progname + "handle_sequencer_event called: {}/{}/{}/{}/{}/{}/{}". format(command[0],command[1],  \
+        self.myprint (DEBUG_LEVEL2, "\t" + progname + "handle_sequencer_event called:{}/{}/{}/{}/{}/{}/{}". format(command[0],command[1],  \
                                                                                                command[2],command[3],command[4],command[5],command[6]   ))
 
 
@@ -349,31 +349,31 @@ class SwHome (MyPrint):
                 self.myprint (DEBUG_LEVEL2, "\t" + progname + "time is now actual time")
                 self.are_actions_before_actual_time = False
                 for dose in self.dosenlist:
-                    dose.set_wiestatus()
+                    dose.set_wiestatus()                    # schalte dose gemäss dem internen status (falls modus auto ist)
 
             elif (command[1] == MIDNIGHT):
                 self.myprint (DEBUG_LEVEL2, "\t" + progname + "a new day has begun")
                 if self.manuelle_reset == 1:
                     self.myprint (DEBUG_LEVEL2, "\t" + progname + "set manuelle OFF")
                     for dose in self.dosenlist:
-                        dose.reset_manuell()
+                        dose.set_mod_auto()                  # set modus der Dose auf auto
 
         elif command[0] == UPDATE_EVENT:   # command[1] ist list of room-id's
           #  print (command[1])
           # set zimmer in dosen
             for dosennummer, dose in enumerate(self.dosenlist): 
-                dose.set_zimmer(command[1][dosennummer]) 
+                dose.set_zimmer(command[1][dosennummer])           # setze den Zimmer namen in die dose
 
 
         elif command[0] == ACTION_EVENT:
-            self.myprint (DEBUG_LEVEL2, "\t" + progname + "ist action event, dose: {} wie: {}".format(command[2],command[3])) 
+            self.myprint (DEBUG_LEVEL2, "\t" + progname + "ist action event, dose:{} wie:{}".format(command[2],command[3])) 
 
             if (self.are_actions_before_actual_time == True):
-                self.dosenlist[command[2]-1].set_auto_virtuell(command[3])  
+                self.dosenlist[command[2]-1].schalten_auto_virtuell(command[3])  
             else:  
-                self.dosenlist[command[2]-1].set_auto(command[3])    
+                self.dosenlist[command[2]-1].schalten_auto(command[3])    
         else:
-            self.myprint (DEBUG_LEVEL0, "\t" + progname + "wrong event type {}".format(command[0])) 
+            self.myprint (DEBUG_LEVEL0, "\t" + progname + "wrong event type:{}".format(command[0])) 
 
 
 #---------------------------------------------------------------
@@ -393,7 +393,7 @@ class SwHome (MyPrint):
                                          # hilfsfeld   
             self.myprint (DEBUG_LEVEL1, "\t" + progname + "Jemand daheim, nicht manuelle Dosen aus")   
             for dose in self.dosenlist:
-                dose.set_zuhause()
+                dose.set_zuhause()                      # schalte ev. dose aus, weil nun jemand daheim ist
         else:
             self.zuhause = False      #  niemand daheim
             self.daheim = 0          # hilfsfeld
@@ -402,7 +402,7 @@ class SwHome (MyPrint):
         
             self.myprint (DEBUG_LEVEL1, "\t" + progname + "Niemand daheim, setzt Dosen gemaess Dosenstatus")            
             for dose in self.dosenlist:
-                dose.set_nichtzuhause()    
+                dose.set_nichtzuhause()                 # schalte ev. dose ein, weil nun niemand daheim ist
 
         self.myprint (DEBUG_LEVEL1, "\t" + progname + "home_state now: {}/{}".format (self.daheim,HOMESTATE[self.daheim]))
         # notify frontend
@@ -440,9 +440,9 @@ class SwHome (MyPrint):
         self.myprint (DEBUG_LEVEL1,  "\t" + progname + "testmode=Ja in Configfile=1, also mache Test_dosen")
         time.sleep(1)
         for dose in self.dosenlist:          
-            dose.set_auto(1)
+            dose.set_auto(1)                    # schalte dose ein
             time.sleep(0.5)
-            dose.set_auto(0)
+            dose.set_auto(0)                    # schalte dose aus
         self.myprint (DEBUG_LEVEL1,  "\t" + progname + "Test_dosen done")
         time.sleep(1)    
 

@@ -29,7 +29,10 @@ DEBUG_LEVEL1=1
 DEBUG_LEVEL2=2
 DEBUG_LEVEL3=3
 
-config_section = "aktor_5"   
+config_section = "aktor_5"  
+progname = "swc_aktor5 "
+OFFON = ['AUS','EIN']
+
 # ***** Variables *****************************
 #   Struktur (Directory) der Daten, die aus dem Configfile swconfig.ini gelesen werden
 #   hier die defaultwerte der 'variablen'
@@ -65,7 +68,7 @@ class Aktor_5 (MyPrint):
         
         self.action_type="Funk bei Habi"     # welche art Schalten ist dies hier
         
-        self.myprint (DEBUG_LEVEL2, "--> aktor_5 {} aktor_init called für Dose {}".format (self.nummer,self.dosennummer))
+        self.myprint (DEBUG_LEVEL2,  progname + "aktor_init called für Dose:{}".format (self.dosennummer))
         Aktor_5.aktorzahler +=1            # erhögen aktorzähler
 
  # nun alle GPIO Pins aus dem Config File holen
@@ -73,11 +76,11 @@ class Aktor_5 (MyPrint):
         config=ConfigRead(self.debug)        # instanz der ConfigRead Class
         ret = config.config_read(self.config_file, config_section, cfglist_akt)
         if ret > 0:
-            self.myprint (DEBUG_LEVEL1, "config_read hat retcode: {}".format (ret))
+            self.myprint (DEBUG_LEVEL1,  progname + "config_read hat retcode:{}".format (ret))
             self.errorcode=99
             return None
 
-        self.myprint (DEBUG_LEVEL3, "--> aktor_5 {} aktor_init : dose {} configfile read {}".format (self.nummer,self.dosennummer, cfglist_akt))
+
 
 
           # get values fro config file
@@ -86,12 +89,12 @@ class Aktor_5 (MyPrint):
             self.code = cfglist_akt["system_code"]
             self.pfad = cfglist_akt["pfad_1"]
         except KeyError :
-            self.myprint (DEBUG_LEVEL0, " actor_5: KeyError in cfglist_akt, check values!")   
+            self.myprint (DEBUG_LEVEL0,  progname + "KeyError in cfglist_akt, check values!")   
 
-        self.myprint (DEBUG_LEVEL2, "--> aktor_5 {} aktor_init : dose {}, using code {} und pfad: {} und pin:{}".format (self.nummer,self.dosennummer, self.code, self.pfad,self.pin))
+        self.myprint (DEBUG_LEVEL2,  progname + "aktor_init : dose:{}, using code:{} und pfad:{} und pin:{}".format (self.dosennummer, self.code, self.pfad,self.pin))
 
         self.commandline = "sudo " + self.pfad + "/send" + " " + str(self.pin)+ " " + self.code + " " + str(self.dosennummer) + " "
-        self.myprint (DEBUG_LEVEL3, "--> aktor_5 {} aktor_init : dose {}, using commandline: {}".format (self.nummer,self.dosennummer, self.commandline))
+        self.myprint (DEBUG_LEVEL3,  progname + "aktor_init : dose:{}, using commandline:{}".format (self.dosennummer, self.commandline))
        
 
 # **************************************************  
@@ -109,7 +112,7 @@ class Aktor_5 (MyPrint):
 # cleanup GPIO PIns
 #------------------------------------------------------------------------
     def __del__(self):
-        self.myprint (DEBUG_LEVEL3, "--> aktor5 del called")
+        self.myprint (DEBUG_LEVEL3,  progname + "del called")
        
         pass
 
@@ -117,16 +120,18 @@ class Aktor_5 (MyPrint):
 # ***** Function zum setzen GPIO *********************
     def schalten(self,einaus,debug_level_mod):
   
-        self.myprint (debug_level_mod, "--> aktor5: schalten called ein/aus:{}".format(einaus))
+        self.myprint (debug_level_mod,  progname + "schalten called:{}".format(OFFON[einaus]))
 #
         
-        self.cmd=self.commandline + str(einaus)
-        ret=os.system(self.cmd)
+        self.cmd = self.commandline + str(einaus)
+        ret = os.system(self.cmd)
         time.sleep(1.2)                     # wenn mehrer setSwitch hintereinander kommen, muss man warten  
    
         if ret >0:
-            self.myprint (DEBUG_LEVEL0, "--> aktor_5 dose {}, send module nicht gefunden: {}".format (self.dosennummer, self.cmd))
+            self.myprint (DEBUG_LEVEL0,  progname + "dose:{}, send module nicht gefunden:{}".format (self.dosennummer, self.cmd))
       
+        return (ret)                  # return code
+   
 # ************************************************** 		
 
 

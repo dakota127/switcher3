@@ -277,6 +277,11 @@ class MQTT_Conn(MyPrint):
        # self.myprint (DEBUG_LEVEL2,  self.printstring +   "publish_msg() called, topic:{}, payload:{}".format(topic,payload))
         self.myprint (DEBUG_LEVEL2,  self.printstring +   "publish_msg() called, topic:{}".format(topic))
         pass
+
+        if not self.connect_flag:           # return error 55 if no connection to broker
+            self.mqtt_error = 55
+            return ( self.mqtt_error )
+
         # ---- publish a message   
         # we try to catch ValueErrors on publish, this cn happen if the topic string has zero lenght        
         try:
@@ -342,17 +347,19 @@ class MQTT_Conn(MyPrint):
 
 #---------------------------------------------------
     def reconnect (self):
-        self.myprint (DEBUG_LEVEL1,  self.printstring + "reconnect() called")
+        self.myprint (DEBUG_LEVEL0,  self.printstring + "reconnect() called")
         self.mqttc.loop_stop()         
         self.connect_flag = False               # set to False and try connection
         try:
             self.mqttc.reconnect() 
             self.mqttc.loop_start() 
-            self.myprint (DEBUG_LEVEL1,  self.printstring + "reconnect sucessfull") 
+            self.myprint (DEBUG_LEVEL0,  self.printstring + "reconnect sucessfull") 
             self.connect_flag = True         
         except:
-            self.myprint (DEBUG_LEVEL1,  self.printstring + "reconnect refused")        
-
+            self.myprint (DEBUG_LEVEL0,  self.printstring + "reconnect refused")        
+        finally:
+            pass
+        
 #------------------------------------------------
 
 

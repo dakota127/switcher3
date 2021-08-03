@@ -29,6 +29,10 @@ DEBUG_LEVEL2=2
 DEBUG_LEVEL3=3
 
 config_section = "aktor_4"
+progname = "swc_aktor4 "
+
+OFFON = ['AUS','EIN']
+
 # dict values from config file, Abschnitt Aktor_4
 cfglist_akt = {      
         "gpio_1"    : 4,
@@ -79,7 +83,7 @@ class Aktor_4 (MyPrint):
         
         Aktor_4.action_type="Funk-OLD"     # welche art Schalten ist dies hier
         
-        self.myprint (DEBUG_LEVEL2, "--> aktor_4 {} aktor_init called fuer Dose {}".format (self.nummer,self.dosennummer))
+        self.myprint (DEBUG_LEVEL2,  progname + "aktor_init called fuer Dose:{}".format (self.dosennummer))
         Aktor_4.aktorzahler +=1            # erhögen aktorzähler
         self.errorcode = 0          # aktor init ok
 
@@ -96,7 +100,7 @@ class Aktor_4 (MyPrint):
 # cleanup GPIO PIns
 #------------------------------------------------------------------------
     def __del__(self):
-        self.myprint (DEBUG_LEVEL3, "--> aktor_4 del called")
+        self.myprint (DEBUG_LEVEL3,  progname + "del called")
 
         if self.errorcode == 0:
             for i in range(1,len(Aktor_4.Pins)):
@@ -108,7 +112,7 @@ class Aktor_4 (MyPrint):
     def schalten(self,einaus, debug_level_mod):
         global GPIO
         self.what=1
-        self.myprint (debug_level_mod, "--> aktor4: schalten called Gpio: %d ein/aus: %s" % ( Aktor_4.Pins[self.dosennummer],einaus))
+        self.myprint (debug_level_mod,  progname + "schalten called Gpio:{} {}".format ( Aktor_4.Pins[self.dosennummer],OFFON[einaus]))
 #
 # parameter what indicates: 1: sender für waittime_senden einschalten und danch wieder ausschalten
 #                           0: sender nur ausschalten (nötig bei Abbruch des programms durch ctrl-c)
@@ -122,7 +126,8 @@ class Aktor_4 (MyPrint):
 
         time.sleep(Aktor_4.WAIT_NACH_SENDEN)     # korrektur habi (give transmitter time to settle down)
 
- 
+        return (0)                  # return code immer null
+   
 # ************************************************** 		
 
 

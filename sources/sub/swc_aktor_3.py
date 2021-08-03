@@ -34,7 +34,10 @@ DEBUG_LEVEL1 = 1
 DEBUG_LEVEL2 = 2
 DEBUG_LEVEL3 = 3
 
-OFFON = ['OFF','ON']
+OFFON = ['AUS','EIN']
+OFFON2 = ['OFF','ON']           # für payload mqtt
+progname = "swc_aktor3 "
+
 
 # Publish and subscribe Topic für Smart Switches
 # NOte: first element must be present and ''
@@ -76,9 +79,8 @@ class Aktor_3 (MyPrint):
         self.mqtt_topic = ""
         self.mqtt_client_id = ""
         self.action_type = "mqtt"     # welche art Schalten ist dies hier
-        self.broker_ok = False
         self.how = ''
-        self.myprint (DEBUG_LEVEL2, "--> aktor_3 {} aktor_init called fuer Dose {}, msg_type:{}, subscribe:{}".format (self.nummer,self.dosennummer,self.meldungs_typ, self.subscribe_noetig))
+        self.myprint (DEBUG_LEVEL2,   progname +  "aktor_init called fuer Dose {}, msg_type:{}, subscribe:{}".format (self.dosennummer,self.meldungs_typ, self.subscribe_noetig))
         Aktor_3.aktorzahler += 1            # erhögen aktorzähler
 
  # nun mqtt Brokder data aus config holen
@@ -86,7 +88,7 @@ class Aktor_3 (MyPrint):
         config = ConfigRead(self.debug)        # instanz der ConfigRead Class
         ret = config.config_read(self.config_file ,config_section, cfglist_akt)
         if ret > 0:
-            self.myprint (DEBUG_LEVEL0, "config_read hat retcode: {}".format (ret))
+            self.myprint (DEBUG_LEVEL0,  progname + "config_read hat retcode:{}".format (ret))
             self.errorcode = 99
             return None
 
@@ -95,12 +97,9 @@ class Aktor_3 (MyPrint):
         # no values needed ....
             pass
         except KeyError :
-            self.myprint (DEBUG_LEVEL0, " actor_3: KeyError in cfglist_akt, check values!")   
+            self.myprint (DEBUG_LEVEL0,  progname + "KeyError in cfglist_akt, check values!")   
     
 
-        self.myprint (DEBUG_LEVEL3, "--> aktor_3 {} aktor_init : dose {} configfile read {}".format (self.nummer,self.dosennummer, cfglist_akt))
-
-        self.broker_ok = True
   
         if self.subscribe_noetig > 0:       #   config verlangt, dass wir ein subscribe absetzen, damit die statusmeldungen
                                             #   von smart switches (sonoff) empfangen werden können
@@ -110,7 +109,7 @@ class Aktor_3 (MyPrint):
             topic_subscribe = first + str(self.dosennummer) + second
   
             self.mqttc.subscribe_topic (topic_subscribe , self.dosencallback)     # subscribe to topic
-            self.myprint (DEBUG_LEVEL1,  "--> aktor3 done mqtt subscription, topic: {} ".format(topic_subscribe))
+            self.myprint (DEBUG_LEVEL1,   progname + "done mqtt subscription, topic:{} ".format(topic_subscribe))
     
        #     self.mqttc.subscribe_topic (TOPIC_LW , self.last_will)              # subscribe to Last Will Topic der Sensoren
 
@@ -131,7 +130,7 @@ class Aktor_3 (MyPrint):
 # cleanup 
 #------------------------------------------------------------------------
     def __del__(self):
-        self.myprint (DEBUG_LEVEL3, "--> aktor_3 del called")
+        self.myprint (DEBUG_LEVEL3,  progname + "del called")
     
         pass
 
@@ -142,19 +141,18 @@ class Aktor_3 (MyPrint):
       
         payload = ""
         
-        self.myprint (DEBUG_LEVEL1, "--> aktor3: schalten called ein/aus: {} ".format(einaus))
+        self.myprint (DEBUG_LEVEL1,  progname + "schalten called:{} ".format(OFFON[einaus]))
         
-#
 #       WICHTIG:
-#       self.meldungs_typ == 1 ist für Testaufbau mit esp8266 
-#       self.meldungs_typ == 2 ist für sonof switches , 
+#       self.meldungs_typ == 1 ist für Testaufbau mit DIY switches mit esp8266 
+#       self.meldungs_typ == 2 ist für sonoff switches , 
 #       other smart switches might use other payloads <<<<------------- 
 #       subscriber script swmqtt_sub.py zeigt meldung an
 #
-        self.how = OFFON[einaus]        # 'ON' oder 'OFF' setzen, wird gebraucht für Payload
+        self.how = OFFON2[einaus]        # 'ON' oder 'OFF' setzen, wird gebraucht für Payload
 
 
-        if self.meldungs_typ == 2 or self.meldungs_typ == 1:          # mqtt typ 2 für sonof switches    
+        if self.meldungs_typ == 2 or self.meldungs_typ == 1:          # mqtt typ 1 oder 2 für sonoff switches and DIY switches    
  #           self.mqtt_topic = TOPIC_P[self.meldungs_typ]
             first, second = TOPIC_P[self.meldungs_typ].split('%')
             self.mqtt_topic = first + str(self.dosennummer) + second
@@ -166,23 +164,23 @@ class Aktor_3 (MyPrint):
                    
                
         
-        if self.broker_ok:          # nur senedne, wenn mqtt connection ok
+        
                                     # wir verwenden für loggin den mod debuglevel von der dose
-            self.myprint (debug_level_mod, "--> aktor3. publish mqtt Topic: {} , Payload: {}".format(self.mqtt_topic, payload))
+        self.myprint (debug_level_mod,  progname + "publish mqtt Topic:{} , Payload:{}".format(self.mqtt_topic, payload))
  
  
         mqtt_error = self.mqttc.publish_msg (self.mqtt_topic, payload)
 #        time.sleep(0.3)
         if mqtt_error > 0:
-            self.myprint (DEBUG_LEVEL0, "--> aktor3: publish returns errorcode: {}".format(mqtt_error)) 
-  #          return (mqtt_error)       
-  #          self.mqttc.mypublish(self.mqtt_topic, payload)
+            self.myprint (DEBUG_LEVEL0,  progname + "publish returns errorcode:{}".format(mqtt_error)) 
+        
+        return (mqtt_error)       
 
 
 #---- set_sensorstat -----------------
 # hier kommt Last Will and Testament des schalters (siehe Arduino Code für ESP8266)
     def last_will(self,payload):
-        self.myprint (DEBUG_LEVEL2,"--> aktor3.last_will() called  payload: {}".format( payload))
+        self.myprint (DEBUG_LEVEL2, progname +  "last_will() called  payload:{}".format( payload))
         pass
         
         # vorläufig empty

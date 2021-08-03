@@ -31,6 +31,10 @@ DEBUG_LEVEL3=3
 
 
 config_section = "aktor_1"
+progname = "swc_aktor1 "
+
+
+OFFON = ['AUS','EIN']
 
 # dict values from config file
 cfglist_akt = {   
@@ -63,7 +67,7 @@ class Aktor_1 (MyPrint):
         
         self.action_type="4 LED"     # welche art Schalten ist dies hier
         
-        self.myprint (DEBUG_LEVEL2, "--> aktor_1 aktor_init called für Dose {}".format (self.dosennummer))
+        self.myprint (DEBUG_LEVEL2,   progname + "aktor_init called für Dose {}".format (self.dosennummer))
         Aktor_1.aktorzahler +=1            # erhögen aktorzähler
 
  # nun alle GPIO Pins aus dem Config File holen
@@ -74,11 +78,10 @@ class Aktor_1 (MyPrint):
         ret = config.config_read(self.config_file, config_section, cfglist_akt)
 ##        ret=config.config_read(self.path + "/swconfig.ini","aktor_1",cfglist_akt)
         if ret > 0:
-            self.myprint (DEBUG_LEVEL0, "config_read hat retcode: {}".format (ret))
+            self.myprint (DEBUG_LEVEL0,   progname +  "config_read hat retcode: {}".format (ret))
             self.errorcode=99
             return None
 
-        self.myprint (DEBUG_LEVEL3, "--> aktor_1 {} aktor_init : dose {} configfile read {}".format (self.nummer,self.dosennummer, cfglist_akt))
 
 
         # get values fro config file
@@ -94,14 +97,14 @@ class Aktor_1 (MyPrint):
         #   GPIO Pin 5 holen
             self.Pins2.append (int(cfglist_akt["gpio_5"]))
         except KeyError :
-            self.myprint (DEBUG_LEVEL0, " actor_1: KeyError in cfglist_akt, check values!")   
+            self.myprint (DEBUG_LEVEL0,   progname + "KeyError in cfglist_akt, check values!")   
 
 
 # nun wurde alle 5 Pins geholt, diese Instanz verwendet genau einen der Pins in der Liste Pins2
         self.mypin=self.Pins2[self.nummer]        # hole Pin NUmmer 
         GPIO.setup(self.mypin, GPIO.OUT)
  #       GPIO.output(self.mypin, True)
-        self.myprint (DEBUG_LEVEL3, "--> aktor_1 {} aktor_init : dose {}, using GPIO:{}".format (self.nummer,self.dosennummer, self.mypin))
+        self.myprint (DEBUG_LEVEL3,   progname + "aktor_init dose:{}, using GPIO:{}".format (self.dosennummer, self.mypin))
    
         self.errorcode=0    # init aktor ok
 
@@ -118,7 +121,7 @@ class Aktor_1 (MyPrint):
 # cleanup GPIO PIns
 #------------------------------------------------------------------------
     def __del__(self):
-        self.myprint (DEBUG_LEVEL2, "--> aktor_1 del called")
+        self.myprint (DEBUG_LEVEL2,   progname + "del called")
         
         if self.errorcode == 0:
             GPIO.cleanup(self.mypin)  # cleanup GPIO Pins
@@ -128,12 +131,14 @@ class Aktor_1 (MyPrint):
     def schalten(self,einaus, debug_level_mod):
         global GPIO
   
-        self.myprint (debug_level_mod, "--> aktor1: schalten called: Gpio: %d ein/aus: %s" % (self.mypin, einaus))
+        self.myprint (debug_level_mod,   progname + "schalten called: Gpio:{} {}".format (self.mypin, OFFON[einaus]))
 #
         if einaus== 1:
             GPIO.output(self.mypin, True)         # dosen muss minus 1 sein wegen List index Dosen
         else:
             GPIO.output(self.mypin, False)
+
+        return (0)                  # return code immer null
    
 # ************************************************** 		
 

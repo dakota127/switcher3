@@ -269,6 +269,20 @@ def Cloning(li1):
     return li_copy
 
 
+#*********  check mqtt connection **********
+#----------------------------------------------------------
+def check_mqtt():
+#
+    myprint.myprint (DEBUG_LEVEL1,   progname + "check_mqtt() called")			
+    connect, error = mymqtt.get_status()
+    if not connect:
+        myprint.myprint (DEBUG_LEVEL0,   progname + "no connection, connect:{}, err:{}".format(connect,error))	
+
+        mymqtt.reconnect()
+
+
+
+
 #---------------------------------------------------------------       
 # --- get all the info (grosser Status für Info Seite)
 # --- 
@@ -780,6 +794,8 @@ def runit():
         sequencer.start()           # start the sequencer
        
         myprint.myprint (DEBUG_LEVEL1 ,progname + "Start of switcher3 Main loop")
+
+    #  ---- MAIN LOOP of program ---------------------------------    
         while True:
     #  ---- MAIN LOOP of program ---------------------------------
            
@@ -810,6 +826,8 @@ def runit():
 	            time_old = datetime.now()
 	            myprint.myprint (DEBUG_LEVEL0 ,progname +  "bin am leben..")
 
+            # check mqtt Connection
+            check_mqtt()
 
         myprint.myprint (DEBUG_LEVEL2 ,progname + "end of big while")
         pass           

@@ -32,6 +32,10 @@ DEBUG_LEVEL2 = 2
 DEBUG_LEVEL3 = 3
 
 config_section = "aktor_2"
+progname = "swc_aktor2 "
+
+OFFON = ['AUS','EIN']
+
 # ***** Variables *****************************
 #   Struktur (Directory) der Daten, die aus dem Configfile swconfig.ini gelesen werden
 #   hier die defaultwerte der 'variablen'
@@ -69,26 +73,26 @@ class Aktor_2 (MyPrint):
         self.codel = 0
         self.data_ein = ""
         self.data_aus = ""
-        self.myprint (DEBUG_LEVEL2, "--> aktor_2_init called fuer Dose {}".format (self.dosennummer))
+        self.myprint (DEBUG_LEVEL2,  progname + "init called fuer Dose {}".format (self.dosennummer))
         Aktor_2.aktorzahler += 1            # erhögen aktorzähler
         
  # nun alle notwendigen Parameter aus dem Config File holen
         
         
         if (self.debug > 2):
-            self.myprint (DEBUG_LEVEL3, "\nsc_aktor_1: Configdictionary before reading:")
+            self.myprint (DEBUG_LEVEL3,  progname + "Configdictionary before reading:")
             for x in cfglist_akt:
                 print ("{} : {}".format (x, cfglist_akt[x]))
 
         config = ConfigRead(self.debug)        # instanz der ConfigRead Class
         ret = config.config_read(self.config_file, config_section, cfglist_akt)        
         if ret > 0:
-            self.myprint (DEBUG_LEVEL0, "config_read hat retcode: {}".format (ret))
+            self.myprint (DEBUG_LEVEL0,  progname + "config_read hat retcode:{}".format (ret))
             self.errorcode=99
             return None
 
         if (self.debug > 2):
-            self.myprint (DEBUG_LEVEL3, "\nsc_aktor_1: Configdictionary after reading:")
+            self.myprint (DEBUG_LEVEL3,  progname + "Configdictionary after reading:")
             for x in cfglist_akt:
                 print ("{} : {}".format (x, cfglist_akt[x]))
 
@@ -116,16 +120,16 @@ class Aktor_2 (MyPrint):
             self.data_aus = str(self.data_aus)
             
         except KeyError :
-            self.myprint (DEBUG_LEVEL0, " actor_2: KeyError in cfglist_akt, check values!")   
+            self.myprint (DEBUG_LEVEL0,  progname + "KeyError in cfglist_akt, check values!")   
 
 
-        self.myprint (DEBUG_LEVEL2, "--> aktor_2 init: Dose: {}, repeat: {} , codel:{}".format(self.dosennummer, self.repeat,self.codel))
+        self.myprint (DEBUG_LEVEL2,  progname + "init: Dose:{}, repeat:{} , codel:{}".format(self.dosennummer, self.repeat,self.codel))
 
 #   
 
         self.swcode_ein,self.pulselength_ein,self.protocoll_ein = self.data_ein.split(",")
         
-        self.myprint (DEBUG_LEVEL2, "--> aktor_2 init: Dose: {}, code: {} , length: {} , protocoll:{}".format(self.dosennummer, self.swcode_ein,self.pulselength_ein,self.protocoll_ein))
+        self.myprint (DEBUG_LEVEL2,  progname + "init: Dose:{}, code:{} , length:{} , protocoll:{}".format(self.dosennummer, self.swcode_ein,self.pulselength_ein,self.protocoll_ein))
  
  #      For Testing       
  #       print (type(self.swcode_ein), self.swcode_ein)
@@ -140,7 +144,7 @@ class Aktor_2 (MyPrint):
         
          
         self.swcode_aus,self.pulselength_aus,self.protocoll_aus=self.data_aus.split(",")
-        self.myprint (DEBUG_LEVEL2, "--> aktor_2 init: Dose: {}, code: {} , length: {} , protocoll:{}".format(self.dosennummer, self.swcode_aus,self.pulselength_aus,self.protocoll_aus))
+        self.myprint (DEBUG_LEVEL2,  progname + "init: Dose:{}, code:{}, length:{}, protocoll:{}".format(self.dosennummer, self.swcode_aus,self.pulselength_aus,self.protocoll_aus))
         self.swcode_aus = int(self.swcode_aus)
         self.pulselength_aus = int(self.pulselength_aus)
         self.protocoll_aus = int(self.protocoll_aus)
@@ -172,7 +176,7 @@ class Aktor_2 (MyPrint):
 # delete instance
 #------------------------------------------------------------------------
     def __del__(self):
-        self.myprint (DEBUG_LEVEL3, "--> aktor_2 del called")
+        self.myprint (DEBUG_LEVEL3,  progname + "del called")
     
         pass
 
@@ -180,7 +184,7 @@ class Aktor_2 (MyPrint):
     def schalten(self,einaus, debug_level_mod):
         global GPIO
   
-        self.myprint (debug_level_mod, "--> aktor2: schalten called, Gpio: %d ein/aus: %s" % (self.mypin, einaus))
+        self.myprint (debug_level_mod,  progname + "schalten called, Gpio:{} {}".format(self.mypin, OFFON[einaus]))
 #
         if einaus == 1:
             self.rfdevice.tx_code(self.swcode_ein, self.protocoll_ein, self.pulselength_ein, self.codel)
@@ -188,7 +192,9 @@ class Aktor_2 (MyPrint):
         else:
             self.rfdevice.tx_code(self.swcode_aus, self.protocoll_aus, self.pulselength_aus, self.codel)
  #           self.rfdevice.cleanup()
-          
+        
+        return (0)                  # return code immer null
+         
    
 # ************************************************** 		
 

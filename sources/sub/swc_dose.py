@@ -14,11 +14,12 @@
 #       display_status()
 #       set_zuhause()
 #       set_nichtzuhause()
-#       set_manuell()
-#       set_auto_virtuell()
+#       schalten_manuell()
+#       schalten_auto()
+#       schalten_auto_virtuell()
+#       set_mod_auto()
+#       umschalten()
 #       set_wiestatus()
-#       reset_manuell()
-#       set_auto()
 #       show_status()
 #       set_zimmer()
 #       get_zimmer()
@@ -27,7 +28,9 @@
 #   private functions:
 #       _stat_list()
 #       _message_out()
-#   
+#       _schalten
+
+
 #   Juli 2018, extended Februar 2021
 #   by Peter K. Boxler
 #************************************************
@@ -55,9 +58,9 @@ TOFE_RESET_ALL  = 9
 
 configfile_name = "swconfig.ini"
 config_section = "dose"                # look up values in this section
-progname = "dose "
+progname = "swc_dose "
 
-EXSTAT      = ["Aus","Ein"]
+OFF_ON      = ["Aus","Ein"]
 SCHPRIO     = ["Typ0","Typ1","Typ2"]
 SCHMODUS    = ["auto","manuell"]
 SCHART      = ["fill","Test (5 LED)","Funk","Smart","Funk2","Funk3"]  # element zero ist filler
@@ -112,7 +115,7 @@ class Dose(MyPrint):
         self.status_extern = 0
         self.configfile = config_filename_in          
         self.dosen_nummer = Dose.dosenzahler
-        self.myprint (DEBUG_LEVEL2 ,progname + "dose{} dosen_init called, debug: {}  testmode: {}".format (self.dosen_nummer,debug_in,testmode_in))
+        self.myprint (DEBUG_LEVEL2 ,progname + "dose{} dosen_init called, debug:{}  testmode:{}".format (self.dosen_nummer,debug_in,testmode_in))
         self.testmode = testmode_in
         self.mqttc = mqttc_in           # instanz mqtt client
         self.callback = callback_function
@@ -126,16 +129,17 @@ class Dose(MyPrint):
         self.schalt = ""                # hilfsfeld   
         self.schalton = 0                  # anzahl schaltvorgänge ON
         self.schaltoff = 0                 # anzahl schaltvorgänge OFF 
+        self.serr = 0                        # schalterror
  # nun schaltart für die Dosen  aus config holen
        
        
-        self.myprint (DEBUG_LEVEL2 ,progname + "dose{} init called, configfile: {}". format(dose, self.configfile))
+        self.myprint (DEBUG_LEVEL2 ,progname + "dose:{} init called, configfile: {}". format(dose, self.configfile))
         config = ConfigRead(debug_level = debug_in)      # instanz der ConfigRead Class    
        
         
         ret=config.config_read(self.configfile,config_section,cfglist_dos)
         if ret > 0:
-            self.myprint (DEBUG_LEVEL2 ,progname +  "dosen init: config_read hat retcode: {}".format (ret))
+            self.myprint (DEBUG_LEVEL2 ,progname +  "dosen init: config_read hat retcode:{}".format (ret))
             self.errorcode=99
             return None
 
@@ -181,7 +185,7 @@ class Dose(MyPrint):
             
             
         if  self.schaltart == 3:
-            self.myprint (DEBUG_LEVEL1 ,progname +"dose{} Schaltart: {}, MQTT_status: {}, msg_var:{}, subscribe:{}".format(self.dosen_nummer,self.schaltart, self.mqtt_connect, self.msg_variante, self.subscribe))
+            self.myprint (DEBUG_LEVEL1 ,progname +"dose{} Schaltart:{}, MQTT_status:{}, msg_var:{}, subscribe:{}".format(self.dosen_nummer,self.schaltart, self.mqtt_connect, self.msg_variante, self.subscribe))
         else:
             self.myprint (DEBUG_LEVEL1 ,progname +  "dose{} Schaltart: {}".format(self.dosen_nummer,self.schaltart))
         
@@ -229,14 +233,14 @@ class Dose(MyPrint):
            
 
         if self.myaktor.errorcode == 99:
-            self.myprint (DEBUG_LEVEL2 ,progname +  "Aktor: {} meldet Fehler {}".format (self.dosen_nummer, self.myaktor.errorcode))	 
+            self.myprint (DEBUG_LEVEL2 ,progname +  "Aktor:{} meldet Fehler {}".format (self.dosen_nummer, self.myaktor.errorcode))	 
             raise RuntimeError('---> Switcher ernsthafter Fehler, check switcher3.log <----')
 
         self.time_last_aktion =  datetime.now()         # zeit merken 
 
         self.myprint (DEBUG_LEVEL0 ,progname + "object created: {}".format(self.myaktor))
 
-        self.myprint (DEBUG_LEVEL2 ,progname +  "dose{} ausschalten (init dose), schaltart: {}".format (self.dosen_nummer, self.schaltart))
+        self.myprint (DEBUG_LEVEL2 ,progname +  "dose{} ausschalten (init dose), schaltart:{}".format (self.dosen_nummer, self.schaltart))
         self.myaktor.schalten(0,  self.debug_level2_mod)
         self.errorcode = 0          # init der Dose ok 
 
@@ -259,9 +263,9 @@ class Dose(MyPrint):
         dos_list =[]
         dos_list.append (self.dosen_nummer)
         dos_list.append (self.status_extern)                    # externer status
-        dos_list.append (EXSTAT[self.status_extern])            # externer status
+        dos_list.append (OFF_ON[self.status_extern])            # externer status
         dos_list.append (self.status_intern)
-        dos_list.append (EXSTAT[self.status_intern])
+        dos_list.append (OFF_ON[self.status_intern])
         dos_list.append (self.schaltmodus)
         dos_list.append (SCHMODUS[self.schaltmodus])            # auto/manuell
         dos_list.append (SCHPRIO[self.schaltprio] + " / " + SCHART[self.schaltart])   # Typ0= nur manuell, Typ1 = normal, Typ2 = immer
@@ -275,11 +279,23 @@ class Dose(MyPrint):
         return (dos_list)           # return this list to caller
     
 
+# ---- private Funktion _schalten() ------------------------------
+    def _schalten(self, how):
+        self.serr = 0
+        # wir rufen den aktor auf um zu zu schalten
+        self.serr = self.myaktor.schalten(how,  self.debug_level2_mod)
+
+        if self.serr > 0:
+            self.myprint (DEBUG_LEVEL0, progname +  "Dose{} error beim schalten:{}".format (self.nummer, self.serr))
+            
+        # zählen schaltvorgänge
+        if how == 1:
+            self.schalton += 1
+        else:
+            self.schaltoff += 1    
+
 # ---- private Funktion _message_out() ------------------------------
-# ,
     def _message_out(self):
-
-
         self.callback (self._stat_list())      # notfy calller that dose was switched
 
 # Funktion dispay_anzahl()  gibt die Anzahl der instantiierten Dosen zurück
@@ -290,22 +306,15 @@ class Dose(MyPrint):
 # Funktion dispay_anzahl()  gibt status aus auf stdout
 #--------------------------------------------------------------------------
     def display_status(self):
-       self.myprint (DEBUG_LEVEL2, "Dose:{} Status intern {} Status extern {} Modus {} Zuhause {}".format (self.nummer, self.status_intern,self.status_extern,self.schaltmodus, self.zuhause))
+       self.myprint (DEBUG_LEVEL2, progname +  "Dose:{} Status intern:{} Status extern:{} Modus:{} Zuhause:{}".format (self.nummer, OFF_ON[self.status_intern],OFF_ON[self.status_extern],self.schaltmodus, self.zuhause))
 
-# Funktion self._count_schalt()  zähnle anzahl schlatvorgänge
-#--------------------------------------------------------------------------
-    def _count_schalt(self,how):
-        if how == 1:
-            self.schalton += 1
-        else:
-            self.schaltoff += 1    
 
 # Funktion set_zuhause()  schaltet dose aus, falls Modus nicht manuell ist, setzt externen Status
 #--------------------------------------------------------------------------
     def set_zuhause(self):
 # 
         self.zuhause=True
-        self.myprint (self.debug_level2_mod ,  "dose{} set_zuhause called, zuhause aktuell: {}" .format (self.dosen_nummer, self.zuhause))
+        self.myprint (self.debug_level2_mod ,  progname +  "dose{} set_zuhause called, zuhause aktuell:{}" .format (self.dosen_nummer, self.zuhause))
         if self.schaltmodus == 1: 
             return            # wenn modus manuell mach nichts weiter
 
@@ -315,9 +324,8 @@ class Dose(MyPrint):
         self.time_last_aktion =  datetime.now()         # zeit merken 
         
         self.status_extern=0
-        self.myprint (self.debug_level2_mod, "dose {} ausschalten, schaltart: {}".format (self.dosen_nummer, self.schaltart))
-        self.myaktor.schalten(0,  self.debug_level2_mod)
-        self._count_schalt(0)            # zählen schaltvorgänge
+        self.myprint (self.debug_level2_mod, progname +  "dose{} ausschalten, schaltart:{}".format (self.dosen_nummer, self.schaltart))
+        self._schalten(0)
 
         self._message_out()        # notfy calller that dose was switched
     
@@ -326,7 +334,7 @@ class Dose(MyPrint):
     def set_nichtzuhause(self):
 
         self.zuhause=False
-        self.myprint (self.debug_level2_mod ,  "dose{} set_nicht zuhause called, zuhause aktuell: {}" .format (self.dosen_nummer, self.zuhause))
+        self.myprint (self.debug_level2_mod ,  progname +  "dose{} set_nicht zuhause called, zuhause aktuell:{}" .format (self.dosen_nummer, self.zuhause))
 
         if self.schaltmodus == 1: 
             return   # manuell, wir machen nichts
@@ -337,23 +345,21 @@ class Dose(MyPrint):
             
         if self.status_intern==1:
             self.status_extern=1
-            self.myprint (self.debug_level2_mod, "dose {} einschalten, schaltart: {}".format (self.dosen_nummer, self.schaltart))
-            self.myaktor.schalten(1,  self.debug_level2_mod)
-            self._count_schalt(1)            # zählen schaltvorgänge
+            self.myprint (self.debug_level2_mod, progname +  "dose{} einschalten, schaltart:{}".format (self.dosen_nummer, self.schaltart))
+            self._schalten(1)                 # wir schalten, mache die via den aktor
             self._message_out()      # notfy calller that dose was switched      # notfy calller that dose was switched
             
         else:
             self.status_extern=0
-            self.myprint (self.debug_level2_mod, "dose {} ausschalten, schaltart: {}".format (self.dosen_nummer, self.schaltart))
-            self.myaktor.schalten(0,  self.debug_level2_mod)
-            self._count_schalt(0)            # zählen schaltvorgänge
+            self.myprint (self.debug_level2_mod, progname +  "dose{} ausschalten, schaltart:{}".format (self.dosen_nummer, self.schaltart))
+            self._schalten(0)                 # wir schalten, mache die via den aktor
             self._message_out()      # notfy calller that dose was switched
 
 # ---- Funktion set_dosen_wiestatus ------------------------------
 #      schaltet die Dose ein, falls interner Status 1 ist - aber nicht, wenn Modus =manuell ist 
     def set_wiestatus(self):
 # 
-        self.myprint (self.debug_level2_mod ,  "dose{} set_dose_wiestatus called, zuhause: {}" .format (self.dosen_nummer, self.zuhause))
+        self.myprint (self.debug_level2_mod ,  progname +  "dose{} set_dose_wiestatus called, zuhause:{}" .format (self.dosen_nummer, self.zuhause))
         if self.schaltmodus == 1: 
             return   # manuell, wir machen nichts
 
@@ -361,61 +367,56 @@ class Dose(MyPrint):
             
         if self.status_intern==1:
             self.status_extern=1
-            self.myprint (self.debug_level2_mod, "dose{} einschalten, schaltart: {}".format (self.dosen_nummer, self.schaltart))
-            self.myaktor.schalten(1,  self.debug_level2_mod)
-            self._count_schalt(1)            # zählen schaltvorgänge
+            self.myprint (self.debug_level2_mod, progname +  "dose{} einschalten, schaltart:{}".format (self.dosen_nummer, self.schaltart))
+            self._schalten(1)                 # wir schalten, mache die via den aktor
         else:
             self.status_extern=0
-            self.myprint (self.debug_level2_mod, "dose{} ausschalten, schaltart: {}".format (self.dosen_nummer, self.schaltart))
-            self.myaktor.schalten(0,  self.debug_level2_mod)
-            self._count_schalt(0)            # zählen schaltvorgänge
+            self.myprint (self.debug_level2_mod, progname +  "dose{} ausschalten, schaltart:{}".format (self.dosen_nummer, self.schaltart))
+            self._schalten(0)                 # wir schalten, mache die via den aktor
         self._message_out()      # notfy calller that dose was switched
 
-# ---- Funktion toggle dosen manuell ------------------------------
-#      schaltet die Dose um , setzt Modus auf manuell
+# ---- Funktion umschalten dosen manuell ------------------------------
+#      schaltet die Dose um (XOR), setzt Modus auf manuell
 #      zuhause spielt hier keine Rolle, da ja manuell geschaltet wird.
-    def set_toggle(self):
+    def umschalten(self):
 
-        self.myprint (self.debug_level2_mod ,  "dose{} set_toggle called, zuhause: {}".format (self.dosen_nummer,self.zuhause))
+        self.myprint (self.debug_level2_mod ,  progname +  "dose{} umschalten called, ext.status:{}".format (self.dosen_nummer,OFF_ON[self.status_extern]))
     
         if (self.status_extern == 0 ):
             self.status_extern = 1 
         else:
             self.status_extern = 0
 
-        self.schaltmodus = 1
+        self.schaltmodus = 1                            # set schaltmodus auf manuell, da manuell geschaltet wird
         self.time_last_aktion =  datetime.now()         # zeit merken 
 
-        self.myprint (self.debug_level2_mod, "dose{} manuell toggle , schaltart: {}".format (self.dosen_nummer, self.schaltart))
-        self.myaktor.schalten(self.status_extern,  self.debug_level2_mod)
-        self._count_schalt(self.status_extern)            # zählen schaltvorgänge
+        self._schalten(self.status_extern)             # wir schalten, mache dies via den aktor
         # notify caller that dose has switched
         self._message_out()
 
         
 
 
-# ---- Funktion set_dosen_manuell ------------------------------
+# ---- Funktion schalten_manuell ------------------------------
 #      schaltet die Dose gemäss Parameter how ein/aus, setzt Modus auf manuell
-#       Parameter how= 1 für ein, 0 für aus
-    def set_manuell(self, how):
+#       Parameter how = 1 für ein, 0 für aus
+    def schalten_manuell(self, how):
 
-        self.myprint (self.debug_level2_mod ,  "dose{} set_manuell called, how: {}  zuhause: {}".format (self.dosen_nummer,how, self.zuhause))
+        self.myprint (self.debug_level2_mod ,  progname +  "dose{} schalten_manuell called, how:{}  zuhause:{}".format (self.dosen_nummer,OFF_ON[how], self.zuhause))
     
         self.status_extern = how
-        self.schaltmodus = 1
+        self.schaltmodus = 1                            # set schaltmodus auf manuell, da manuell geschaltet wird
         self.time_last_aktion =  datetime.now()         # zeit merken 
 
-        self.myprint (self.debug_level2_mod, "dose{} manuell schalten , schaltart: {}".format (self.dosen_nummer, self.schaltart))
-        self.myaktor.schalten(how,  self.debug_level2_mod)
-        self._count_schalt(how)            # zählen schaltvorgänge
+        self._schalten(how)                 # wir schalten, mache die via den aktor
+
          #  self.swinterface.interface_out (1, self.dosen_nummer, self.status_extern , self.schaltmodus)   
         self._message_out()      # notfy calller that dose was switched
         
-# ---- Funktion reset manuell ------------------------------
+# ---- Funktion set_mod_auto ------------------------------
 #   setzt Modus auf Auto (0) und schaltet Dose gemäss dem aktuellen internen Status
-    def reset_manuell(self):
-        self.myprint (self.debug_level2_mod,  "dose{} reset_manuell called, modus: {}, status_intern: {}".format (self.dosen_nummer, self.schaltmodus, self.status_intern))
+    def set_mod_auto(self):
+        self.myprint (self.debug_level2_mod,  progname +  "dose{} set_mod_auto called, modus:{}, status_intern:{}".format (self.dosen_nummer, self.schaltmodus, OFF_ON[self.status_intern]))
         if self.schaltmodus == 0 or self.schaltprio == 0:
             return                  # wir behandlen nur Dosen mit modus manuell, und prio 0 werden auch nicht behandelt
         self.time_last_aktion =  datetime.now()         # zeit merken 
@@ -423,23 +424,22 @@ class Dose(MyPrint):
         self.schaltmodus = 0
         if self.status_intern == 1:   
             self.status_extern = 1
-            self.myprint (self.debug_level2_mod , "dose{} reset_manuell: einschalten , schaltart: {}".format (self.dosen_nummer, self.schaltart))
-            self.myaktor.schalten(1,  self.debug_level2_mod)
-            self._count_schalt(1)            # zählen schaltvorgänge
+            self.myprint (self.debug_level2_mod , progname +  "dose{} einschalten , schaltart:{}".format (self.dosen_nummer, self.schaltart))
+            self._schalten(1)                 # wir schalten, mache die via den aktor
         else:
             self.status_extern = 0
-            self.myprint (self.debug_level2_mod , "dose{} reset_manuell: ausschalten , schaltart: {}".format (self.dosen_nummer, self.schaltart))
-            self.myaktor.schalten(0,  self.debug_level2_mod)
-            self._count_schalt(0)            # zählen schaltvorgänge
+            self.myprint (self.debug_level2_mod , progname +  "dose{} ausschalten , schaltart:{}".format (self.dosen_nummer, self.schaltart))
+            self._schalten(0)                 # wir schalten, mache die via den aktor
          #  self.swinterface.interface_out (1,self.dosen_nummer, self.status_extern , self.schaltmodus)   
         self._message_out()     # notfy calller that dose was switched
           
  
-# ---- Funktion set_auto,  ------------------------------
+# ---- Funktion schalten_auto,  ------------------------------
+#   schalten der Dose auto, also gemäss Eintrag xml file
 #   schaltet dose gemäss how, jedoch nur, wenn Modus 'Auto' ist (bei Modus 'Manuell' wird nicht geschaltet)  
-    def set_auto(self, how):
+    def schalten_auto(self, how):
 # how= 1 für ein, 0 für aus
-        self.myprint (self.debug_level2_mod ,  "dose{} set_auto called, how: {}  modus: {}  zuhause: {}".format (self.dosen_nummer,how,self.schaltmodus,self.zuhause))
+        self.myprint (self.debug_level2_mod ,  progname +  "dose{} schalten_auto called, how:{}  modus:{}  zuhause:{}".format (self.dosen_nummer,OFF_ON[how],self.schaltmodus,self.zuhause))
    
         if self.schaltprio == 0: 
             return            # wenn prio 0 machen wir gar nichts, diese Dosen werden nur manuell geschaltet
@@ -454,23 +454,22 @@ class Dose(MyPrint):
             self.status_extern=how
             self.time_last_aktion =  datetime.now()         # zeit merken 
 
-            self.myprint (DEBUG_LEVEL2,  "dose{} auto schalten {}".format (self.dosen_nummer, how))
-            self.myaktor.schalten(how,  self.debug_level2_mod)
-            self._count_schalt(how)            # zählen schaltvorgänge
-
+            self.myprint (DEBUG_LEVEL2,  progname +  "dose{} schalten:{}".format (self.dosen_nummer, OFF_ON[how]))
+            self._schalten(how)                 # wir schalten, mache die via den aktor
             # now that the actor switched a device we need to inform 
             self._message_out()
             
             return 
 
 
-# ---- Funktion set_auto_virtuell,  ------------------------------
+# ---- Funktion schalten_auto_virtuell,  ------------------------------
+#   schalten der Dose auto, also gemäss Eintrag xml file
 #   schaltet dose nicht, setzt aber internen Status gemäss how
 #   wird bei der Abarbeitung der vergangenen Aktionen des Tages benutzt im Switcher
 #   bei Funk wollen wir nicht so lange funken, bis alles abgearbeitet ist
-    def set_auto_virtuell(self, how):
+    def schalten_auto_virtuell(self, how):
 # how= 1 für ein, 0 für aus
-        self.myprint (DEBUG_LEVEL2,  "dose{} set_auto_virtuell called, how: {}  modus: {}".format (self.dosen_nummer,how,self.schaltmodus))
+        self.myprint (DEBUG_LEVEL2,  progname +  "dose{} schalten_auto_virtuell called, how:{}  modus:{}".format (self.dosen_nummer,OFF_ON[how],self.schaltmodus))
         if self.schaltprio == 0: 
             return            # wenn prio 0 machen wir gar nichts, diese Dosen werden nur manuell geschaltet
 
@@ -493,33 +492,33 @@ class Dose(MyPrint):
         time_new =  datetime.now() 
         delta = time_new - self.time_last_aktion
         delta = int(delta.seconds)     # delta in sekunden
-        self.myprint (DEBUG_LEVEL1,  "dose{} aktor_callback() called, payload: {}, zeit seit letzter aktion: {} sek.".format (self.dosen_nummer, payload, delta))
+        self.myprint (DEBUG_LEVEL1,  progname +  "dose{} aktor_callback() called, payload:{}, zeit seit letzter aktion:{} sek.".format (self.dosen_nummer, payload, delta))
         if delta > WAIT_STATUS_MELDUNG:
         
             if payload == "ON" :
                 self.status_extern = 1          # dose wurde eingeschaltet
                 self.schaltmodus = 1            # sie ist manuell eingeschaltet
-                self.myprint (DEBUG_LEVEL2,  "dose{} aktor_callback() setze dose ein/maunell ".format (self.dosen_nummer))
+                self.myprint (DEBUG_LEVEL2,  progname +  "dose{} aktor_callback() setze dose ein/maunell ".format (self.dosen_nummer))
             if payload == "OFF" :
-                self.myprint (DEBUG_LEVEL2,  "dose{} aktor_callback() setze dose aus/maunell ".format (self.dosen_nummer))
+                self.myprint (DEBUG_LEVEL2,  progname +  "dose{} aktor_callback() setze dose aus/maunell ".format (self.dosen_nummer))
                 self.status_extern = 0          # dose wurde ausgeschaltet
                 self.schaltmodus = 1            # schaltmodus nun manuell
             self._message_out()        # notfy calller that dose was switched    
         else:
-             self.myprint (DEBUG_LEVEL1,  "dose{} aktor_callback() Meldung von Dose gekommen, Zeitdiff kleiner als: {} sek, mache nichts".format(self.dosen_nummer,WAIT_STATUS_MELDUNG))
+             self.myprint (DEBUG_LEVEL1,  progname +  "dose{} aktor_callback() Meldung von Dose gekommen, Zeitdiff kleiner als:{} sek, mache nichts".format(self.dosen_nummer,WAIT_STATUS_MELDUNG))
  
 
 # ---- Funktion set Zimmer ------------------------------
 #       setzen Zimmer Name
     def set_zimmer(self,namezimmer):
-        self.myprint (DEBUG_LEVEL2,  "dose{} set_zimmer called: {}".format (self.dosen_nummer,namezimmer))
+        self.myprint (DEBUG_LEVEL2,  progname +  "dose{} set_zimmer called:{}".format (self.dosen_nummer,namezimmer))
         
         self.zimmer_name=namezimmer
             
 # ---- Funktion get Zimmer ------------------------------
 #       setzen Zimmer Name
     def get_zimmer(self):
-        self.myprint (DEBUG_LEVEL2,  "dose{} get_zimmer called".format (self.dosen_nummer))
+        self.myprint (DEBUG_LEVEL2,  progname +  "dose{} get_zimmer called".format (self.dosen_nummer))
         
         return (self.zimmer_name)
 
@@ -529,7 +528,7 @@ class Dose(MyPrint):
 #       gibt liste zurück mit values
     def show_status(self):
 
-        self.myprint (DEBUG_LEVEL2,  "dose{} show_status called".format (self.dosen_nummer))
+        self.myprint (DEBUG_LEVEL2,  progname +  "dose{} show_status called".format (self.dosen_nummer))
         
         return (self._stat_list())      #return list of statis to the caller
 

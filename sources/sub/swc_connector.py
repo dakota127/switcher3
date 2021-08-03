@@ -56,7 +56,7 @@ MQTT_TOPIC_SWIPUB       =     "serv/as"         # In Switcher:  PUB sending to s
 
 MQTT_TOPIC_SUBSWIT =   "toswitcher"         # SUB receiving at switcher from flask server
 MQTT_TOPIC_RESP =   "response"           # PUB sending to flask server
-progname = "swconnector "
+progname = "swc_connector "
 
 MSG_ASYNC = 0
 MSG_SYNC  = 1
