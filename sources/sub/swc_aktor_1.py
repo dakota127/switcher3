@@ -131,7 +131,7 @@ class Aktor_1 (MyPrint):
     def schalten(self,einaus, debug_level_mod):
         global GPIO
   
-        self.myprint (debug_level_mod,   progname + "schalten called: Gpio:{} {}".format (self.mypin, OFFON[einaus]))
+        self.myprint (debug_level_mod,   progname + "schalten called: Gpio:{} [{}]".format (self.mypin, OFFON[einaus]))
 #
         if einaus== 1:
             GPIO.output(self.mypin, True)         # dosen muss minus 1 sein wegen List index Dosen

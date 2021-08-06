@@ -402,7 +402,7 @@ class Dose(MyPrint):
 #       Parameter how = 1 für ein, 0 für aus
     def schalten_manuell(self, how):
 
-        self.myprint (self.debug_level2_mod ,  progname +  "dose{} schalten_manuell called, how:{}  zuhause:{}".format (self.dosen_nummer,OFF_ON[how], self.zuhause))
+        self.myprint (self.debug_level2_mod ,  progname +  "dose{} schalten_manuell called [{}],  zuhause:{}".format (self.dosen_nummer,OFF_ON[how], self.zuhause))
     
         self.status_extern = how
         self.schaltmodus = 1                            # set schaltmodus auf manuell, da manuell geschaltet wird
@@ -439,7 +439,7 @@ class Dose(MyPrint):
 #   schaltet dose gemäss how, jedoch nur, wenn Modus 'Auto' ist (bei Modus 'Manuell' wird nicht geschaltet)  
     def schalten_auto(self, how):
 # how= 1 für ein, 0 für aus
-        self.myprint (self.debug_level2_mod ,  progname +  "dose{} schalten_auto called, how:{}  modus:{}  zuhause:{}".format (self.dosen_nummer,OFF_ON[how],self.schaltmodus,self.zuhause))
+        self.myprint (self.debug_level2_mod ,  progname +  "dose{} schalten_auto called [{}]  modus:{}  zuhause:{}".format (self.dosen_nummer,OFF_ON[how],self.schaltmodus,self.zuhause))
    
         if self.schaltprio == 0: 
             return            # wenn prio 0 machen wir gar nichts, diese Dosen werden nur manuell geschaltet
@@ -469,7 +469,7 @@ class Dose(MyPrint):
 #   bei Funk wollen wir nicht so lange funken, bis alles abgearbeitet ist
     def schalten_auto_virtuell(self, how):
 # how= 1 für ein, 0 für aus
-        self.myprint (DEBUG_LEVEL2,  progname +  "dose{} schalten_auto_virtuell called, how:{}  modus:{}".format (self.dosen_nummer,OFF_ON[how],self.schaltmodus))
+        self.myprint (DEBUG_LEVEL2,  progname +  "dose{} schalten_auto_virtuell called [{}]  modus:{}".format (self.dosen_nummer,OFF_ON[how],self.schaltmodus))
         if self.schaltprio == 0: 
             return            # wenn prio 0 machen wir gar nichts, diese Dosen werden nur manuell geschaltet
 

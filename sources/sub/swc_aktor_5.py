@@ -120,7 +120,7 @@ class Aktor_5 (MyPrint):
 # ***** Function zum setzen GPIO *********************
     def schalten(self,einaus,debug_level_mod):
   
-        self.myprint (debug_level_mod,  progname + "schalten called:{}".format(OFFON[einaus]))
+        self.myprint (debug_level_mod,  progname + "schalten called:[{}]".format(OFFON[einaus]))
 #
         
         self.cmd = self.commandline + str(einaus)
