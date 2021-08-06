@@ -45,7 +45,7 @@
 // defines für verschiedene Programm-Varianten
 //
 //*************************************************
-#define TEST     // uncomment für Testumgebung
+//#define TEST     // uncomment für Testumgebung
 //*************************************************
 //
 //
@@ -128,7 +128,7 @@ const char* password_mqtt =   MQTT_PW;
 
 
 // IP Adresse des MQTT Brokers
-const char* mqtt_server = "192.168.1.121";
+const char* mqtt_server = "192.168.1.153";
 
 //Variables Sensor
 int       chk;
