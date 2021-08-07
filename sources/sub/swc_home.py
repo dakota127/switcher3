@@ -440,9 +440,9 @@ class SwHome (MyPrint):
         self.myprint (DEBUG_LEVEL1,  "\t" + progname + "testmode=Ja in Configfile=1, also mache Test_dosen")
         time.sleep(1)
         for dose in self.dosenlist:          
-            dose.set_auto(1)                    # schalte dose ein
+            dose.schalten_auto(1)                    # schalte dose ein
             time.sleep(0.5)
-            dose.set_auto(0)                    # schalte dose aus
+            dose.schalten_auto(0)                    # schalte dose aus
         self.myprint (DEBUG_LEVEL1,  "\t" + progname + "Test_dosen done")
         time.sleep(1)    
 
