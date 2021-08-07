@@ -63,6 +63,7 @@ const int sleepTimeS = 2000;        // 2000 ist etwa 30 Minuten
 // zum inkludieren der richtigen Lib (ESP32 oder ESP8266)
 // select ESP8266 or ESP32 mittels define
 #define ESP8266
+
 // #define LAST_WILL      // auskommentieren macht keinen MQTT LastWill
 #define MQTT_AUTH         // auskommentieren wenn MQTT connect ohne userid/password 
 
@@ -149,8 +150,8 @@ long      lastMsg = 0;
 char      msg[50];
 int       value = 0;
 String    batt_status;
-char*     topic =     "switcher/wetter/data";
-char*     topic_lw =  "switcher/wetter/lw";
+const char*     topic =     "switcher/wetter/data";
+const char*     topic_lw =  "switcher/wetter/lw";
 int       inout_door ;       // HIGH: indoor, LOW: outdoor
 String    last_will_msg = "Verbindung verloren zu Sensor: ";
 String    the_sketchname;
