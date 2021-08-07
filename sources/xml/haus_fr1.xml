@@ -4,14 +4,14 @@
 "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
 
 <!--
-    Control Datei für die Funkdevicen-Steuerung, by Peter K. Boxler, August 2014
-     Pro Steckdevice (max 4) sind für jeden Wochentag (0=Sonntag bis 6=Samstag)
+    Control Datei für switcher3 by Peter K. Boxler, August 2021
+    Pro Dose (max 4) sind für jeden Wochentag (0=Sonntag bis 6=Samstag)
      beliebige Sequenzen definierbar. Eine Sequenz besteht je aus Einschalten/Ausschalten
      zu bestimmten Zeitpunkten (HHMM)
      
-     Ist Input-File für die Python Applikation switcher3.py und swlist3.py
+    Ist Input-File für die Python Applikation switcher3.py und swlist3.py
 
-    Mit 5 devices (Dosen)  TESTVERSION
+    Mit 5 devices (Dosen) 
 -->
 <aktionen>
 <file_id>Prisca 5 Devices</file_id>
@@ -248,10 +248,6 @@ device Nummer 3  Arbeitszimmer*********************************** device 3
   	<ON>00.15</ON>
   	<OFF>00.25</OFF>
   </sequence>
-  <sequence>
-  	<ON>05.10</ON>
-  	<OFF>05.35</OFF>
-  </sequence> 
  
    <sequence>
   	<ON>22.05</ON>
@@ -261,98 +257,79 @@ device Nummer 3  Arbeitszimmer*********************************** device 3
    
 <tag nummer = "1">
  <sequence>
-  	<ON>00.15</ON>
-  	<OFF>00.55</OFF>
+  	<ON>00.05</ON>
+  	<OFF>00.35</OFF>
   </sequence>
  
    <sequence>
-  	<ON>21.23</ON>
-  	<OFF>21.56</OFF>
+  	<ON>23.23</ON>
+  	<OFF>23.56</OFF>
   </sequence>
-   <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.14</OFF>
-  </sequence>
+
   </tag>
   
 <tag nummer = "2">
  <sequence>
-  	<ON>00.15</ON>
-  	<OFF>00.55</OFF>
+  	<ON>00.10</ON>
+  	<OFF>00.20</OFF>
   </sequence>
  
    <sequence>
-  	<ON>21.23</ON>
-  	<OFF>21.56</OFF>
-  </sequence>
-   <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.14</OFF>
+  	<ON>22.45</ON>
+  	<OFF>23.20</OFF>
   </sequence>
   </tag>
 
 <tag nummer = "3">
  <sequence>
-  	<ON>00.15</ON>
-  	<OFF>00.55</OFF>
+  	<ON>00.30</ON>
+  	<OFF>00.45</OFF>
   </sequence>
  
    <sequence>
-  	<ON>21.23</ON>
-  	<OFF>21.56</OFF>
+  	<ON>23.30</ON>
+  	<OFF>23.56</OFF>
   </sequence>
-   <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.14</OFF>
-  </sequence>
+  
    </tag>
    
 <tag nummer = "4">
  <sequence>
-  	<ON>00.15</ON>
-  	<OFF>00.55</OFF>
+  	<ON>00.05</ON>
+  	<OFF>00.25</OFF>
   </sequence>
  
    <sequence>
-  	<ON>21.23</ON>
-  	<OFF>21.56</OFF>
+  	<ON>23.40</ON>
+  	<OFF>23.58</OFF>
   </sequence>
-   <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.14</OFF>
-  </sequence>
+  
   </tag>
 
 <tag nummer = "5">
  <sequence>
-  	<ON>00.15</ON>
-  	<OFF>00.55</OFF>
+  	<ON>00.02</ON>
+  	<OFF>00.35</OFF>
   </sequence>
  
    <sequence>
-  	<ON>21.23</ON>
-  	<OFF>21.56</OFF>
+  	<ON>23.05</ON>
+  	<OFF>23.56</OFF>
   </sequence>
-   <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.14</OFF>
-  </sequence>
+  
   </tag>
   
 <tag nummer = "6">
  <sequence>
-  	<ON>00.15</ON>
-  	<OFF>00.55</OFF>
+  	<ON>00.20</ON>
+  	<OFF>00.35</OFF>
   </sequence>
  
    <sequence>
-  	<ON>21.23</ON>
-  	<OFF>21.56</OFF>
+  	<ON>23.43</ON>
+  	<OFF>23.59</OFF>
   </sequence>
-   <sequence>
-  	<ON>22.05</ON>
-  	<OFF>23.14</OFF>
-  </sequence>
+
   </tag>
 
 
