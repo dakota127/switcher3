@@ -35,7 +35,7 @@ import socket
 # ---------------------------------------------------------
 # Change Version of swserver3 here 
 # 
-server_version = "3.03"
+server_version = "3.04"
 #---------------------------------------------------------
 #--------------------------------------------------------
 
@@ -160,15 +160,15 @@ def reboot_function():  #   --> in eigenem Thread !!
     while True:
         if reboot_verlangt:
             print ("swserver3 terminating mit reboot pi")
-            time.sleep(1)      # give switcher3 time to switch of dosen
+            time.sleep(3)      # give switcher3 time to switch of dosen
             os.system('sudo reboot') 
           #        
         elif shutdown_verlangt:
             print ("swserver3 shutdown pi")
-            time.sleep(1)  # give switcher3 time to switch of dosen
+            time.sleep(3)  # give switcher3 time to switch of dosen
             os.system('sudo shutdown -h now')        
         else: 
-            time.sleep(2)    
+            time.sleep(2)    # loop this thread
 
 #----------- Function to reag switcher log ---------------
 def do_getlog():
@@ -231,7 +231,7 @@ def find_procs_by_name(name):
         # print (pr)
         for i, item in enumerate(pr):
         
-            print ("item[{}]:{}".format(i,item))
+         #   print ("item[{}]:{}".format(i,item))
             if type(item) == str and item.find("switcher3.py") != -1:
             #    print ("switcher3 pid:{}, threads:{}".format(pr[0], pr[3]))
                 swi_pid = pr[0]
