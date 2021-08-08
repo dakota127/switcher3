@@ -184,7 +184,7 @@ class Aktor_2 (MyPrint):
     def schalten(self,einaus, debug_level_mod):
         global GPIO
   
-        self.myprint (debug_level_mod,  progname + "schalten called, Gpio:{} [{}]".format(self.mypin, OFFON[einaus]))
+        self.myprint (debug_level_mod,  progname + "dose{} schalten called, Gpio:{} [{}]".format(self.dosennummer,self.mypin, OFFON[einaus]))
 #
         if einaus == 1:
             self.rfdevice.tx_code(self.swcode_ein, self.protocoll_ein, self.pulselength_ein, self.codel)

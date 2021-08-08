@@ -141,7 +141,7 @@ class Aktor_3 (MyPrint):
       
         payload = ""
         
-        self.myprint (DEBUG_LEVEL1,  progname + "schalten called:[{}] ".format(OFFON[einaus]))
+        self.myprint (debug_level_mod,  progname + "dose{} schalten called:[{}] ".format(self.dosennummer,OFFON[einaus]))
         
 #       WICHTIG:
 #       self.meldungs_typ == 1 ist für Testaufbau mit DIY switches mit esp8266 

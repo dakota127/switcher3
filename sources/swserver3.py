@@ -35,7 +35,7 @@ import socket
 # ---------------------------------------------------------
 # Change Version of swserver3 here 
 # 
-server_version = "3.02"
+server_version = "3.03"
 #---------------------------------------------------------
 #--------------------------------------------------------
 
@@ -155,19 +155,20 @@ def argu():
 # ***** Function reboot läuft als Thread **************************
 def reboot_function():  #   --> in eigenem Thread !!
 
+    print ("swserver3 shutdown/reboot thread started..")
+    # endless loop waiting for signal....
     while True:
         if reboot_verlangt:
             print ("swserver3 terminating mit reboot pi")
-            time.sleep(10)      # give switcher3 time to switch of dosen
+            time.sleep(1)      # give switcher3 time to switch of dosen
             os.system('sudo reboot') 
           #        
         elif shutdown_verlangt:
-    
-            time.sleep(10)  # give switcher3 time to switch of dosen
-            os.system('sudo shutdown -r now')        
+            print ("swserver3 shutdown pi")
+            time.sleep(1)  # give switcher3 time to switch of dosen
+            os.system('sudo shutdown -h now')        
         else: 
-            time.sleep(1)    
-
+            time.sleep(2)    
 
 #----------- Function to reag switcher log ---------------
 def do_getlog():
@@ -391,7 +392,7 @@ def set_anzdosen (anzahl):
 # -----------------------------------------------------
 def setup_server():
     global mqttc, myprint, mqtt_connect, path
-    global reboot_verlangt, swconnector
+    global reboot_verlangt, shutdown_verlangt, swconnector
     global host_name, host_ip, debug
 
     error_return = 0            # return code setup function
@@ -831,11 +832,16 @@ def info():
 def reboot():
     global reboot_verlangt
     
-    myprint.myprint (DEBUG_LEVEL1,  progname + "app.route /reboot called")     
+    swconnector.do_unsubscribe()               #unsubscribe for messages from switcher3
+    time.sleep(3)
+    myprint.myprint (DEBUG_LEVEL1,  progname + "app.route /reboot called") 
+    myprint.myprint (DEBUG_LEVEL0,  progname + "stop switcher3, then reboot")     
 
-    cmd = "sudo systemctl stop switcher3.service"
-    ret = os.system(cmd)
-    time.sleep(2)
+  
+
+    ret = os.system("sudo systemctl stop switcher3.service" ) # stop switcher3 via systemd
+    time.sleep(15)                                          # braucht zeit bis alle dosen off
+
    # hier reboot thread benachrichtigen
     reboot_verlangt = True
 
@@ -851,11 +857,13 @@ def reboot():
 def shutdown():
     global shutdown_verlangt
     
+    swconnector.do_unsubscribe()               #unsubscribe for messages from switcher3
+    time.sleep(3)
     myprint.myprint (DEBUG_LEVEL0,  progname + "app.route /shutdown called")     
     myprint.myprint (DEBUG_LEVEL0,  progname + "stop switcher3, then shutdown") 
-    cmd = "sudo systemctl stop switcher3.service"
-    ret = os.system(cmd)
-    time.sleep(2)
+    
+    ret = os.system("sudo systemctl stop switcher3.service" ) # stop switcher3 via systemd
+    time.sleep(15)                                           # braucht zeit bis alle dosen off
    # hier reboot thread benachrichtigen
     shutdown_verlangt = True
     myprint.myprint (DEBUG_LEVEL1,  progname +  "going to render resultat.html (3)")    

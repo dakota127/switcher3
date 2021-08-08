@@ -158,6 +158,7 @@ class SwConnector (MyPrint):
 #-------------------------------------------------------------       
     def do_subscribe(self):
 
+        self.myprint (DEBUG_LEVEL1,  "\t\t" + progname + " do_subscribe called, endpoint:{}".format(self.endpoint)) 
         # endpoint 1 is switcher program
         #   
         if (self.endpoint == 1):    
@@ -189,6 +190,43 @@ class SwConnector (MyPrint):
                 sys.exit(2)     
             return
 
+#---------------------------------------------------------------       
+# --- do unsubscribe to messages 
+#       swserver side is using endpoint 2
+#       switcher side ist using endpoint 1
+#
+# --- needs to be called when unsubscribe is needed
+#-------------------------------------------------------------       
+    def do_unsubscribe(self):
+
+
+        self.myprint (DEBUG_LEVEL1,  "\t\t" + progname + " do_unsubscribe called, endpoint:{}".format(self.endpoint)) 
+        # endpoint 1 is switcher program
+        #   
+        if (self.endpoint == 1):    
+            # switcher subscribes to 2 topics:
+            # subcribe to topic swi/as (async Message sent from server to switcher)            
+            res = self.mqttc.unsubscribe_topic (MQTT_TOPIC_SERVPUB)     # unsubscribe
+            if (res > 0):
+                self.myprint (DEBUG_LEVEL0,  "\t\t" + progname + " unsubscribe async returns errorcode: {}".format(res)) 
+
+
+            # subcribe to topic swi/sync (sync Message sent from server to switcher)  
+            res = self.mqttc.unsubscribe_topic (MQTT_TOPIC_SERVPUB_SY)     # unsubscribe to 'sync messages'
+            if (res > 0):
+                self.myprint (DEBUG_LEVEL0,  "\t\t" + progname + " unsubscribe sync returns errorcode: {}".format(res)) 
+    
+            return
+
+        # endpoint2 ist swserver program, subscribe to topic serv/as
+        else:   
+            # server subscribes to one topic only
+            # subcribe to topic serv/as (async Message sent from switcher to server)           
+            res = self.mqttc.unsubscribe_topic (MQTT_TOPIC_SWIPUB)     # unsubscribe to topic
+            if (res > 0):
+                self.myprint (DEBUG_LEVEL0,  "\t\t" + progname + " unsubscribe async returns errorcode: {}".format(res)) 
+            return
+
 #---------------------------------------------------------------        
 # handle incoming messages (FROM webserver) with MQTT_TOPIC_SUBSWIT
 #---------------------------------------------------------------
@@ -199,7 +237,7 @@ class SwConnector (MyPrint):
      #       self.myprint (DEBUG_LEVEL0, " swconnector wrong endpoint !: ")
      #       return  
 
-        self.myprint (DEBUG_LEVEL2, "\t\t" + progname + " handle_incoming_asyncmsg:{}". format(message.payload.decode()))
+        self.myprint (DEBUG_LEVEL2, "\t\t" + progname + " handle_incoming_asyncmsg, endpoint:{}". format(self.endpoint))
         self.data = message.payload.decode()
         try:
             self.data = json.loads(self.data)   # JSON Object wird in Python List of List gewandeltmessage.payload.decode()

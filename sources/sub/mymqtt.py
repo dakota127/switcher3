@@ -144,7 +144,12 @@ class MQTT_Conn(MyPrint):
 #------------
         def __my_on_subscribe__ (client, userdata, mid, qos):
             self.myprint (DEBUG_LEVEL3,  self.printstring + "my_on_subscribe() called, userdata: {}".format(userdata) )
- 
+
+# Eventhandler
+#------------
+        def __my_on_unsubscribe__ (client, userdata, mid):
+            self.myprint (DEBUG_LEVEL3,  self.printstring + "my_on_unsubscribe() called, userdata: {}".format(userdata) )
+
 # Eventhandler
 #------------
         def __my_on_disconnect__ (client, userdata, rc):
@@ -202,6 +207,7 @@ class MQTT_Conn(MyPrint):
     # Register Event Handlers
         self.mqttc.on_connect   = __my_on_connect__              # setup on connect callback
         self.mqttc.on_subscribe = __my_on_subscribe__          # setup on subscribe callback
+        self.mqttc.on_unsubscribe = __my_on_unsubscribe__          # setup on unsubscribe callback
         self.mqttc.on_message   = __my_on_message__
         self.mqttc.on_disconnect = __my_on_disconnect__  
         self.mqttc.on_publish   = __my_on_publish__    

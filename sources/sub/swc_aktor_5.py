@@ -120,15 +120,14 @@ class Aktor_5 (MyPrint):
 # ***** Function zum setzen GPIO *********************
     def schalten(self,einaus,debug_level_mod):
   
-        self.myprint (debug_level_mod,  progname + "schalten called:[{}]".format(OFFON[einaus]))
-#
+        self.myprint (debug_level_mod,  progname + "dose{} schalten called:[{}] ".format(self.dosennummer,OFFON[einaus]))
         
         self.cmd = self.commandline + str(einaus)
         ret = os.system(self.cmd)
         time.sleep(1.2)                     # wenn mehrer setSwitch hintereinander kommen, muss man warten  
    
         if ret >0:
-            self.myprint (DEBUG_LEVEL0,  progname + "dose:{}, send module nicht gefunden:{}".format (self.dosennummer, self.cmd))
+            self.myprint (DEBUG_LEVEL0,  progname + "dose{} send module nicht gefunden:{}".format (self.dosennummer, self.cmd))
       
         return (ret)                  # return code
    
