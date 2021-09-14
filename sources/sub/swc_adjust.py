@@ -150,7 +150,8 @@ class CalcAdjust (MyPrint):
         if weeks == 0:              
 
             today = datetime.now()
-            week = int(today.strftime("%U"))
+            week = int(today.strftime("%V"))    # use %V with Python 3.6 !! 
+                                                # see https://bugs.python.org/issue12006
             self.weekyear = week
 
         else:

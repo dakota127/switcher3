@@ -104,6 +104,10 @@ def convTime(min_in):
 def setup():
     global actioncalc, myprint
 
+    today = datetime.now()
+    week = int(today.strftime("%V"))
+    print ("weeky of year:{}".format(week))
+
     path = os.path.dirname(os.path.realpath(__file__))    # current path
 # create Instance of MyPrint Class 
     myprint = MyPrint(  appname = progname, 

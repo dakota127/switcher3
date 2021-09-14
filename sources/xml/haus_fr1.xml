@@ -30,7 +30,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   </sequence>
 
    <sequence>
-  	<ON>21.45</ON>
+  	<ON>21.35</ON>
   	<OFF>23.57</OFF>
   </sequence>
    
@@ -43,7 +43,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   </sequence>
   
    <sequence>
-  	<ON>21.45</ON>
+  	<ON>21.35</ON>
   	<OFF>23.57</OFF>
   </sequence>
   </tag>
@@ -55,7 +55,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   </sequence>
   
    <sequence>
-  	<ON>21.45</ON>
+  	<ON>21.35</ON>
   	<OFF>23.57</OFF>
   </sequence>
   </tag>
@@ -67,7 +67,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   </sequence>
   
    <sequence>
-  	<ON>21.45</ON>
+  	<ON>21.35</ON>
   	<OFF>23.57</OFF>
   </sequence>
    </tag>
@@ -79,7 +79,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   </sequence>
   
    <sequence>
-  	<ON>21.45</ON>
+  	<ON>21.35</ON>
   	<OFF>23.57</OFF>
   </sequence>
   </tag>
@@ -91,7 +91,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   </sequence>
   
    <sequence>
-  	<ON>21.45</ON>
+  	<ON>21.35</ON>
   	<OFF>23.57</OFF>
   </sequence>
   </tag>
@@ -103,7 +103,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   </sequence>
   
    <sequence>
-  	<ON>21.45</ON>
+  	<ON>21.35</ON>
   	<OFF>23.57</OFF>
   </sequence>
   </tag>
