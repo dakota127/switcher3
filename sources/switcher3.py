@@ -298,7 +298,7 @@ def assemble_info():
     info_gross[2][1] = days_str                                            # item 3: Laufzeit Tage
     info_gross[3][1] = "{:05d} / {:05d}".format (home_list[2][0],home_list[2][1])   # anzahl schaltaktionen
     if seq_list [0] > 0:                   # adjust times needed
-        info_gross[4][1] = "{0:0>2}".format(str(seq_list[1]))  + " / " + "{0:0>3}".format(str(seq_list[2]))
+        info_gross[4][1] = "{0:0>2}".format(str(seq_list[1]))  + " / " + "{0:0>3}".format(str(seq_list[2]) + " / " + "{}".format(seq_list[14]))
     else:
         info_gross[4][1] = "nicht konfiguriert"
     # print (info_gross[2][1])
