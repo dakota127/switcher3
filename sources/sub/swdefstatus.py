@@ -33,7 +33,7 @@ info_gross = [
                 ["Start", " "],                         # 1
                 ["Laufzeit Tage", " " ],                # 2
                 ["Total Schaltaktionen", " "],			# 3
-                ["Woche / Ajust (Min)", " "],           # 4
+                ["Woche / Adjust (Min)", " "],           # 4
                 ["Zuhause", " " ],                      # 5
                 ["File-ID", " " ],                      # 6   
                 ["Testmode / Debug"," " ],                # 7           

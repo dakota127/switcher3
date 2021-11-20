@@ -138,7 +138,7 @@ class CalcAdjust (MyPrint):
     #    print (hhmm_e)
         self.evening_start_limit = (60 * int(hhmm_s[0])) + int(hhmm_s[1])       # minuten des Tages
         self.morning_start_limit  =   (60 * int(hhmm_e[0])) + int(hhmm_e[1])       # minuten des Tages
-        self.myprint (DEBUG_LEVEL0, progname + "evstart:{} evon:{} mostart:{} moon:{} faktor:{}".format(self.evening_start_limit, \
+        self.myprint (DEBUG_LEVEL1, progname + "evstart:{} evon:{} mostart:{} moon:{} faktor:{}".format(self.evening_start_limit, \
                                                         self.evening_ontime,  \
                                                         self.morning_start_limit,  \
                                                         self.morning_ontime ,   \
@@ -151,7 +151,7 @@ class CalcAdjust (MyPrint):
     def __repr__ (self):
 
         
-        rep = "CalcAdjust, + evstart:{} evon:{} mostart:{} moon:{}".format(self.evening_start_limit, \
+        rep = "CalcAdjust, evstart:{} evon:{} mostart:{} moon:{}".format(self.evening_start_limit, \
                                                         self.evening_ontime,  \
                                                         self.morning_start_limit,  \
                                                         self.morning_ontime )
@@ -189,8 +189,11 @@ class CalcAdjust (MyPrint):
         else:
             self.weekyear = weeks
 
-
-        self.adjust_time_min = int(abs( 60 * ((self.weekyear - 27) * (self.faktor)) ))  # number of minutes we need to adjust, based on week of the year
+        # ajustierung der Schaltzeiten verlangt ?
+        if self.do_adjustTime == 1:       # 1 = verlangt
+            self.adjust_time_min = int(abs( 60 * ((self.weekyear - 27) * (self.faktor)) ))  # number of minutes we need to adjust, based on week of the year
+        else:
+            self.adjust_time_min = 0     # nicht verlangt, also 0 minuten
 
         # nun noch Sommer-Winterzeit berücksichtigen, falls verlangt im Config File.
         # Alle Schaltzeiten sind im XML File für den Sommer
@@ -244,7 +247,7 @@ class CalcAdjust (MyPrint):
                                         self.fall_day))  
 
 
-        return (self.sommer_winter, self.weekyear, self.adjust_time_min + self.daylight_saving_minutes)
+        return (self.sommer_winter, self.adjust_time_min + self.daylight_saving_minutes)
 
 
 #--------------------------------------------

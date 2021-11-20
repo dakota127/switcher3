@@ -154,11 +154,11 @@ class MySequencer(threading.Thread, MyPrint):
         self.list_aktionen_zukunft =[] 
         self.total_aktionen_protag = []
         self.status_currtime=""              # fuer Statusanzeige
-        self.do_adjustTime = 0                  # adjust times
-        self.do_adjustDaylight_saving = 0       # adjust daylight saving time
+        self.do_adjustTime = 0                  # 1: adjust times, 0: nichts ajustieren
+        self.do_adjustDaylight_saving = 0       # 1 : adjust daylight saving time, 0: nichts machen
         self.term_verlangt = 0
     
-        self.daylight_saving_season = ""
+        self.daylight_saving_season = ""        # S oder W   (Sommer /Winter)
         self.maxchar_zimmer = 0
         self.adjust_time = 0
         self.anz_dosen_config = 0
@@ -303,13 +303,28 @@ class MySequencer(threading.Thread, MyPrint):
     #  ---------------------------------------------------------------------------------------
     def _adjust_switchtimes (self, list_in):
 
-        self.myprint (DEBUG_LEVEL1, "\t" + progname + "_adjust_switchtimes called")
+        self.myprint (DEBUG_LEVEL2, "\t" + progname + "_adjust_switchtimes called")
         
-        # init der adjust routine, liefert woche des Jahres und total ajustierung in min zurück
-        self.daylight_saving_season ,self.weekyear, self.adjust_time = self.actioncalc.adjust_init (0)               # init call
+        self.today = datetime.now()
+        self.weekyear = int(datetime.now().strftime("%V"))    # use %V with Python 3.6 !! 
+                                                # see https://bugs.python.org/issue12006
+     # wenn a) 
+        # Anpassung der Schaltzeiten verlangt ist (im Configfile), 
+        # oder b)
+        # Berücksichtigung Sommer-Winterzeit verlangt ist,
+        # so machen wir das hier 
+        # wenn beides nicht verlangt ist, geben wir einfach die bestehende Liste zurück ohne Aenderung
+    
+        if (self.do_adjustTime == 0) and (self.do_adjustDaylight_saving == 0):             # Nov 21
+            return (list_in)
 
-        print ("++++++++++++++++++++++++")
-        print (self.daylight_saving_season)
+
+        #  eines von beiden (oder beides) ist verlangt, also machen wir das hier
+        # init der adjust routine, liefert woche des Jahres und total ajustierung in min zurück
+        self.daylight_saving_season, self.adjust_time = self.actioncalc.adjust_init (0)               # init call
+
+        #print ("++++++++++++++++++++++++")
+        #print (self.daylight_saving_season)
 
         adjust_list_tag     = [ [] for z in range (7)]     # BIG Liste ueber alle Tage  
 
@@ -339,6 +354,7 @@ class MySequencer(threading.Thread, MyPrint):
         # finally we are done adjusting 
         self.myprint (DEBUG_LEVEL2, "\t\n" + progname + "_adjust_switchtimes ended")
     
+        # wir geben eine neue Liste mit geänderten Aktionen zurück
         return (adjust_list_tag)
 
 
@@ -363,6 +379,7 @@ class MySequencer(threading.Thread, MyPrint):
                     self.start_time.strftime("%A, %d %B %Y : %H:%M:%S" ),    \
                     now_time.strftime("%A, %d %B %Y : %H:%M:%S" ),  \
                     now_time.strftime("%H:%M" ),  \
+                    self.do_adjustDaylight_saving, \
                     self.daylight_saving_season    \
                     ])
 
@@ -404,16 +421,14 @@ class MySequencer(threading.Thread, MyPrint):
 
         self.start_tag = int(hhmm_tag[1])                        # heutiger wochentag, starte damit, loop bis tag 6
 
-        # wenn Anpassung der Schaltzeiten verlangt ist (im Configfile), so machen wir das hier
-        # entweder pro woche des jahres und/oder Anpqssung Sommerzeit
-        if (self.do_adjustTime > 0) or (self.do_adjustDaylight_saving > 0):             # Nov 21
-            self.list_tage_new = self._adjust_switchtimes (self.list_tage)              # adjust times
-            
-            # Nun extrahieren von vergangenen und zukünftigen Aktionen (gemessen an der Startzeit des Switchers) für den aktuellen Tag
-            # aber nur für dosen kleiner/gleich der anzahl konfigurierten dosen !
-            self.list_aktionen_past, self.list_aktionen_zukunft = self._aktionen_pro_tag (self.list_tage_new, self.start_tag , self.anz_dosen_config )
-        else:
-            self.list_aktionen_past, self.list_aktionen_zukunft = self._aktionen_pro_tag (self.list_tage, self.start_tag , self.anz_dosen_config )    
+
+        self.list_tage_new = self._adjust_switchtimes (self.list_tage)              # adjust SCHALTZEITEN WENN NÖTIG
+
+        
+        # Nun extrahieren von vergangenen und zukünftigen Aktionen (gemessen an der Startzeit des Switchers) für den aktuellen Tag
+        # aber nur für dosen kleiner/gleich der anzahl konfigurierten dosen !
+        # entweder von bestehender oder von neuer Liste
+        self.list_aktionen_past, self.list_aktionen_zukunft = self._aktionen_pro_tag (self.list_tage_new, self.start_tag , self.anz_dosen_config )
         
     
     # Vorbereitung ist nun fertig--------------------------------------------------------------------
@@ -585,8 +600,7 @@ class MySequencer(threading.Thread, MyPrint):
                     self.myprint (DEBUG_LEVEL2,   "\t" + progname + "LOOP-1 finds self.term_verlangt=1")
                     break                                   # break loop ueber alle actions des Tages
                               
-                # wenn neuer Tag da ist, werden die Aktionslisten dieses Tages erstellt    
-
+                # wenn neuer Tag da ist, werden die Aktionslisten dieses neuen Tages erstellt    
              
                 self.list_aktionen_past, self.list_aktionen_zukunft = self._aktionen_pro_tag (self.list_tage_new, self.wochentag ,self.anz_dosen_config)
                 self.status_anzactions_done = 0                       # anzahl getaner Aktionen pro Tag
@@ -702,6 +716,9 @@ class MySequencer(threading.Thread, MyPrint):
             for x in cfglist_seq:
                 print ("{} : {}".format (x, cfglist_seq[x]))
 
+        # aus den eingelesenen Werten werden hier nur 2 verwendet:
+        #       ist time adjust verlangt
+        #       ist Berücksichtigung Sommer/Winterzeit verlangt 
         try:
         # input comes from configfile
             self.do_adjustTime = int(cfglist_seq ["adjust_needed"])    
@@ -711,7 +728,7 @@ class MySequencer(threading.Thread, MyPrint):
 
        
         
-        # if adjust of schaltzeiten oder Sommerzeit nötig
+        # print to log was verlangt ist
         if self.do_adjustTime > 0:
             self.myprint (DEBUG_LEVEL1, "\t" + progname + "adjust Time verlangt") 
         else:
@@ -722,8 +739,9 @@ class MySequencer(threading.Thread, MyPrint):
         else:
             self.myprint (DEBUG_LEVEL1, "\t" + progname + "adjust Sommerzeit NICHT verlangt") 
 
+
+    #   create instance of Class ActionList
         self.actionList=ActionList(self.debug, self.path)      # Instanz der actionLister Class
-    #   parsen
     # 
         self.myprint (DEBUG_LEVEL0 ,progname +  "object created: {}".format(self.actionList))
         
@@ -757,10 +775,11 @@ class MySequencer(threading.Thread, MyPrint):
             
 
         # print alle gefundenen Zimmer
-            print (" ")
-            print (self.list_zimmer)
-            print (" ")
+        #    print (" ")
+        #    print (self.list_zimmer)
+        #    print (" ")
         
+
         self.anz_dosen_xml = self.actionList.show_anzdevices()
 
         swdosconf = SWDos_conf (debug = self.debug, path = self.path)   # instanz der Klasse erstellen

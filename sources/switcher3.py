@@ -293,14 +293,34 @@ def assemble_info():
     home_list = swhome.home_status()                    # get info from swHome Class 
                                                         # this is a list of three lists
 
+
+    # Vorbereitung für info_gross[4]....
+    if seq_list [0] == 0:                   # adjust times verlangt
+        adj_sunset_time = "n.a"
+    else:
+        adj_sunset_time = "Ja"
+    
+    if seq_list [14] == 0:                   # adjust sommer/winterzeit verlangt
+        adj_winter = "n.a"
+    else:
+        adj_winter = seq_list [15]
+
+
     info_gross[0][1] =  switcher_version + " / " + str(seq_list[10])       # item 1: switcher version/anzahl Dosen
     info_gross[1][1] =  seq_list[11]                                       # item 2: start date/time
     info_gross[2][1] = days_str                                            # item 3: Laufzeit Tage
     info_gross[3][1] = "{:05d} / {:05d}".format (home_list[2][0],home_list[2][1])   # anzahl schaltaktionen
-    if seq_list [0] > 0:                   # adjust times needed
-        info_gross[4][1] = "{0:0>2}".format(str(seq_list[1]))  + " / " + "{0:0>3}".format(str(seq_list[2]) + " / " + "{}".format(seq_list[14]))
-    else:
-        info_gross[4][1] = "nicht konfiguriert"
+    #if seq_list [0] > 0:                   # adjust times verlangt
+    #    info_gross[4][1] = "{0:0>2}".format(str(seq_list[1]))  + " / " + "{0:0>3}".format(str(seq_list[2]) + " / " + "{}".format(seq_list[14]))
+    #else:
+    #    info_gross[4][1] = "{0:0>2}".format(str(seq_list[1]))  + " / n.a / " + "{}".format(seq_list[14])
+    
+    #    info_gross[4][1] = "nicht konfiguriert"
+
+    # zeile 4: Info über  schaltzeiten ajustieren
+    # [4][1]: woche / 00 / Ja / W
+    info_gross[4][1] = "{0:0>2}".format(str(seq_list[1]))  + " / " + "{:s}".format(str(seq_list[2])) + " / " + adj_sunset_time + " / " + adj_winter
+  #  info_gross[4][1] = "{0:0>2}".format(str(seq_list[1]))  + " / " + adj_time + " / " + adj_summer
     # print (info_gross[2][1])
     info_gross[5][1] = swhome.home_status()[0][1]       # zuhause status
     info_gross[6][1] = seq_list[3]                      # file ID des XML Files
