@@ -173,11 +173,10 @@ class CalcAdjust (MyPrint):
 
 
 #---------------------------------------------------------------------------------
-# Privat function calculate minutes to adjust based on week of year
+# Privat function adjust_init: calculate minutes to adjust based on week of year
 # also berücksichtige SommerWinterzeit, wenn verlangt
 #---------------------------------------------------------------------------------
     def adjust_init (self, weeks):
-
 
         self.myprint (DEBUG_LEVEL2, progname + "adjust_init called, weeks:{}".format(weeks))
         if weeks == 0:              
@@ -220,6 +219,7 @@ class CalcAdjust (MyPrint):
         # berücksichtigen Sommer/Winterzeit verlangt ?
         if self.do_adjustDaylight_saving == 1:       # 1 = verlangt
 
+            # entscheiden, ab das aktuelle Datum im Sommer oder Winterhabljahr liegt.
             self.sommer_winter = "S"                # nehme an Sommer
 
             if (self.dayofyear > self.fall_day) or (self.spring_datef < self.dayofyear):  # winterzeit
@@ -282,6 +282,7 @@ class CalcAdjust (MyPrint):
         # dies ist nur für Ausgabe, nicht sehr wichtig hier
         if week > 0:                                # >0 means = only calculate minutes, do nothing more...
             self.adjust_init (week)
+            self.myprint (DEBUG_LEVEL2, progname + "adjust_time min:{}".format(self.adjust_time_min + self.daylight_saving_minutes))
             return (action, self.adjust_time_min + self.daylight_saving_minutes)
 
        # self.adjust_init (week)        nicht mehr nötig, Nov 21
@@ -321,9 +322,9 @@ class CalcAdjust (MyPrint):
             pass
     # -- process the action given as parameter
 
-
+        self.myprint (DEBUG_LEVEL2, progname + "adjust_time: new Action2:{}".format(action))
         # gebe angepasste Aktionsstruktur zurück
-        return (action)
+        return (action, self.adjust_time_min + self.daylight_saving_minutes)
 
 
 

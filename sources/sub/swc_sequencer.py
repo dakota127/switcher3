@@ -335,7 +335,7 @@ class MySequencer(threading.Thread, MyPrint):
         #   for tag in list_in:
         #        for device in tag:
             for action in tag:
-                new_action = self.actioncalc.adjust_time (action , 0)      # adjust schalt zeit
+                new_action, minutes = self.actioncalc.adjust_time (action , 0)      # adjust schalt zeit (minutes not used here)
                #   append the updated (or unchanged) action to the two lists
                 adjust_list_tag [wochentag].append (new_action)
 

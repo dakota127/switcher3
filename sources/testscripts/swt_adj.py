@@ -4,6 +4,12 @@
 #   Testscript timetest
 #
 #   probieren der time, differenz und so 
+#
+#   ---> hat 2 Funktionen:
+#   OHNE commandlien Parm w:  berechne Ajustierung der Schaltzeit für kurze Liste mit Aktionen
+#   MIT commandlien Parm w:   berechne Ajustierung in Minuten für jede Woche des Jahren  
+#
+#  Verbessert Nov 2021
 # ***** Imports ******************************
 import sys, getopt, os
 import time
@@ -35,10 +41,13 @@ allweeks = False
 logfile_name = "switcher3.log"
 progname = "swt_adj"
 
+
+# Eine kurze liste von Aktionen, bei denen die Einschaltzeiten modifiziert und ausgegeben werden
+# dies jedoch nur, wenn parm w NICHT angegeben ist.
 actionList = [ 
                 ["21.15",1275,30,"21.15",1,1],
-                ["21.45",1305,30,"21.45",1,0],
-                ["21.35",0,0,"21.35",1,1],
+                ["21.35",1305,30,"21.35",1,0],
+                ["21.45",0,0,"21.45",1,1],
                 ["21.55",0,0,"21.55",1,0],
                 ["22.10",0,0,"22.10",2,1],
                 ["23.20",0,0,"23.20",3,0],
@@ -76,7 +85,7 @@ def argu():
     if args.A: 
         debug=DEBUG_LEVEL3
     if args.w:
-        allweeks = True
+        allweeks = True             # parm w: laufe durch alle wochens des Jahres und zeige Minuten der Anpassung
                  
     return(args)
     
@@ -106,8 +115,7 @@ def setup():
 
     today = datetime.now()
     week = int(today.strftime("%V"))
-    print ("weeky of year:{}".format(week))
-
+   
     path = os.path.dirname(os.path.realpath(__file__))    # current path
 # create Instance of MyPrint Class 
     myprint = MyPrint(  appname = progname, 
@@ -115,7 +123,9 @@ def setup():
                     logfile =  path + "/" + logfile_name ) 
     actioncalc = sub.swc_adjust.CalcAdjust (debug,allweeks)     # instanz von CalcAdjust erstellen 
 
-    actioncalc._calc_base(0)
+    saison, min= actioncalc.adjust_init(0)
+
+    print ("Woche:{}, Sommer/Winter:{}, Adjust Min: {:3}".format(week, saison, min))
 
 
 
@@ -126,26 +136,33 @@ def setup():
 if __name__ == '__main__':
 #
     options=argu()        
+    
     setup()
+
     # this test programm performs two tests:
 
-    # here the defined actions are processed
+    # here all of the defined actions in actionlist are processed
     if allweeks == False:  
         myprint.myprint (DEBUG_LEVEL1, "\nAdjust actions")  
+       
         for action in actionList:
-            
-            new_action, minutes = actioncalc.calc_adjusttime (action , 0)
+            new_action, minutes = actioncalc.adjust_time (action , 0)
             print ("test new action   :   {}".format(new_action))
-    
+        sys.exit(0)
+
+
+    # loop über alle fiktiven Aktionen in der Liste actionList
     # here we run over all weeks of the year an show the adjust minutes for every week
-    else:
-        myprint.myprint (DEBUG_LEVEL1, progname + "\nLaufe über alle Wochen des Jahres")
-        for we in range (1,52,1):
-            new_action, minutes = actioncalc.calc_adjusttime (actionList[0] , we)           # use first element
-            newtime = convTime (1319 - minutes)
-            print ("week: {:2}, adjust: {:3}  new time: {} (from 21.59)".format(we, minutes, newtime))
+    # wir nehmen eine fiktive Aktion
+    aktion =   ["21.35",1295,30,"21.35",1,1]
+    myprint.myprint (DEBUG_LEVEL1, progname + "\nLaufe über alle Wochen des Jahres")
+    for we in range (1,52,1):
+        new_action, minutes = actioncalc.adjust_time (aktion , we)           # use first element
+        newtime = convTime (1295 - minutes)
+        print ("week: {:2}, adjust: {:3}  new time: {} (from 21.35)".format(we, minutes, newtime))
     
     sys.exit(0)
+
 #**************************************************************
 #  That is the end
 #***************************************************************
