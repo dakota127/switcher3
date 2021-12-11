@@ -47,6 +47,20 @@ fi
 echo "$file not found, also kopiere"
 sudo cp -n -v mosquitto_stuff/my_passw.txt /etc/mosquitto
 
+
+# acl file 
+sudo rm -f my_aclfile.txt
+file="/etc/mosquitto/my_aclfile.txt"
+if [ -f "$file" ]
+then
+	echo "$file bereits vorhanden, remove"
+	sudo rm -f $file
+fi
+
+echo "$file not found, also kopiere"
+sudo cp -n -v mosquitto_stuff/my_aclfile.txt /etc/mosquitto
+
+
 # encrypt the passowrd file
 echo "encrypt password file..."
 sudo mosquitto_passwd -U /etc/mosquitto/my_passw.txt

@@ -1,0 +1,12 @@
+#  aclfile für switcher3 mqtt
+#  December 2021 Peter Boxler
+#---------------------------------------
+# This affects access control for clients with no username.
+topic read $SYS/#
+
+# This only affects clients with username "roger".
+user test127
+topic readwrite test
+
+# This affects all clients.
+pattern write $SYS/broker/connection/%c/state
