@@ -819,7 +819,7 @@ def runit():
         while True:
     #  ---- MAIN LOOP of program ---------------------------------
            
-            if sequencer.isAlive():
+            if sequencer.is_alive():
                 pass
             else:
                 myprint.myprint (DEBUG_LEVEL0 ,progname + "Sequencer Thread is dead, siehe log")

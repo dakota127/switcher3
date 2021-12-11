@@ -70,7 +70,7 @@ class MQTT_Conn(MyPrint):
         self.myprint (DEBUG_LEVEL2,     "--> MQTTConn init_ called, ipadr: {}".format(ipadr))    
         self.path = path                 # pfad  where the script is running
         self.mqtt_client_id = client 
-        self.mqtt_broker_ip = ipadr        # value from commandline (if present)
+        self.mqtt_broker_ip_cmdl = ipadr        # value from commandline (if present)
         self.mqttc = 0                      # Instance of mqtt
         self.broker_ok = False
         self.retry = retry
@@ -79,7 +79,8 @@ class MQTT_Conn(MyPrint):
         self.mqtt_error = 0
         self.config_filename =  conf   # path and name of config file 
         self.config_section = "mqtt"
-        self._IP =""                          # this machines ip adr
+        self._IP_extern =""                      # this machines ip adr
+        self._IPlocalhost = "127.0.0.1"            # localhost
         self.ipadr_to_use = ""                   # ipad we are going to use
         self.printstring = "--> MQTT_Conn: "
         self.retry_counter = 1
@@ -176,25 +177,30 @@ class MQTT_Conn(MyPrint):
         
 #---------------    
         
-# get this machines IP address
+# get this machines IP address, externe iP Adresse
         self.s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
         try:
                 # doesn't even have to be reachable
             self.s.connect(('10.255.255.255', 1))
-            self._IP = self.s.getsockname()[0]
-        except:
-            self._IP = '127.0.0.1'
+            self._IP_extern = self.s.getsockname()[0]
+        except:         # wenn Fehler
+            self._IP_extern = self._IPlocalhost
         finally:
             self.s.close()
 
  #  now determine which ip addr to use: the one from the commandline parm has precendence
- #  if none is given on the commandline check if the one in parameters is > 0
- #  if this is present, take it, if not use the machines own ip adr      
-        self.ipadr_to_use =  self.cfgdir_mqtt["mqtt_ipadr"]
-        if (len(self.mqtt_broker_ip) > 0):                       # from cammandline
-            self.ipadr_to_use = self.mqtt_broker_ip               # use this if present      
-        else: 
-            self.ipadr_to_use =  self._IP
+ #  if none is given on the commandline check if the one in configfile is > 0
+ #  if this is present, take it, if not use 127.0.0.1 
+ #     
+        # default broker IP        
+        self.ipadr_to_use =  self._IPlocalhost
+        # set from config if present
+        if (len(self.cfgdir_mqtt["mqtt_ipadr"])> 0):
+            self.ipadr_to_use =  self.cfgdir_mqtt["mqtt_ipadr"]
+        # set from commandline ifpresent
+        if (len(self.mqtt_broker_ip_cmdl) > 0):                       # from cammandline
+            self.ipadr_to_use = self.mqtt_broker_ip_cmdl               # use this if present      
+
                   
         self.myprint (DEBUG_LEVEL2,  self.printstring + "Use this IP-Adr.: {}".format(self.ipadr_to_use))
         self.myprint (DEBUG_LEVEL2,  self.printstring + "UserID: {} , Passwort: {} , QoS: {} , Retain: {}".format \
@@ -244,6 +250,9 @@ class MQTT_Conn(MyPrint):
         while ( self.retry_counter > 0):
             try:
                 self.connect_flag = False               # set to False and try connection
+
+            
+        
                 self.mqttc.connect(self.ipadr_to_use, int(self.cfgdir_mqtt["mqtt_port"]), int(self.cfgdir_mqtt["mqtt_keepalive_intervall"])) 
      #       self.mqttc.connect(self.ipadr_to_use,1883)         # for test
                 time.sleep(0.2) 
