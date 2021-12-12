@@ -137,8 +137,8 @@ class MQTT_Conn(MyPrint):
             self.myprint (DEBUG_LEVEL3,"--> MQTT_Conn: my_on_message() called ")
   
 # Eventhandler
-#----Function Callback (msg gekommen )--------------------------------
-        def __my_on_publish__ (client,rc,mid):         
+#----Function Callback (msg gesendet )--------------------------------
+        def __my_on_publish__ (client,userdata,mid):         
             self.myprint (DEBUG_LEVEL3, self.printstring + "my_on_publish() called")
              
 # Eventhandler
@@ -184,7 +184,7 @@ class MQTT_Conn(MyPrint):
             self.s.connect(('10.255.255.255', 1))
             self._IP_extern = self.s.getsockname()[0]
         except:         # wenn Fehler
-            self._IP_extern = self._IPlocalhost
+            self._IP_extern = self._IPlocalhost  # "127.0.0.1"
         finally:
             self.s.close()
 
@@ -202,10 +202,10 @@ class MQTT_Conn(MyPrint):
             self.ipadr_to_use = self.mqtt_broker_ip_cmdl               # use this if present      
 
                   
-        self.myprint (DEBUG_LEVEL2,  self.printstring + "Use this IP-Adr.: {}".format(self.ipadr_to_use))
-        self.myprint (DEBUG_LEVEL2,  self.printstring + "UserID: {} , Passwort: {} , QoS: {} , Retain: {}".format \
+        self.myprint (DEBUG_LEVEL2,  self.printstring + "Use this IP-Adr:{}".format(self.ipadr_to_use))
+        self.myprint (DEBUG_LEVEL2,  self.printstring + "UserID:{}, Passwort:{}, QoS:{} , Retain:{}".format \
         (self.cfgdir_mqtt["mqtt_userid"], self.cfgdir_mqtt["mqtt_pw"], self.cfgdir_mqtt["mqtt_qos"], self.cfgdir_mqtt["mqtt_retain"]))
-        self.myprint (DEBUG_LEVEL2,  self.printstring + "retry_intervall: {}  retry_counter: {}".format(self.cfgdir_mqtt["retry_intervall"], self.cfgdir_mqtt["retry_counter"]))
+        self.myprint (DEBUG_LEVEL2,  self.printstring + "retry_intervall:{}  retry_counter:{}".format(self.cfgdir_mqtt["retry_intervall"], self.cfgdir_mqtt["retry_counter"]))
 
 # finally, we come the actual MQTT stuff, we know the ip addr to use
         self.mqttc = mqtt.Client(self.mqtt_client_id, True, self.cfgdir_mqtt["userdata"])       # Initiate MQTT Client

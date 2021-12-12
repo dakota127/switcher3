@@ -4,9 +4,21 @@
 # This affects access control for clients with no username.
 topic read $SYS/#
 
-# This only affects clients with username "roger".
+# This only affects clients with username "test127"
 user test127
-topic readwrite test
+topic test
+topic prisca
+
+# This only affects clients with username "dagobert"  (Switcher3)
+# Switcher3 muss sich mit user_id dagobert beim broker anmelden (siehe configfile swconfig.ini))
+user dagobert
+topic test
+topic swi/#
+topic serv/#
+topic aliste
+topic wetter
+topic home
+topic response
 
 # This affects all clients.
 pattern write $SYS/broker/connection/%c/state

@@ -45,7 +45,7 @@ import signal
 # ---------------------------------------------------------
 # Change Version of switcher3 here 
 # 
-switcher_version = "3.02"
+switcher_version = "3.2"
 #---------------------------------------------------------
 #--------------------------------------------------------
 
@@ -367,20 +367,24 @@ def assemble_info_2():
     
     return (li2)
 
+
 #-------------------------------------------------
 # get hostname und IP
 #----------------------------------------------
 def get_Host_name_IP():
 
     host = " "
-    ip = " "
+    local_ip_address = " "
+    host = socket.gethostname()
+    s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
     try:
-        host = socket.gethostname()
-        ip = socket.gethostbyname(host + ".local")
-    except:
-        print("Unable to get Hostname and IP")
-    
-    return (host, ip)
+        s.connect(('8.8.8.8', 1))  # connect() for UDP doesn't send packets
+        local_ip_address = s.getsockname()[0]
+    except: 
+        local_ip_address= "??"
+    finally:
+        print("-----------------IPAdr this machine:{}".format(local_ip_address))
+    return (host, local_ip_address)
 
 
 # --- handle messages from frontend
