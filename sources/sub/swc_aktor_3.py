@@ -47,7 +47,7 @@ TOPIC_P = ['','cmnd/dose%/POWER', 'cmnd/future1',' ',' ']  # 4 Topics Publish fu
 TOPIC_S = ['','stat/dose%/POWER', 'stat/future',' ',' ']  # 4 Topics  Subscribe fuer 4 verschiedene WiFi Schalter
 
 # Topic last will der Temp Sensoren                
-TOPIC_LW  = "switcher3/switch/lw"
+TOPIC_LW  = "swi/switch/lw"
 
 config_section = "aktor_3"                
 # ***** Variables *****************************
@@ -120,7 +120,7 @@ class Aktor_3 (MyPrint):
 # 
     def __repr__ (self):
 
-        rep = "Aktor_3 (Für Dose"  + str(self.dosennummer) + "," + self.action_type  + ")"
+        rep = "Aktor_3 (Fuer Dose"  + str(self.dosennummer) + "," + self.action_type  + ")"
         return (rep)
 
 

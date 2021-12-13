@@ -164,7 +164,7 @@ class Aktor_2 (MyPrint):
 # 
     def __repr__ (self):
 
-        rep = "Aktor_2 (Für Dose"  + str(self.dosennummer) + "," + self.action_type  + ")"
+        rep = "Aktor_2 (Fr Dose"  + str(self.dosennummer) + "," + self.action_type  + ")"
         return (rep)
 
 

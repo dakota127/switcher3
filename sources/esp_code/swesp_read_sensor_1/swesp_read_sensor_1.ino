@@ -45,9 +45,18 @@
 // defines für verschiedene Programm-Varianten
 //
 //*************************************************
-//#define TEST     // uncomment für Testumgebung
+#define TEST     // uncomment für Testumgebung
 //*************************************************
 //
+
+//  CONNECT MQTT --------
+//The value of rc indicates success or not:
+//0: Connection successful 
+//1: Connection refused - incorrect protocol version 
+//2: Connection refused - invalid client identifier 
+//3: Connection refused - server unavailable 
+//4: Connection refused - bad username or password 
+//5: Connection refused - not authorised 6-255: Currently unused.
 //
 #if defined TEST
 #define DEBUGLEVEL 1      // für Debug Output, für Produktion DEBUGLEVEL 0 setzen !
@@ -89,7 +98,7 @@ extern "C" {
 #include <Ticker.h>
 #include <PubSubClient.h>
 #include <DebugUtils.h>     // Library von Adreas Spiess
-#include <credentials.h>    // eigene crendentials
+#include "sw_credentials.h"    // eigene crendentials
 
 // esp8266 oder esp32 ----------------------
 #if defined ESP8266
@@ -120,16 +129,14 @@ PubSubClient client(espClient);
 ADC_MODE(ADC_VCC);          // nötig bei VCC Messung
 
 
-// werte kommen aus sw_credentials.h
+// werte kommen aus sw_credentials.h 
 const char* wifi_ssid =       WAN_SSID ;
 const char* wifi_password =   WAN_PW;
-const char* user_id_mqtt =    MQTT_USER;
-const char* password_mqtt =   MQTT_PW;
+const char* mqtt_user_id =    MQTT_USER;
+const char* mqtt_password =   MQTT_PW;
+const char* mqtt_broker_ip =  BROKER_IP;
 
 
-
-// IP Adresse des MQTT Brokers
-const char* mqtt_server = "192.168.1.153";
 
 //Variables Sensor
 int       chk;
@@ -150,8 +157,8 @@ long      lastMsg = 0;
 char      msg[50];
 int       value = 0;
 String    batt_status;
-const char*     topic =     "switcher/wetter/data";
-const char*     topic_lw =  "switcher/wetter/lw";
+const char*     topic =     "swi/wetter/data";
+const char*     topic_lw =  "swi/wetter/lw";
 int       inout_door ;       // HIGH: indoor, LOW: outdoor
 String    last_will_msg = "Verbindung verloren zu Sensor: ";
 String    the_sketchname;
@@ -686,7 +693,7 @@ void mqtt_connect() {
   for (int i=0; i < 2; i++) {
 
     DEBUGPRINT1 ("\nAttempting MQTT connection...Client-ID: ");
-    client.setServer(mqtt_server, 1883);
+    client.setServer(mqtt_broker_ip, 1883);
     // Create a random client ID
     String clientId = the_sketchname;
     clientId += String(random(0xffff), HEX);
@@ -698,13 +705,17 @@ void mqtt_connect() {
 #if defined LAST_WILL
 // connect mit Angabe eines last will
     DEBUGPRINTLN1 ("MQTT MIT userid/pw und lastwill message");
-   if (client.connect(clientId.c_str(), user_id_mqtt,password_mqtt, topic_lw ,0 , false,last_will))
+    // clientId.c_str()
+   if (client.connect(clientId.c_str(), mqtt_user_id,mqtt_password, topic_lw ,0 , false,last_will))
     {
 #else
  // connect OHNE Angabe eines last will
 #if defined MQTT_AUTH 
     DEBUGPRINTLN1 ("MQTT MIT userid/pw");
-    if (client.connect(clientId.c_str(), user_id_mqtt,password_mqtt ))
+    DEBUGPRINTLN1 (mqtt_user_id);
+    DEBUGPRINTLN1 (mqtt_password);
+    DEBUGPRINTLN1 (clientId.c_str());
+    if (client.connect(clientId.c_str(), mqtt_user_id,mqtt_password ))
     {
 #else
     DEBUGPRINTLN1 ("MQTT OHNE userid/pw");

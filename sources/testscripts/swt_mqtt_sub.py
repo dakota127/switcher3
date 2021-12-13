@@ -110,6 +110,7 @@ def runit():
     
     print ("Using User_id:{} and Password:{}".format(broker_user_id, broker_user_passwort))
     try:
+        print ("About to connect to:{}".format(MQTT_BROKER_IPADR))
         mqttc.connect(MQTT_BROKER_IPADR, MQTT_PORT, MQTT_KEEPALIVE_INTERVAL) 
     except:
         print("MQTT Connect failed, is mosquitto broker running?")

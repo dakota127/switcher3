@@ -126,8 +126,8 @@ class Wetter (MyPrint):
         self.wetter_data[1][4] = datetime.now()          # Init
 
     #   subscribe to mqtt broker
-        self.mqttc.subscribe_topic ("switcher/wetter/data" , self.store_wetter_data)    # subscribe to topic wetterdaten
-        self.mqttc.subscribe_topic ("switcher/wetter/lw" , self.last_will)              # subscribe to Last Will Topic der Sensoren
+        self.mqttc.subscribe_topic ("swi/wetter/data" , self.store_wetter_data)    # subscribe to topic wetterdaten
+        self.mqttc.subscribe_topic ("swi/wetter/lw" , self.last_will)              # subscribe to Last Will Topic der Sensoren
 
 #   Ende init Wetter Klasse
 

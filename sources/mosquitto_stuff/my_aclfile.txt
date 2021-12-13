@@ -19,6 +19,10 @@ topic aliste
 topic wetter
 topic home
 topic response
+#
+# topics für smart switches
+topic cmnd/#
+topic stat/#
 
 # This affects all clients.
 pattern write $SYS/broker/connection/%c/state

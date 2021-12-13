@@ -171,7 +171,7 @@ class Dose(MyPrint):
             
          # schaltart auswerten....   
         if len(self.schalt) == 0:
-            self.myprint (DEBUG_LEVEL1 ,progname + "dose{} Schaltart ungültig, nehme default 1".format(self.dosen_nummer))
+            self.myprint (DEBUG_LEVEL1 ,progname + "dose{} Schaltart ungueltig, nehme default 1".format(self.dosen_nummer))
             self.schalt = "1,1,1"
         if len(self.schalt) == 1:
             self.schaltart  = int(self.schalt)    

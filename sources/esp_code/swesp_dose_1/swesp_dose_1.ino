@@ -42,12 +42,9 @@ const int interruptPin = 0; //Flash button on board     für
 
 #include <PubSubClient.h>
 #include <EEPROM.h>
+#include "sw_credentials.h"    // eigene crendentials
 
-/* diese Werte anpassen   <<--------- */
-const char* ssid = "P-NETGEAR";           // WLAN SSID
-const char* password = "hermannelsa";    // WLAN Passwort
-// const char* ip_adr_broker = "192.168.1.153";
-const char* ip_adr_broker = "192.168.1.121";
+
 const char* sub_topic1 = "cmnd/dose1/POWER";
 const char* sub_topic2 = "cmnd/dose2/POWER";
 const char* sub_topic3 = "cmnd/dose3/POWER";
@@ -57,7 +54,7 @@ const char* pub_topic2 = "stat/dose2/POWER";
 const char* pub_topic3 = "stat/dose3/POWER";
 const char* pub_topic4 = "stat/dose4/POWER";
 
-const char* lwt_topic = "switcher2/switch/lw";
+const char* lwt_topic = "swi/switch/lw";
 
 
 String last_will_msg = "Verbindung verloren zu mqtt dose: ";
@@ -65,8 +62,6 @@ String last_will_msg = "Verbindung verloren zu mqtt dose: ";
 const char*   publish_topic;
 /* diese Werte anpassen   <<--------- */
 
-const char* user_id="switcher2";
-const char* password_mqtt =  "itscool";
 
 
 int stat_pin1;
@@ -75,8 +70,13 @@ int dosennummer;
 int dosenstatus;        // variable für den aktuellen Status der Dose 1=ein, 0= aus
 long time_lastMsg = 0;
 
-// IP-Adr des MQTT Brokers  
-const char* mqtt_server = ip_adr_broker;        // IP-AD MQTT Broker
+// werte kommen aus sw_credentials.h 
+const char* wifi_ssid =       WAN_SSID ;
+const char* wifi_password =   WAN_PW;
+const char* mqtt_user_id =    MQTT_USER;
+const char* mqtt_password =   MQTT_PW;
+const char* mqtt_broker_ip =  BROKER_IP;
+
 
 WiFiClient espClient;
 PubSubClient client(espClient);
@@ -142,8 +142,8 @@ void setup_wifi() {
     Serial.println("Conneting to WiFi --------");
   // We start by connecting to a WiFi network
     Serial.print("Connecting to ");
-    Serial.println(ssid);
-    WiFi.begin(ssid, password);
+    Serial.println(wifi_ssid);
+    WiFi.begin(wifi_ssid, wifi_password);
     while (WiFi.status() != WL_CONNECTED) 
     {
       delay(500);
@@ -155,7 +155,7 @@ void setup_wifi() {
   Serial.print("My IP address: ");
   Serial.println(WiFi.localIP());
   Serial.print("Broker IP address: ");
-  Serial.println(ip_adr_broker); 
+  Serial.println(mqtt_broker_ip); 
   Serial.println("Done Conneting to WiFi --------");
   
 }
@@ -251,7 +251,7 @@ void reconnect() {
   while (!client.connected()) 
   {
      Serial.print("Attempting MQTT connection...Client-ID: ");
-    client.setServer(mqtt_server, 1883);
+    client.setServer(mqtt_broker_ip, 1883);
     // Create a random client ID
     String clientId = the_sketchname;
     clientId += String(random(0xffff), HEX);
@@ -262,7 +262,7 @@ void reconnect() {
 
     
 //  if (client.connect(clientId.c_str()))
-    if (client.connect(clientId.c_str(), user_id,password_mqtt, lwt_topic ,0 , false,last_will))
+    if (client.connect(clientId.c_str(), mqtt_user_id, mqtt_password, lwt_topic ,0 , false,last_will))
     {
       Serial.println("connected to broker");
      //once connected to MQTT broker, subscribe command if any
@@ -299,7 +299,7 @@ void setup() {
   Serial.println("Starting Setup --------");
    display_Running_Sketch();
   setup_wifi();
-  client.setServer(mqtt_server, 1883);
+  client.setServer(mqtt_broker_ip, 1883);
   client.setCallback(callback);
   pinMode(led, OUTPUT);
   pinMode(pin1, INPUT);

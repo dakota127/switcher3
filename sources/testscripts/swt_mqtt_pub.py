@@ -8,7 +8,7 @@
 # Import package
 import paho.mqtt.client as mqtt
 import socket
-import sys
+import sys, time
 import argparse
 
 # Define Variables
@@ -86,7 +86,7 @@ def runit():
     
     
     # Initiate MQTT Client
-    mqttc = mqtt.Client()
+    mqttc = mqtt.Client(client_id="Hans123", clean_session=True, userdata=None)
     # Register Event Handlers
     mqttc.on_publish = on_publish
     mqttc.on_connect = on_connect
@@ -97,6 +97,7 @@ def runit():
     print ("Using User_id:{} and Password:{}".format(broker_user_id, broker_user_passwort))
     # Connect with MQTT Broker
     try:
+        print ("About to connect to:{}".format(MQTT_BROKER_IPADR))
         mqttc.connect(MQTT_BROKER_IPADR, MQTT_PORT, MQTT_KEEPALIVE_INTERVAL) 
     except:
         print("MQTT Connect failed, is mosquitto broker running?")
@@ -105,9 +106,16 @@ def runit():
     finally:
         pass
 
+    mqttc.loop_start()
+
+    i = 0
+    print("About to Publish 3 Messages with Topic:{} and Payload:{}".format(MQTT_TOPIC,MQTT_MSG))
+    while (i < 3):
     # Publish message to MQTT Topic 
-    print("About to Publish Topic:{} and Payload:{}".format(MQTT_TOPIC,MQTT_MSG))
-    mqttc.publish(MQTT_TOPIC, MQTT_MSG)
+        payload = "{:d}{:03d}{}".format (0,i, MQTT_MSG) 
+        mqttc.publish(MQTT_TOPIC, payload)
+        time.sleep(2)
+        i = i + 1
     
     # Disconnect from MQTT_Broker
     mqttc.disconnect()
