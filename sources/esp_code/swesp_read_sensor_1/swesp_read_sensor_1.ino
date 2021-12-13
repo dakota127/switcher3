@@ -45,7 +45,7 @@
 // defines für verschiedene Programm-Varianten
 //
 //*************************************************
-#define TEST     // uncomment für Testumgebung
+//#define TEST     // uncomment für Testumgebung
 //*************************************************
 //
 
