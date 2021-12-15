@@ -202,8 +202,8 @@ class MQTT_Conn(MyPrint):
             self.ipadr_to_use = self.mqtt_broker_ip_cmdl               # use this if present      
 
                   
-        self.myprint (DEBUG_LEVEL2,  self.printstring + "Use this IP-Adr:{}".format(self.ipadr_to_use))
-        self.myprint (DEBUG_LEVEL2,  self.printstring + "UserID:{}, Passwort:{}, QoS:{} , Retain:{}".format \
+        self.myprint (DEBUG_LEVEL1,  self.printstring + "Use this IP-Adr:{}".format(self.ipadr_to_use))
+        self.myprint (DEBUG_LEVEL1,  self.printstring + "UserID:{}, Passwort:{}, QoS:{} , Retain:{}".format \
         (self.cfgdir_mqtt["mqtt_userid"], self.cfgdir_mqtt["mqtt_pw"], self.cfgdir_mqtt["mqtt_qos"], self.cfgdir_mqtt["mqtt_retain"]))
         self.myprint (DEBUG_LEVEL2,  self.printstring + "retry_intervall:{}  retry_counter:{}".format(self.cfgdir_mqtt["retry_intervall"], self.cfgdir_mqtt["retry_counter"]))
 
