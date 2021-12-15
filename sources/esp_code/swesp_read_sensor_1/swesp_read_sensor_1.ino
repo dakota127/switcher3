@@ -45,7 +45,7 @@
 // defines für verschiedene Programm-Varianten
 //
 //*************************************************
-//#define TEST     // uncomment für Testumgebung
+#define TEST     // uncomment für Testumgebung
 //*************************************************
 //
 
@@ -112,7 +112,7 @@ extern "C" {
 #endif
 
 //Static IP address configuration
-IPAddress staticIP  (192, 168, 1, 999); //ESP static ip
+IPAddress staticIP  (192, 168, 1, 231); //ESP static ip
 IPAddress gateway   (192, 168, 1, 1);   //IP Address of your WiFi Router (Gateway)
 IPAddress subnet    (255, 255, 255, 0);  //Subnet mask
 IPAddress dns    (8, 8, 8, 8);  //DNS
@@ -301,6 +301,7 @@ void setup() {
   
   pinMode       (indoor_outdoor_pin, INPUT_PULLUP);   // defines indoor-outdoor
   pinMode       (adc_sensor_pin, OUTPUT);       // Spannungsteiler/Sensor ein/aus     
+  DEBUGPRINTLN1 ("Sensor/ADC VCC einschalten");
   digitalWrite  (adc_sensor_pin, HIGH);          // Spannungsteiler/Sensor einschalten
   
   inout_door = digitalRead  (indoor_outdoor_pin);
@@ -312,7 +313,7 @@ void setup() {
      DEBUGPRINTLN1 ("Bin Outdoor");
      last_will_msg = last_will_msg + "outdoor";
   }
-   DEBUGPRINTLN1 ("Sensor/ADC einschalten");
+ 
 
   DEBUGPRINTLN1 ("Mache WiFi Begin --------");
   // We start by connecting to a WiFi network
@@ -508,7 +509,7 @@ void display_Esp_Info() {
 //-------------------------------------
 void deepsleep() {
 
-  DEBUGPRINTLN1 ("Sensor/ADC ausschalten");
+  DEBUGPRINTLN1 ("Sensor/ADC VCC ausschalten");
   digitalWrite  (adc_sensor_pin, LOW);          // Spannungsteiler/Sensor ausschalten 
   DEBUGPRINT1 ("Going into deep sleep for ");
   DEBUGPRINT1 (String(sleepTimeS));
