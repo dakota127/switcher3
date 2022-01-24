@@ -121,11 +121,13 @@ def setup():
     myprint = MyPrint(  appname = progname, 
                     debug_level = debug,
                     logfile =  path + "/" + logfile_name ) 
-    actioncalc = sub.swc_adjust.CalcAdjust (debug,allweeks)     # instanz von CalcAdjust erstellen 
 
-    saison, min= actioncalc.adjust_init(0)
+    actioncalc = sub.swc_adjust.CalcAdjust (debug,allweeks)     # instanz von CalcAdjust erstellen           
+   # actioncalc = CalcAdjust (debug,allweeks)     # instanz von CalcAdjust erstellen 
 
-    print ("Woche:{}, Sommer/Winter:{}, Adjust Min: {:3}".format(week, saison, min))
+    daylight_saving_season, min = actioncalc.adjust_init(0)
+
+    print ("Woche:{}, Sommer/Winter:{}, Adjust Min: {:3}".format(week, daylight_saving_season, min))
 
 
 

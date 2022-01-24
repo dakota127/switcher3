@@ -222,7 +222,9 @@ class CalcAdjust (MyPrint):
             # entscheiden, ab das aktuelle Datum im Sommer oder Winterhabljahr liegt.
             self.sommer_winter = "S"                # nehme an Sommer
 
-            if (self.dayofyear > self.fall_day) or (self.spring_datef < self.dayofyear):  # winterzeit
+       #     print (self.dayofyear, self.fall_day)
+       #     print (self.spring_datef, self.dayofyear)
+            if (self.dayofyear > self.fall_day) or (self.spring_day > self.dayofyear):  # winterzeit
                 self.daylight_saving_minutes = 60            # in Witerzeit zusätzlich 60 min früher 
                 self.sommer_winter = "W"
                 self.myprint (DEBUG_LEVEL1, progname + "Daylight Saving, adjust minutes:{}".format(self.daylight_saving_minutes))  
