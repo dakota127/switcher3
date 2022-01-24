@@ -11,6 +11,6 @@
 
 
 // für MQTT 
-#define BROKER_IP "192.168.1.172"
+#define BROKER_IP "192.168.1.153"
 #define MQTT_USER "dagobert"
 #define MQTT_PW "itscool"
