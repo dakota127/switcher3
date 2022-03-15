@@ -30,9 +30,7 @@ DEBUG_LEVEL2=2
 DEBUG_LEVEL3=3
 
 #------------
-# -------------------------------------------------------------------------
-FAKTOR = 0.17               # <------------------ FAKTOR für Berechnung ---------------
-#-------------------------------------------------------------------------------------
+
 
 progname = "swc_adjust "
 configfile_name = "swconfig.ini"
@@ -90,7 +88,7 @@ class CalcAdjust (MyPrint):
         self.fall_day = 0
         self.daylight_saving_minutes = 0         # anzahl minuten anpassung im Sommer (ZERO)
 
-        self.faktor = FAKTOR
+        self.faktor = 0
 
 
         self.myconfig = ConfigRead(debug_level = self.debug)     # Create Instance of the ConfigRead Class
@@ -118,6 +116,7 @@ class CalcAdjust (MyPrint):
             self.evening_ontime = int(cfglist_seq ["evening_ontime"])
             self.morning_ontime = int(cfglist_seq ["morning_ontime"])
             self.faktor = int(cfglist_seq ["faktor"]) / 100
+
             self.spring_datef = cfglist_seq ["spring_date"].split(".")
             self.fall_datef = cfglist_seq ["fall_date"].split(".")
 
@@ -249,7 +248,7 @@ class CalcAdjust (MyPrint):
                                         self.fall_day))  
 
 
-        return (self.sommer_winter, self.adjust_time_min + self.daylight_saving_minutes)
+        return (self.sommer_winter, self.adjust_time_min + self.daylight_saving_minutes,self.faktor )
 
 
 #--------------------------------------------

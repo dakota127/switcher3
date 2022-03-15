@@ -321,7 +321,7 @@ class MySequencer(threading.Thread, MyPrint):
 
         #  eines von beiden (oder beides) ist verlangt, also machen wir das hier
         # init der adjust routine, liefert woche des Jahres und total ajustierung in min zurück
-        self.daylight_saving_season, self.adjust_time = self.actioncalc.adjust_init (0)               # init call
+        self.daylight_saving_season, self.adjust_time, faktor = self.actioncalc.adjust_init (0)               # init call
 
         #print ("++++++++++++++++++++++++")
         #print (self.daylight_saving_season)

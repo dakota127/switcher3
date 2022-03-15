@@ -125,9 +125,9 @@ def setup():
     actioncalc = sub.swc_adjust.CalcAdjust (debug,allweeks)     # instanz von CalcAdjust erstellen           
    # actioncalc = CalcAdjust (debug,allweeks)     # instanz von CalcAdjust erstellen 
 
-    daylight_saving_season, min = actioncalc.adjust_init(0)
+    daylight_saving_season, min , faktor = actioncalc.adjust_init(0)
 
-    print ("Woche:{}, Sommer/Winter:{}, Adjust Min: {:3}".format(week, daylight_saving_season, min))
+    print ("Woche:{}, Sommer/Winter:{}, Adjust(Min):{:3}, Faktor:{}".format(week, daylight_saving_season, min, faktor))
 
 
 
