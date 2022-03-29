@@ -694,7 +694,7 @@ class MySequencer(threading.Thread, MyPrint):
         self.myprint (DEBUG_LEVEL1, "\t" + progname + "setup MySequencer")  
 
         try:
-            locale.setlocale(locale.LC_TIME , 'de_CH')
+            locale.setlocale(locale.LC_TIME , 'de_CH.utf8')
         except:
             self.myprint (DEBUG_LEVEL0, "\t" + progname + "setzen Locale geht nicht, prüfe mit Befehl locale -a ")
         
@@ -730,14 +730,14 @@ class MySequencer(threading.Thread, MyPrint):
         
         # print to log was verlangt ist
         if self.do_adjustTime > 0:
-            self.myprint (DEBUG_LEVEL1, "\t" + progname + "adjust Time verlangt") 
+            self.myprint (DEBUG_LEVEL1, "\t" + progname + "adjust Schaltzeiten verlangt") 
         else:
-            self.myprint (DEBUG_LEVEL1, "\t" + progname + "adjust Time NICHT verlangt")     
+            self.myprint (DEBUG_LEVEL1, "\t" + progname + "adjust Schaltzeiten NICHT verlangt")     
 
         if self.do_adjustDaylight_saving > 0:
-            self.myprint (DEBUG_LEVEL1, "\t" + progname + "adjust Sommerzeit verlangt") 
+            self.myprint (DEBUG_LEVEL1, "\t" + progname + "adjust Daylight-Saving verlangt") 
         else:
-            self.myprint (DEBUG_LEVEL1, "\t" + progname + "adjust Sommerzeit NICHT verlangt") 
+            self.myprint (DEBUG_LEVEL1, "\t" + progname + "adjust Daylight-Saving NICHT verlangt") 
 
 
     #   create instance of Class ActionList

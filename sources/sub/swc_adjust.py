@@ -217,16 +217,21 @@ class CalcAdjust (MyPrint):
        
         # berücksichtigen Sommer/Winterzeit verlangt ?
         if self.do_adjustDaylight_saving == 1:       # 1 = verlangt
-
+            self.myprint (DEBUG_LEVEL1, progname + "berechne Daylight-Saving")
             # entscheiden, ab das aktuelle Datum im Sommer oder Winterhabljahr liegt.
-            self.sommer_winter = "S"                # nehme an Sommer
+            self.sommer_winter = "S"                # nehme default an Sommer
 
+            self.myprint (DEBUG_LEVEL2, progname + "TagJahr:{}/FallDay:{}/SpringDay:{}".format (self.dayofyear,self.fall_day, self.spring_day ))
        #     print (self.dayofyear, self.fall_day)
        #     print (self.spring_datef, self.dayofyear)
-            if (self.dayofyear > self.fall_day) or (self.spring_day > self.dayofyear):  # winterzeit
-                self.daylight_saving_minutes = 60            # in Witerzeit zusätzlich 60 min früher 
+            # im Winter schieben wir Zeit um nochmals + 60 Minuten
+            if (self.dayofyear > self.fall_day) and (self.dayofyear < self.spring_day):  # winterzeit
+
+                self.daylight_saving_minutes = 60            # in Winterzeit zusätzlich 60 min früher 
                 self.sommer_winter = "W"
-                self.myprint (DEBUG_LEVEL1, progname + "Daylight Saving, adjust minutes:{}".format(self.daylight_saving_minutes))  
+                self.myprint (DEBUG_LEVEL1, progname + "Winter is here, adjust additional minutes:{}".format(self.daylight_saving_minutes))  
+            else:   
+                self.myprint (DEBUG_LEVEL1, progname + "Summer is here, kein zusätzlicher adjust")
         else:
             self.myprint (DEBUG_LEVEL1, progname + "Daylight Saving nicht verlangt")
 
@@ -243,9 +248,7 @@ class CalcAdjust (MyPrint):
                                         self.evening_ontime, \
                                         self.morning_start_limit,  \
                                         self.morning_ontime))  
-        self.myprint (DEBUG_LEVEL2, progname + "DaylightSaving - Frühling_Tag:{} Herbst_Tag:{}".format(  \
-                                        self.spring_day,   \
-                                        self.fall_day))  
+    
 
 
         return (self.sommer_winter, self.adjust_time_min + self.daylight_saving_minutes,self.faktor )
