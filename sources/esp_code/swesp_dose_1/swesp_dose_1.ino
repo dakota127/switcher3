@@ -22,6 +22,9 @@
     Peter K. Boxler, September 2018
 /* --------------------------------------------------*/
 
+void ICACHE_RAM_ATTR handleInterrupt();
+/* siehe https://www.esp8266.com/viewtopic.php?t=20118  */
+
 #define ESP8266
 
 /* select ESP8266 or ESP32 mittels define */
@@ -344,6 +347,7 @@ void setup() {
    last_will_msg = last_will_msg + "";
 
    Serial.println("Read struct dose");
+   delay(500);
   // Read structure (struct) from EEPROM
   nekst_free = EEPROMAnythingRead(100, reinterpret_cast<char*>(&dose2), sizeof(dose2));
   Serial.println("DoseID = " + String (dose2.id) + " Dosennumer = " + String(dose2.dosennummer) +  " , einaus = " + String(dose2.einaus));
