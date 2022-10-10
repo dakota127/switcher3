@@ -15,7 +15,7 @@
 #
 from flask import Flask
 from flask import render_template,  request
-from flask_socketio import SocketIO
+from flask_socketio import SocketIO, emit
 import argparse, os, sys
 from sys import argv
 import psutil
@@ -35,7 +35,7 @@ import socket
 # ---------------------------------------------------------
 # Change Version of swserver3 here 
 # 
-server_version = "3.1"
+server_version = "3.2"
 #---------------------------------------------------------
 #--------------------------------------------------------
 
@@ -408,7 +408,7 @@ def setup_server():
                     debug_level = debug,
                     logfile =  path + "/" + logfile_name ) 
   
-    myprint.myprint (DEBUG_LEVEL0,  progname + "started <---------------------: {}".format(time.strftime('%X')))   
+    myprint.myprint (DEBUG_LEVEL0,  progname + "Setup swserver3 started <------: {}".format(time.strftime('%X')))   
     myprint.myprint (DEBUG_LEVEL0,  progname + "Name logfile: {} ".format( path + "/" + logfile_name) )
     myprint.myprint (DEBUG_LEVEL0,  progname +  "Name configfile: {} ".format( path + "/" + configfile_name) ) 
 
@@ -486,8 +486,7 @@ def setup_server():
     thread_list = threading.enumerate()
         
     myprint.myprint (DEBUG_LEVEL1,  progname + "Anzahl Threads: {},  List: {}".format(count_thread,thread_list))
-    myprint.myprint (DEBUG_LEVEL0,  progname +  "--> gestartet")
-    myprint.myprint (DEBUG_LEVEL0,  progname +  "setup Server done")
+    myprint.myprint (DEBUG_LEVEL0,  progname +  "Setup swserver3 done <------")
 
     return(error_return)
 # end setup    
@@ -1146,7 +1145,7 @@ def change_switch(switch):
 #--------------------------------------------------------
 if __name__ == "__main__":
 
-
+    print ("swserver3 starts") 
     # do setup fuction
     general_error = setup_server()
     myprint.myprint (DEBUG_LEVEL1 ,progname +  "Setup returns:{}".format (general_error))
