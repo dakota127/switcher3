@@ -71,7 +71,7 @@ class Aktor_3 (MyPrint):
         self.meldungs_typ = meldungs_typ             # typ der mqtt meldung und topic
         self.subscribe_noetig = subscribe
         self.config_file = config_filename_in          # configfile
-        self.dosencallback = callback_dosen
+        self.dosencallback = callback_dosen             # points to funktion in Dosen Class (actor_callback)
         self.dosennummer = dosennummer            # arbeite für diese Dose (1 bis n)
         self.mqtt_broker_ip = ""
         self.mqtt_port = 0

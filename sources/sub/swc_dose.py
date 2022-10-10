@@ -118,7 +118,7 @@ class Dose(MyPrint):
         self.myprint (DEBUG_LEVEL2 ,progname + "dose{} dosen_init called, debug:{}  testmode:{}".format (self.dosen_nummer,debug_in,testmode_in))
         self.testmode = testmode_in
         self.mqttc = mqttc_in           # instanz mqtt client
-        self.callback = callback_function
+        self.callback = callback_function    # points to function in swhome class 
         self.mqtt_connect = mqtt_status_in
         self.msg_variante = 1           # default wert Test Pyload
         self.subscribe = 0
@@ -296,7 +296,7 @@ class Dose(MyPrint):
 
 # ---- private Funktion _message_out() ------------------------------
     def _message_out(self):
-        self.callback (self._stat_list())      # notfy calller that dose was switched
+        self.callback (self._stat_list())      # notfy swhome class that dose was switched
 
 # Funktion dispay_anzahl()  gibt die Anzahl der instantiierten Dosen zurück
 #--------------------------------------------------------------------------

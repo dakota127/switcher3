@@ -137,7 +137,7 @@ class MySequencer(threading.Thread, MyPrint):
         super().__init__()
         self.debug = debug_in
         self.path = path_in             # path switcher main 
-        self.callback = callback1
+        self.callback = callback1       # points to swhome class instance
         self.configfile = conf          # full pfad  switcher config file
         self.myprint (DEBUG_LEVEL1, "\t" + progname + "_init called")
         self.myconfig = None
@@ -543,7 +543,8 @@ class MySequencer(threading.Thread, MyPrint):
                     self.warte_bis_zeit_da (self.current_action[0])       # hierin wird gewartet, is die Zeit reif ist...
                                
 # ++++++++ Hier wird geschaltet +++++++++++		
-#  ++++++++	Fuehre Aktion aus (Ein oder Aus schalten einer Dose)  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++		
+#  ++++++++	Fuehre Aktion aus (Ein oder Aus schalten einer Dose)  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
+#               call eine Funtion der swhome class		
                     self.myprint (DEBUG_LEVEL2,  "\t" + progname + "Schalten der Dose:{}  Zeit:{}/{}".format ( self.current_action[4], self.current_action[0], ONOFF[self.current_action[5]]  ))				                         
                     dosennu = int(self.current_action[4])
                     ein_aus = int(self.current_action[5])
@@ -609,7 +610,7 @@ class MySequencer(threading.Thread, MyPrint):
         
                 self.myprint (DEBUG_LEVEL0,   "\t" + progname + "Neuer Tag, send midnight event")
                     
-        
+        #       call eine Funtion der swhome class		
                 self.callback.handle_sequencer_event ( [   TIME_OFDAY_EVENT, 
                                         MIDNIGHT, 
                                         NOTUSED, 
@@ -816,6 +817,7 @@ class MySequencer(threading.Thread, MyPrint):
 
 
         #      self.callback (UPDATE_EVENT, ....)    # notify Update zimmer
+        #      call eine Funtion der swhome class		
         self.callback.handle_sequencer_event ( [   UPDATE_EVENT, 
                                             self.list_zimmer, 
                                             NOTUSED, 

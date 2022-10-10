@@ -103,7 +103,7 @@ class SwHome (MyPrint):
         self.path = path
         self.configfile = conf          # pfad  main switcher
         self.mqttc = mqtt_client
-        self.connector = connector
+        self.connector = connector      # points to instace of swconnector class
         self.dosenlist=[]                        # list von Doseninstanzen
         self.anz_dosen_config = 5
         self.payload2 = ""
@@ -219,6 +219,7 @@ class SwHome (MyPrint):
         for dose in self.dosenlist:
                 dose.schalten_manuell(0)
         
+        # ------ function der swconnector class
         self.connector.terminate()              # do terminate in the connector
 
 
@@ -276,7 +277,7 @@ class SwHome (MyPrint):
         self.payload = ["done_dev"  , dose_list]   # publish ack on topic  
         self.payl=json.dumps(self.payload)          # umwandeln in JSON Object (also ein String)   
 
-        self.ret = self.connector.transmit (self.payl)      # <------------------  transmit to frontend --------
+        self.ret = self.connector.transmit (self.payl)      # <------ function der swconnector class,  transmit to frontend --------
         if (self.ret > 0):
             self.myprint (DEBUG_LEVEL0,  "\t" + progname + "transmit returns:{} ".format(self.ret))
 
@@ -410,7 +411,7 @@ class SwHome (MyPrint):
         # send notification to swserver        
         self.payload2 = ["done_home"  , [self.daheim, HOMESTATE[self.daheim]] ]  #   
         self.payl=json.dumps(self.payload2)          # umwandeln in JSON Object (also ein String)    
-        self.ret = self.connector.transmit (self.payl)            # <------------------  transmit to frontend --------
+        self.ret = self.connector.transmit (self.payl)      # <------ function der swconnector class,  transmit to frontend --------
         if (self.ret > 0):
             self.myprint (DEBUG_LEVEL0, "\t" + progname +  "transmit returns: {} ".format(self.ret))   
       
