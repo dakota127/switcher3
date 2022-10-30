@@ -207,7 +207,7 @@ class CalcAdjust (MyPrint):
 
         spring = datetime(year, int(self.spring_datef[1]), int(self.spring_datef[0]))
         fall = datetime(year, int(self.fall_datef[1]), int(self.fall_datef[0]))
-       
+        self.myprint (DEBUG_LEVEL2, progname + "Spring and Fall: SprinDay:{}/FallDay:{}".format (spring, fall ))
         self.spring_day = int(spring.strftime("%j")) 
         self.fall_day =   int(fall.strftime("%j") )
 
@@ -222,16 +222,16 @@ class CalcAdjust (MyPrint):
             self.sommer_winter = "S"                # nehme default an Sommer
 
             self.myprint (DEBUG_LEVEL2, progname + "TagJahr:{}/FallDay:{}/SpringDay:{}".format (self.dayofyear,self.fall_day, self.spring_day ))
-       #     print (self.dayofyear, self.fall_day)
-       #     print (self.spring_datef, self.dayofyear)
+       
             # im Winter schieben wir Zeit um nochmals + 60 Minuten
-            if (self.dayofyear > self.fall_day) and (self.dayofyear < self.spring_day):  # winterzeit
+            if (self.dayofyear > self.spring_day) and (self.dayofyear < self.fall_day):  # Sommerzeit
 
+                self.myprint (DEBUG_LEVEL1, progname + "Summer is here, kein zusätzlicher adjust")
+            else:
                 self.daylight_saving_minutes = 60            # in Winterzeit zusätzlich 60 min früher 
                 self.sommer_winter = "W"
                 self.myprint (DEBUG_LEVEL1, progname + "Winter is here, adjust additional minutes:{}".format(self.daylight_saving_minutes))  
-            else:   
-                self.myprint (DEBUG_LEVEL1, progname + "Summer is here, kein zusätzlicher adjust")
+           
         else:
             self.myprint (DEBUG_LEVEL1, progname + "Daylight Saving nicht verlangt")
 
@@ -242,7 +242,7 @@ class CalcAdjust (MyPrint):
 
 
 
-        self.myprint (DEBUG_LEVEL3, progname + "Week des Jahres:{} ,adjust minutes:{}".format(self.weekyear,self.adjust_time_min))  
+        self.myprint (DEBUG_LEVEL1, progname + "Week des Jahres:{} ,adjust minutes:{} ,adjust minutes(total):{}".format(self.weekyear,self.adjust_time_min,(self.adjust_time_min+self.daylight_saving_minutes)))  
         self.myprint (DEBUG_LEVEL3, progname + "Evening:{}/{},Morning: {}/{}".format(  \
                                         self.evening_start_limit,   \
                                         self.evening_ontime, \
