@@ -167,9 +167,9 @@ class MySequencer(threading.Thread, MyPrint):
         self.start_tag = 0  # mit diesem Wochentag starten wir (wird später auf aktuelen Tag gesetzt nach Start)
 
     
-        self.weekyear = ""
+        self.weekyear = ""              # aktuelle woches des Jahres
         
-        self.wochentag = 0
+        self.wochentag = 0              # aktueller wochentag 
         self.current_action = 0
         # variables for status
         self.status_anzactions_done=0             # fuer Statusanzeige Anzahl Actions durchgefuehrt seit Start
@@ -232,8 +232,10 @@ class MySequencer(threading.Thread, MyPrint):
 #  -- Funktion: warten bis der nächste wochentag wirklich eintrifft -
 #  ---------------------------------------------------------------------------------------
     def warte_bis_tag_da(self,weekday):
+   #    
+   #        aktueller wochentag ist input 
    #
-        self.myprint (DEBUG_LEVEL0,   "\t" + progname + "warte_bis_tag_da() called. Es ist tag: {}".format(weekday))
+        self.myprint (DEBUG_LEVEL0,   "\t" + progname + "warte_bis_tag_da() called. Jetzt ist tag: {}".format(weekday))
 
         # loop bis condition is erfüllt, alo neuer Tag ist gekommen...
         while True:
@@ -294,6 +296,7 @@ class MySequencer(threading.Thread, MyPrint):
     #------ Funktion do_stuff regular
     #--------------------------------------------------------------- 
     def do_stuff_regular(self):
+        time.sleep(1)       # wait  just a bit
         return
 
 
@@ -303,7 +306,7 @@ class MySequencer(threading.Thread, MyPrint):
     #  ---------------------------------------------------------------------------------------
     def _adjust_switchtimes (self, list_in):
 
-        self.myprint (DEBUG_LEVEL2, "\t" + progname + "_adjust_switchtimes called")
+        self.myprint (DEBUG_LEVEL0, "\t" + progname + "_adjust_switchtimes called")
         
         self.today = datetime.now()
         self.weekyear = int(datetime.now().strftime("%V"))    # use %V with Python 3.6 !! 
@@ -352,7 +355,8 @@ class MySequencer(threading.Thread, MyPrint):
 
 
         # finally we are done adjusting 
-        self.myprint (DEBUG_LEVEL2, "\t\n" + progname + "_adjust_switchtimes ended")
+        self.myprint (DEBUG_LEVEL0, "\t" + progname + "_adjust_switchtimes ended")
+       
     
         # wir geben eine neue Liste mit geänderten Aktionen zurück
         return (adjust_list_tag)
@@ -402,6 +406,7 @@ class MySequencer(threading.Thread, MyPrint):
         return
     #---------------------------------------------------------------
     #------ Funktion running the Sequencer
+    #------- Runs in a separate TASK ---------------
     #--------------------------------------------------------------- 
     def running(self):
         self.myprint (DEBUG_LEVEL0, "\t" + progname + "now running ---->> Start Switching <<-----")
@@ -410,7 +415,8 @@ class MySequencer(threading.Thread, MyPrint):
 
      #   print (self.list_zimmer)
 
-   # hier beginnt run_switchter() ------------------------
+   # hier beginnt run sequencer ------------------------
+   # zuerst Vorbereitung --------------
         if self.debug: 
             time.sleep(1) 
       
@@ -421,7 +427,7 @@ class MySequencer(threading.Thread, MyPrint):
 
         self.start_tag = int(hhmm_tag[1])                        # heutiger wochentag, starte damit, loop bis tag 6
 
-
+        # Note: --> die Liste self.list_tage  ist statisch - sie wird beim Start des Switchers gefüllt und bleibt danach unverändert !!
         self.list_tage_new = self._adjust_switchtimes (self.list_tage)              # adjust SCHALTZEITEN WENN NÖTIG
 
         
@@ -431,6 +437,7 @@ class MySequencer(threading.Thread, MyPrint):
         self.list_aktionen_past, self.list_aktionen_zukunft = self._aktionen_pro_tag (self.list_tage_new, self.start_tag , self.anz_dosen_config )
         
     
+
     # Vorbereitung ist nun fertig--------------------------------------------------------------------
     # nun haben wir also zwei Listen aller verlangten Aktionen des heutigen Tages, die müssen wir nun abarbeiten
     # Liste 1: alle Aktionen, die schon (gemessen an der aktuellen Zeit) in der Vergangenheit liegen
@@ -447,7 +454,7 @@ class MySequencer(threading.Thread, MyPrint):
     #   5: 1 = einschalten / 0 = ausschalten
     #-------------------------------------------------------------
     #
-    # --  Zuerst die vergagenen Aktionen des Tages behandeln ---
+    # --  Part 1  Zuerst die vergagenen Aktionen des Tages behandeln ---
     #     dies, falls der Switcher in Laufe des Tages gestartet wird  - damit Status der Dosen aktuell ist
     #     gibt es also nur bei Neustart innerhalb des Tages !!!
         self.myprint (DEBUG_LEVEL1,   "\t" + progname + "behandle vergangene aktionen, anzahl: {}".format(len(self.list_aktionen_past)))
@@ -484,8 +491,7 @@ class MySequencer(threading.Thread, MyPrint):
             self.status_lastaction[0] = self.aktion[4]
 
         #  nun haben wir die vergangenen Aktionen virtuell geschaltet - also bloss den internen Status gesetzt haben,
-        #  muessen wir nun noch die Dosen gemaess diesen Stati wirklich schalten.
-      
+        #  muessen wir nun noch die Dosen gemaess diesen Stati wirklich schalten.   
         #  wir teilen der swHome klasse mit, dass nun die Abarbeitung die aktuelle Zeit erreicht hat, also
         #  ein TIME_OF_Day event.
         self.callback.handle_sequencer_event ( [   TIME_OFDAY_EVENT, 
@@ -499,11 +505,11 @@ class MySequencer(threading.Thread, MyPrint):
         
         self.myprint (DEBUG_LEVEL0,   "\t" + progname + "vergangene aktionen sind erledigt")
 
-# ---- Alle vergangenen Aktionen des Tages erledigt. Nun gehts ans Schalten..
+# ---- Alle vergangenen Aktionen des Tages erledigt. Part 1 fertig  Nun gehts ans Schalten..
     
 #----------------------------------------------------------------------------    
 #  ---- Main Loop -----------------------------------------------------------   
-#   hier werden die restlichen Aktionen des Tages behandelt.
+#   Part 2  hier werden die restlichen Aktionen des Tages behandelt.
 #
 # posit: solange, falls kein Ctlr-C kommt
         self.term_verlangt = 0
@@ -539,9 +545,11 @@ class MySequencer(threading.Thread, MyPrint):
                     self.status_nextaction[1] = "{} Uhr, {} / {}".format (self.current_action[0],self.list_zimmer[self.current_action[4]-1], ONOFF[self.current_action[5]])
                     self.status_nextaction[0] = self.current_action[4]    # dosennummer fuer status request ===============
                     self.status_waitfor = "{} Uhr".format(self.current_action[0])          # fuer status request  Zeit auf die wir warten als String===============
-            
-                    self.warte_bis_zeit_da (self.current_action[0])       # hierin wird gewartet, is die Zeit reif ist...
-                               
+
+                    # -------------------------------------------------
+                    self.warte_bis_zeit_da (self.current_action[0])       # hierin wird gewartet, is die Zeit reif ist für nächste SChaltaktion 
+                    # -------------------------------------------------
+                    #            
 # ++++++++ Hier wird geschaltet +++++++++++		
 #  ++++++++	Fuehre Aktion aus (Ein oder Aus schalten einer Dose)  +++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 #               call eine Funtion der swhome class		
@@ -594,21 +602,25 @@ class MySequencer(threading.Thread, MyPrint):
                 self.status_nextaction[1] = "Vorlaeufig unbekannt"      
                 self.status_nextaction[0] = 99                   # damit zimmer unbekannt gesetzt wird    
      
-                # warten bis Tag wechselt
-                self.wochentag = self.warte_bis_tag_da(self.wochentag)     # hierin wird gewartet, bis der neue tag kommt (mitternacht)
-
+                # -------------------------------------------------
+                # warten bis Tag wechselt, bringt neuen Wochentag zurück.
+                self.wochentag = self.warte_bis_tag_da(self.wochentag)     # hierin wird gewartet, bis der neue tag kommt (also bis mitternacht)
+                # -------------------------------------------------
+                
                 if  self.term_verlangt == 1:  
                     self.myprint (DEBUG_LEVEL2,   "\t" + progname + "LOOP-1 finds self.term_verlangt=1")
                     break                                   # break loop ueber alle actions des Tages
-                              
-                # wenn neuer Tag da ist, werden die Aktionslisten dieses neuen Tages erstellt    
-             
+
+                # der Tag hat gewechselt, also Midnight  <---------------------
+                
+                self.myprint (DEBUG_LEVEL0,   "\t" + progname + "Neuer Tag, adjust times and send midnight event")              
+                # wenn neuer Tag da ist, werden die Aktionslisten dieses neuen Tages erstellt   
+                # Note: --> die Liste self.list_tage  ist statisch - sie wird beim Start des Switchers gefüllt und bleibt danach unverändert !! 
+                self.list_tage_new = self._adjust_switchtimes (self.list_tage)              # adjust SCHALTZEITEN WENN NÖTIG, erstelle neue Liste
                 self.list_aktionen_past, self.list_aktionen_zukunft = self._aktionen_pro_tag (self.list_tage_new, self.wochentag ,self.anz_dosen_config)
                 self.status_anzactions_done = 0                       # anzahl getaner Aktionen pro Tag
                                    
                                                         # manuell im configfile: 0= forever, 1=nur bis Mitternacht)                                          
-        
-                self.myprint (DEBUG_LEVEL0,   "\t" + progname + "Neuer Tag, send midnight event")
                     
         #       call eine Funtion der swhome class		
                 self.callback.handle_sequencer_event ( [   TIME_OFDAY_EVENT, 
@@ -750,6 +762,7 @@ class MySequencer(threading.Thread, MyPrint):
         ret, self.file_id = self.actionList.get_actionList (self.list_tage, self.list_device, self.list_zimmer, cfglist_seq)
 #
 #   nun sind alle Aktionen aus den XML-Files eingelesen und versorgt in den Listen list_tage, list_device und zimmer
+# Note: --> die Liste self.list_tage  ist statisch - sie wird beim Start des Switchers gefüllt und bleibt danach unverändert !!
 #
         #print what we got back from actionList Class
         if (self.debug > 2):

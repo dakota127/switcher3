@@ -177,6 +177,9 @@ class CalcAdjust (MyPrint):
 #---------------------------------------------------------------------------------
     def adjust_init (self, weeks):
 
+        self.today = datetime.now()                             
+        self.dayofyear = int(self.today.strftime("%j"))      # tag des Jahres ermitteln 
+
         self.myprint (DEBUG_LEVEL2, progname + "adjust_init called, weeks:{}".format(weeks))
         if weeks == 0:              
 
@@ -203,11 +206,10 @@ class CalcAdjust (MyPrint):
         month = int(self.today.strftime("%-m"))    # use with Python 3.6 !! 
         day_month = int(self.today.strftime("%-d")) 
         year = int(self.today.strftime("%-Y")) 
-       
 
-        spring = datetime(year, int(self.spring_datef[1]), int(self.spring_datef[0]))
-        fall = datetime(year, int(self.fall_datef[1]), int(self.fall_datef[0]))
-        self.myprint (DEBUG_LEVEL2, progname + "Spring and Fall: SprinDay:{}/FallDay:{}".format (spring, fall ))
+        spring = datetime(year, int(self.spring_datef[1]), int(self.spring_datef[0]))       # datuemer aus KOnfig File
+        fall = datetime(year, int(self.fall_datef[1]), int(self.fall_datef[0]))             # datuemer aus KOnfig File
+       
         self.spring_day = int(spring.strftime("%j")) 
         self.fall_day =   int(fall.strftime("%j") )
 
@@ -217,20 +219,19 @@ class CalcAdjust (MyPrint):
        
         # berücksichtigen Sommer/Winterzeit verlangt ?
         if self.do_adjustDaylight_saving == 1:       # 1 = verlangt
-            self.myprint (DEBUG_LEVEL1, progname + "berechne Daylight-Saving")
+            self.myprint (DEBUG_LEVEL1, progname + "Daylight-Saving verlangt")
             # entscheiden, ab das aktuelle Datum im Sommer oder Winterhabljahr liegt.
             self.sommer_winter = "S"                # nehme default an Sommer
 
-            self.myprint (DEBUG_LEVEL2, progname + "TagJahr:{}/FallDay:{}/SpringDay:{}".format (self.dayofyear,self.fall_day, self.spring_day ))
        
             # im Winter schieben wir Zeit um nochmals + 60 Minuten
-            if (self.dayofyear > self.spring_day) and (self.dayofyear < self.fall_day):  # Sommerzeit
-
-                self.myprint (DEBUG_LEVEL1, progname + "Summer is here, kein zusätzlicher adjust")
+            if (self.dayofyear > self.spring_day) and (self.dayofyear <= self.fall_day):  # Sommerzeit
+                self.myprint (DEBUG_LEVEL0, progname + "Sommerzeit, TagJahr:{}/FallDay:{}/SpringDay:{}".format (self.dayofyear,self.fall_day, self.spring_day ))    
+        
             else:
                 self.daylight_saving_minutes = 60            # in Winterzeit zusätzlich 60 min früher 
                 self.sommer_winter = "W"
-                self.myprint (DEBUG_LEVEL1, progname + "Winter is here, adjust additional minutes:{}".format(self.daylight_saving_minutes))  
+                self.myprint (DEBUG_LEVEL0, progname + "Winterzeit, TagJahr:{}/FallDay:{}/SpringDay:{}".format (self.dayofyear,self.fall_day, self.spring_day ))   
            
         else:
             self.myprint (DEBUG_LEVEL1, progname + "Daylight Saving nicht verlangt")
@@ -242,7 +243,7 @@ class CalcAdjust (MyPrint):
 
 
 
-        self.myprint (DEBUG_LEVEL1, progname + "Week des Jahres:{} ,adjust minutes:{} ,adjust minutes(total):{}".format(self.weekyear,self.adjust_time_min,(self.adjust_time_min+self.daylight_saving_minutes)))  
+        self.myprint (DEBUG_LEVEL0, progname + "Week des Jahres:{} ,adjust minutes:{} ,adjust minutes(total):{}".format(self.weekyear,self.adjust_time_min,(self.adjust_time_min+self.daylight_saving_minutes)))  
         self.myprint (DEBUG_LEVEL3, progname + "Evening:{}/{},Morning: {}/{}".format(  \
                                         self.evening_start_limit,   \
                                         self.evening_ontime, \
