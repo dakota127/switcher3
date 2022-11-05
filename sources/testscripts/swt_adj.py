@@ -9,7 +9,7 @@
 #   OHNE commandlien Parm w:  berechne Ajustierung der Schaltzeit für kurze Liste mit Aktionen
 #   MIT commandlien Parm w:   berechne Ajustierung in Minuten für jede Woche des Jahren  
 #
-#  Verbessert Nov 2021
+#  Verbessert Okt 2022
 # ***** Imports ******************************
 import sys, getopt, os
 import time
@@ -37,6 +37,8 @@ timenow=0
 actioncalc = None
 debug = 0
 allweeks = False
+dates = 0
+week = 0
 
 logfile_name = "switcher3.log"
 progname = "swt_adj"
@@ -111,7 +113,7 @@ def convTime(min_in):
 #–---------------------------------------------
 # setup()
 def setup():
-    global actioncalc, myprint
+    global actioncalc, myprint, week
 
     today = datetime.now()
     week = int(today.strftime("%V"))
@@ -122,12 +124,8 @@ def setup():
                     debug_level = debug,
                     logfile =  path + "/" + logfile_name ) 
 
-    actioncalc = sub.swc_adjust.CalcAdjust (debug,allweeks)     # instanz von CalcAdjust erstellen           
-   # actioncalc = CalcAdjust (debug,allweeks)     # instanz von CalcAdjust erstellen 
-
-    daylight_saving_season, min , faktor = actioncalc.adjust_init(0)
-
-    print ("Woche:{}, Sommer/Winter:{}, Adjust(Min):{:3}, Faktor:{}".format(week, daylight_saving_season, min, faktor))
+    actioncalc = sub.swc_adjust.CalcAdjust (debug)     # instanz von CalcAdjust erstellen           
+  
 
 
 
@@ -143,13 +141,18 @@ if __name__ == '__main__':
 
     # this test programm performs two tests:
 
+    # berechne ajustierung für aktuelle Woches des Jahres (Parameter (0))
+    daylight_saving_season, min , faktor, dates = actioncalc.adjust_init(0)
     # here all of the defined actions in actionlist are processed
     if allweeks == False:  
-        myprint.myprint (DEBUG_LEVEL1, "\nAdjust actions")  
+        myprint.myprint (DEBUG_LEVEL0, " ---->Adjust definierte Actions für aktuelle Woche")  
        
         for action in actionList:
-            new_action, minutes = actioncalc.adjust_time (action , 0)
-            print ("test new action   :   {}".format(new_action))
+            print ("use this action   :   {}".format(action))
+            new_action, minutes = actioncalc.adjust_time (action )
+           
+            print ("new action        :   {}".format(new_action))
+            print ("Woche:{:2}, Minuten adjust {:2}".format(week, minutes))
         sys.exit(0)
 
 
@@ -157,10 +160,15 @@ if __name__ == '__main__':
     # here we run over all weeks of the year an show the adjust minutes for every week
     # wir nehmen eine fiktive Aktion
     aktion =   ["21.35",1295,30,"21.35",1,1]
-    myprint.myprint (DEBUG_LEVEL1, progname + "\nLaufe über alle Wochen des Jahres")
+    myprint.myprint (DEBUG_LEVEL0, progname + " ---->Laufe über alle Wochen des Jahres für definierte Action <------")
+    myprint.myprint (DEBUG_LEVEL0, progname + " ---->Achtung, Sommer-Winterzeit entspr. Laufzeit des Programms <----")
     for we in range (1,52,1):
-        new_action, minutes = actioncalc.adjust_time (aktion , we)           # use first element
+        aktion =   ["21.35",1295,30,"21.35",1,1]
+        # berechne ajustierung für aktuelle Woches des Jahres (Parameter (0))
+        daylight_saving_season, min , faktor, dates = actioncalc.adjust_init(we)
+        new_action, minutes = actioncalc.adjust_time (aktion )           # use first element
         newtime = convTime (1295 - minutes)
+        print ("test new action   :   {}".format(new_action))
         print ("week: {:2}, adjust: {:3}  new time: {} (from 21.35)".format(we, minutes, newtime))
     
     sys.exit(0)

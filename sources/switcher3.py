@@ -45,7 +45,7 @@ import signal
 # ---------------------------------------------------------
 # Change Version of switcher3 here 
 # 
-switcher_version = "3.2"
+switcher_version = "3.4"
 #---------------------------------------------------------
 #--------------------------------------------------------
 
@@ -291,20 +291,12 @@ def assemble_info():
 
     seq_list = sequencer.show_status()                  # get info from Sequencer Class
     home_list = swhome.home_status()                    # get info from swHome Class 
-                                                        # this is a list of three lists
-
-
-    # Vorbereitung für info_gross[4]....
-    if seq_list [0] == 0:                   # adjust times verlangt
-        adj_sunset_time = "n.a"
-    else:
-        adj_sunset_time = "Ja"
+    # print (seq_list)                                    # this is a list of three lists
     
-    if seq_list [14] == 0:                   # adjust sommer/winterzeit verlangt
-        adj_winter = "n.a"
-    else:
-        adj_winter = seq_list [15]
-
+    adj_sunset_time = seq_list [0]                  # ist J oder N
+    adj_sommerwinter = seq_list [14]                # ist J oder N
+    sommerwinter_zeit = adj_winter = seq_list [15]  # ist W oder S oder -
+   
 
     info_gross[0][1] =  switcher_version + " / " + str(seq_list[10])       # item 1: switcher version/anzahl Dosen
     info_gross[1][1] =  seq_list[11]                                       # item 2: start date/time
@@ -319,7 +311,11 @@ def assemble_info():
 
     # zeile 4: Info über  schaltzeiten ajustieren
     # [4][1]: woche / 00 / Ja / W
-    info_gross[4][1] = "{0:0>2}".format(str(seq_list[1]))  + " / " + "{:s}".format(str(seq_list[2])) + " / " + adj_sunset_time + " / " + adj_winter
+    info_gross[4][1] = "{0:0>2}".format(str(seq_list[1]))  + " / " + "{:s}".format(str(seq_list[2])) + " / " + adj_sunset_time + " / " + adj_sommerwinter  \
+        + " / "  + sommerwinter_zeit + " / " + "{}".format(seq_list[16][0]) + " / " + "{}".format(seq_list[16][1]) + " / " + "{}".format(seq_list[16][2])
+
+    info_gross[4][1] =  adj_sunset_time + " / " + adj_sommerwinter + " / " + "{0:0>2}".format(str(seq_list[1]))  + " / " + "{:s}".format(str(seq_list[2]))    \
+        + " / "  + sommerwinter_zeit + " / " + "{}".format(seq_list[16][0]) + " / " + "{}".format(seq_list[16][1]) + " / " + "{}".format(seq_list[16][2])
   #  info_gross[4][1] = "{0:0>2}".format(str(seq_list[1]))  + " / " + adj_time + " / " + adj_summer
     # print (info_gross[2][1])
     info_gross[5][1] = swhome.home_status()[0][1]       # zuhause status

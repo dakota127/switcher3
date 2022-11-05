@@ -64,14 +64,13 @@ class CalcAdjust (MyPrint):
     ' klasse CalcAdjust '
 
     
-    def __init__(self, debug_in, all_weeks):  # Init Funktion
+    def __init__(self, debug_in):  # Init Funktion
 
         self.myprint (DEBUG_LEVEL2,  progname + "CalcAdust_init called")
 
         self.debug = debug_in
-        self.weeks = all_weeks  
         self.dayofyear = 0
-        self.weekyear = 0
+        self.week_of_year = 0
         self.adjust_time_min = 0    # in minutes
         self.today = 0
         self.do_adjustTime = 0                  # adjust times normal
@@ -108,7 +107,7 @@ class CalcAdjust (MyPrint):
         try:
             self.do_adjustTime = int(cfglist_seq ["adjust_needed"])    
             self.do_adjustDaylight_saving = int(cfglist_seq ["daylight_saving"])
-            if self.do_adjustDaylight_saving == 0: self.sommer_winter = "n.a"
+            if self.do_adjustDaylight_saving == 0: self.sommer_winter = "-"                 # - heisst: keine Umchaltung verlangt im Konfig File
 
             
             hhmm_s = cfglist_seq ["evening_start_limit"].split(".")
@@ -172,36 +171,37 @@ class CalcAdjust (MyPrint):
 
 
 #---------------------------------------------------------------------------------
-# Privat function adjust_init: calculate minutes to adjust based on week of year
+# Public function adjust_init: calculate minutes to adjust based on week of year
 # also berücksichtige SommerWinterzeit, wenn verlangt
 #---------------------------------------------------------------------------------
-    def adjust_init (self, weeks):
+    def adjust_init (self,woche_input):
 
+        # Falls woche_input == 0, wird die aktuelle Woche des Jahres ermittelt und die Ajustierung dafür berechnet
+        # Falls woche_input > 0, wird dies als aktuelle Woche benutzt und die Ajustierung dafür berechnet (für Testprogramm swt_adj.py)
         self.today = datetime.now()                             
         self.dayofyear = int(self.today.strftime("%j"))      # tag des Jahres ermitteln 
 
-        self.myprint (DEBUG_LEVEL2, progname + "adjust_init called, weeks:{}".format(weeks))
-        if weeks == 0:              
-
-            week = int(self.today.strftime("%V"))    # use %V with Python 3.6 !! 
+        self.myprint (DEBUG_LEVEL2, progname + "adjust_init called, woche_input:{:2}".format(woche_input))
+        self.week_of_year = int(self.today.strftime("%V"))    # use %V with Python 3.6 !!                    # woche des Jahres ermitteln
                                                 # see https://bugs.python.org/issue12006
-            self.weekyear = week
 
-        else:
-            self.weekyear = weeks
+        if woche_input > 0:              
+            self.week_of_year = woche_input
 
         # ajustierung der Schaltzeiten verlangt ?
         if self.do_adjustTime == 1:       # 1 = verlangt
-            self.adjust_time_min = int(abs( 60 * ((self.weekyear - 27) * (self.faktor)) ))  # number of minutes we need to adjust, based on week of the year
+            self.adjust_time_min = int(abs( 60 * ((self.week_of_year - 27) * (self.faktor)) ))  # number of minutes we need to adjust, based on week of the year
         else:
             self.adjust_time_min = 0     # nicht verlangt, also 0 minuten
 
+        # --------------------------------------------------------------------------
         # nun noch Sommer-Winterzeit berücksichtigen, falls verlangt im Config File.
         # Alle Schaltzeiten sind im XML File für den Sommer
         # wenn verlangt, ist also im Winter 60 Minuten zur Adjust Zeit hinzufügen
         
-        # zuerst feststellen, ob Sommer oder Winter, im Config file ist der Tag des Wechsels im Frühling und im Herbst definiert.
-        
+        # zuerst feststellen, ob Sommer oder Winter ist: im Config file ist der Tag des Wechsels im Frühling und im Herbst definiert.
+        #--------------------------------------------------------------------------
+
         # aktueller Monat und Tag des Monats
         month = int(self.today.strftime("%-m"))    # use with Python 3.6 !! 
         day_month = int(self.today.strftime("%-d")) 
@@ -243,7 +243,7 @@ class CalcAdjust (MyPrint):
 
 
 
-        self.myprint (DEBUG_LEVEL0, progname + "Week des Jahres:{} ,adjust minutes:{} ,adjust minutes(total):{}".format(self.weekyear,self.adjust_time_min,(self.adjust_time_min+self.daylight_saving_minutes)))  
+        self.myprint (DEBUG_LEVEL0, progname + "Week des Jahres:{} ,adjust minutes:{} ,adjust minutes(total):{}".format(self.week_of_year,self.adjust_time_min,(self.adjust_time_min+self.daylight_saving_minutes)))  
         self.myprint (DEBUG_LEVEL3, progname + "Evening:{}/{},Morning: {}/{}".format(  \
                                         self.evening_start_limit,   \
                                         self.evening_ontime, \
@@ -252,13 +252,13 @@ class CalcAdjust (MyPrint):
     
 
 
-        return (self.sommer_winter, self.adjust_time_min + self.daylight_saving_minutes,self.faktor )
+        return (self.sommer_winter, (self.adjust_time_min + self.daylight_saving_minutes),self.faktor , [self.dayofyear,self.spring_day,self.fall_day])
 
 
 #--------------------------------------------
 # Public Function calc_adjust 
 #--------------------------------------------
-    def adjust_time (self, action, week):
+    def adjust_time (self, action):
 
     # wird aufgerufen, wenn Schaltzeiten zu modifizieren sind, dies kann sein:
     #
@@ -282,16 +282,18 @@ class CalcAdjust (MyPrint):
     #   0 = ausschalten
     #-------------------------------------------------------------
        
-        self.myprint (DEBUG_LEVEL2, progname + "adjust_time called, week:{}, action in:{}".format(week,action))
+        self.myprint (DEBUG_LEVEL2, progname + "adjust_time called, action in:{}".format(action))
         
         # dies ist nur für Ausgabe, nicht sehr wichtig hier
-        if week > 0:                                # >0 means = only calculate minutes, do nothing more...
-            self.adjust_init (week)
-            self.myprint (DEBUG_LEVEL2, progname + "adjust_time min:{}".format(self.adjust_time_min + self.daylight_saving_minutes))
-            return (action, self.adjust_time_min + self.daylight_saving_minutes)
+        # wenn parameter week > 0 ist, heisst dies, berechne für die angegebene woche (ist für Testprogramm swt_adj.py)
+        # wenn parameter week == 0 ist, heisst dies, ermittle die aktuelle Woches Jahre
+      #  if week > 0:                                # >0 means = take this week
+      #      self.myprint (DEBUG_LEVEL2, progname + "adjust_time min:{}".format(self.adjust_time_min + self.daylight_saving_minutes))
+         #   return (action, self.adjust_time_min + self.daylight_saving_minutes)
+        #    return (action, self.adjust_time_min )
 
-       # self.adjust_init (week)        nicht mehr nötig, Nov 21
-
+        self.myprint (DEBUG_LEVEL2, progname + "adjust_time min:{}".format(self.adjust_time_min + self.daylight_saving_minutes))
+        # nun also für die aktuelle Woches des Jahres berechnen.... 
         # nun art der ajustierung ermitteln:
         changed = False
         evening_valid = False
@@ -328,6 +330,7 @@ class CalcAdjust (MyPrint):
     # -- process the action given as parameter
 
         self.myprint (DEBUG_LEVEL2, progname + "adjust_time: new Action2:{}".format(action))
+       
         # gebe angepasste Aktionsstruktur zurück
         return (action, self.adjust_time_min + self.daylight_saving_minutes)
 

@@ -40,17 +40,18 @@ DEBUG_LEVEL3 = 3
 
 configfile_name = "swconfig.ini"
 config_section = "sequencer"                # look up values in this section
-progname = "swc_sequencer "
+progname    = "swc_sequencer "
 dosenconfig = "swdosen.ini"
-hhmm_tag = 0
+hhmm_tag    = 0
 status_currtime = 0
-time_old = 0
+time_old    = 0
 
-JANEIN=["Nein","Ja"]
-ONOFF={1:'EIN', 0:'AUS'}     
-wochentage=["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"]
-reset_man=["Nie","Mitternacht"]
-SLEEPTIME=2			            # default sleeptime normaler Lauf
+J_N         = ["N","J"]
+JANEIN      = ["Nein","Ja"]
+ONOFF       = {1:'EIN', 0:'AUS'}     
+wochentage  = ["Sonntag","Montag","Dienstag","Mittwoch","Donnerstag","Freitag","Samstag"]
+reset_man   = ["Nie","Mitternacht"]
+SLEEPTIME   = 2			            # default sleeptime normaler Lauf
 SLEEPTIME_DONE = 30             # sleeptime vor Mitternacht (alle Aktionen gemacht)
 # variablen, die für die Status Abfrage geführt/verwendet werden
 
@@ -156,11 +157,12 @@ class MySequencer(threading.Thread, MyPrint):
         self.status_currtime=""              # fuer Statusanzeige
         self.do_adjustTime = 0                  # 1: adjust times, 0: nichts ajustieren
         self.do_adjustDaylight_saving = 0       # 1 : adjust daylight saving time, 0: nichts machen
+        self.adjust_minutes = 0
         self.term_verlangt = 0
+        self.dates =0                           #  Tag des Jahres / Beginn Sommerzeit / Beginn Winterzeit
     
         self.daylight_saving_season = ""        # S oder W   (Sommer /Winter)
         self.maxchar_zimmer = 0
-        self.adjust_time = 0
         self.anz_dosen_config = 0
         self.anz_dosen_xml = 0
         self.file_id = ""
@@ -179,7 +181,7 @@ class MySequencer(threading.Thread, MyPrint):
 
         self._do_setup()            # do setup sequencer
         
-        self.actioncalc = CalcAdjust(self.debug, 0 )     # instanz von CalcAdjust erstellen 
+        self.actioncalc = CalcAdjust(self.debug)     # instanz von CalcAdjust erstellen 
         
         self.myprint (DEBUG_LEVEL0 ,"\t" + progname +  "object created: {}".format(self.actioncalc))
         time.sleep(.1)       # initial wait 
@@ -302,7 +304,8 @@ class MySequencer(threading.Thread, MyPrint):
 
     #  ---------------------------------------------------------------------------------------
     #------ Funktion adjust action times 
-    # wird aufgerufen, wenn dies im config file verlangt ist
+    # wird aufgerufen beim Start und nach Mitternacht, also wenn Tag wechselt.
+    # stellt eine neue Actionlist zur Verfügung. list_in ist statisch
     #  ---------------------------------------------------------------------------------------
     def _adjust_switchtimes (self, list_in):
 
@@ -317,19 +320,22 @@ class MySequencer(threading.Thread, MyPrint):
         # Berücksichtigung Sommer-Winterzeit verlangt ist,
         # so machen wir das hier 
         # wenn beides nicht verlangt ist, geben wir einfach die bestehende Liste zurück ohne Aenderung
+        # den init() call machen wir trotzdem, damit wir die Daten bekommen
+        self.daylight_saving_season, self.adjust_minutes, faktor, self.dates = self.actioncalc.adjust_init (0)               # init call
     
         if (self.do_adjustTime == 0) and (self.do_adjustDaylight_saving == 0):             # Nov 21
-            return (list_in)
+            return (list_in)            # nichts verlangt, also zurück, wir haben die Liste
 
 
         #  eines von beiden (oder beides) ist verlangt, also machen wir das hier
         # init der adjust routine, liefert woche des Jahres und total ajustierung in min zurück
-        self.daylight_saving_season, self.adjust_time, faktor = self.actioncalc.adjust_init (0)               # init call
+        self.daylight_saving_season, self.adjust_minutes, faktor, self.dates = self.actioncalc.adjust_init (0)               # init call
+
 
         #print ("++++++++++++++++++++++++")
         #print (self.daylight_saving_season)
 
-        adjust_list_tag     = [ [] for z in range (7)]     # BIG Liste ueber alle Tage  
+        adjust_list_tag     = [ [] for z in range (7)]     # NEUE BIG Liste ueber alle Tage  
 
         #---------------------------------------------------------------------------
         # now let us iterate over all days and over all devices and over all actions per day  in list_in 
@@ -338,7 +344,7 @@ class MySequencer(threading.Thread, MyPrint):
         #   for tag in list_in:
         #        for device in tag:
             for action in tag:
-                new_action, minutes = self.actioncalc.adjust_time (action , 0)      # adjust schalt zeit (minutes not used here)
+                new_action, minutes = self.actioncalc.adjust_time (action )      # adjust schalt zeit (minutes not used here)
                #   append the updated (or unchanged) action to the two lists
                 adjust_list_tag [wochentag].append (new_action)
 
@@ -368,10 +374,10 @@ class MySequencer(threading.Thread, MyPrint):
     def show_status(self):
 
         now_time = datetime.now()
-     #   return ([   str(self.weekyear) + "/" + str(self.adjust_time), \
-        return ([   self.do_adjustTime,              \
+     #   return ([   str(self.weekyear) + "/" + str(self.do_adjustTime), \
+        return ([   J_N[self.do_adjustTime],              \
                     self.weekyear,                      \
-                    self.adjust_time,                   \
+                    self.adjust_minutes,                   \
                     self.file_id,                       \
                     wochentage[self.wochentag],         \
                     str(self.total_aktionen_protag),    \
@@ -383,8 +389,9 @@ class MySequencer(threading.Thread, MyPrint):
                     self.start_time.strftime("%A, %d %B %Y : %H:%M:%S" ),    \
                     now_time.strftime("%A, %d %B %Y : %H:%M:%S" ),  \
                     now_time.strftime("%H:%M" ),  \
-                    self.do_adjustDaylight_saving, \
-                    self.daylight_saving_season    \
+                    J_N[self.do_adjustDaylight_saving], \
+                    self.daylight_saving_season,    \
+                    self.dates
                     ])
 
 
