@@ -45,7 +45,7 @@ import signal
 # ---------------------------------------------------------
 # Change Version of switcher3 here 
 # 
-switcher_version = "3.4"
+switcher_version = "3.5"
 #---------------------------------------------------------
 #--------------------------------------------------------
 
@@ -272,7 +272,15 @@ def Cloning(li1):
 #*********  check mqtt connection **********
 #----------------------------------------------------------
 def check_mqtt():
-#
+    
+#  ---------------------------
+#   im Oktober 2022 dies eingefügt, weil ev. Ipadr bei reboot des Pi nicht geholt werden kann, da beim start network unavailable ist
+#   wir versuchens das nochmals
+    global host_name, host_ip
+    if host_ip == "??":
+        host_name, host_ip = get_Host_name_IP()
+# -----------------------------------------------
+
     myprint.myprint (DEBUG_LEVEL1,   progname + "check_mqtt() called")			
     connect, error = mymqtt.get_status()
     if not connect:
@@ -369,17 +377,25 @@ def assemble_info_2():
 #----------------------------------------------
 def get_Host_name_IP():
 
+# Note: bei frischen reboot des Pi kann hier die Ipadr nicht geholt werden, da network nochunavailable ist <----------
+#   darum versuchen wir es später wieder in Funktion check_mqtt()
+#   ist hack, aber ok
     host = " "
     local_ip_address = " "
     host = socket.gethostname()
     s = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    s.settimeout(10)
     try:
-        s.connect(('8.8.8.8', 1))  # connect() for UDP doesn't send packets
+            # doesn't even have to be reachable
+        s.connect(('10.254.254.254', 1))
         local_ip_address = s.getsockname()[0]
-    except: 
-        local_ip_address= "??"
+    except:
+        local_ip_address = '??'
+        myprint.myprint (DEBUG_LEVEL0,   progname + " Fehler beim Bestimmen der ipadr, set to ?? and continue..")
+
     finally:
-        print("-----------------IPAdr this machine:{}".format(local_ip_address))
+        myprint.myprint (DEBUG_LEVEL0,   progname + " ----> IPAdr this machine:{}".format(local_ip_address))
+    
     return (host, local_ip_address)
 
 
@@ -646,8 +662,8 @@ def setup():
     signal.signal(signal.SIGTERM, sigterm_handler)  # setup Signal Handler for Term Signal
     signal.signal(signal.SIGHUP, sigterm_handler)  # setup Signal Handler for Term Signal
 
-    host_name, host_ip = get_Host_name_IP()
-     
+    
+   # print ("------> {}|{}".format(host_name,host_ip))
     start_switcher = date.today()
     
     setup_fortschritt = 0
@@ -666,6 +682,9 @@ def setup():
     myprint.myprint (DEBUG_LEVEL0,  progname + "started <-------------: {}".format(time.strftime('%X')))   
     myprint.myprint (DEBUG_LEVEL0,  progname + "Name logfile: {} ".format( path + "/" + logfile_name) )
     myprint.myprint (DEBUG_LEVEL0,  progname +  "Name configfile: {} ".format( path + "/" + configfile_name) ) 
+
+    host_name, host_ip = get_Host_name_IP()
+    
     # Create Instance of the ConfigRead Class
     myconfig = ConfigRead(debug_level = debug)     
 
