@@ -2,10 +2,10 @@
 
 {% extends "layout.html" %}
 {% block title %} Switcher3 Logfile {% endblock %}
-{% block body %} 
+{% block body %}
 <style>
 	.button4 {
-	  background-color: #478dbb; /* blue */    
+	  background-color: #478dbb; /* blue */
 	}
 </style>
 
@@ -20,15 +20,15 @@
 		<a href="index.html">Home</a>
 	  </div>
   </div>
-  
-  
+
+
   <div class="container">
 	<div class="wrapperlog">
 	  <div class="longcontent">
 		{% for item in logzeilen -%}
 					 {{ item }}  </br>
 					  {% endfor %}
-					
+
 	</div>
 	</div>
 	<p class=red> Hinweis: {{mqtttext}} </p>
@@ -39,30 +39,36 @@
   {% if show_reboot == True %}
   <div class="wrapperbutton">
 
-  <div class="item-list-1">
+  <div class="item-list-2">
 
-	
+
 	<div class="item2">
 	<form  method="post" action="{{ url_for('reboot') }}">
-		<input class="button4" name="anzdosen" type="submit" value="Reboot Pi"></span><br />  
-	</form>   
+		<input class="button4" name="boot" type="submit" value="Reboot Pi"></span><br />
+	</form>
 
 	</div>
 	<div class="item2">
 	  <form  method="post" action="{{ url_for('shutdown') }}">
-		<input class="button4" name="anzdosen" type="submit" value="ShutDown Pi"></span><br /> 
-	  </form>  
+		<input class="button4" name="halt" type="submit" value="ShutDown Pi"></span><br />
+	  </form>
 	</div>
 
 	<div class="item2">
 	  <form  method="post" action="{{ url_for('swdosen') }}">
-		<input class="button4" name="anzdosen" type="submit" value="Anzahl Dosen"></span><br />  
-	 </form> 
+		<input class="button4" name="anzdosen" type="submit" value="Anzahl Dosen"></span><br />
+	 </form>
 	</div>
 
-  </div>
+	<div class="item2">
+		<form  method="post" action="{{ url_for('removelog') }}">
+		<input class="button4" name="log" type="submit" value="Clear Log"></span><br />
+	 </form>
+	</div>
+
+</div>
 </div> 
-    {% endif %}  
+    {% endif %}
 
 
 	<div class="footer">
@@ -74,4 +80,3 @@
 </div>
 {% endblock %}
 </html>
-
