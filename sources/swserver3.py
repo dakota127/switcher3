@@ -35,7 +35,7 @@ import socket
 # ---------------------------------------------------------
 # Change Version of swserver3 here 
 # 
-server_version = "3.2"
+server_version = "3.3"
 #---------------------------------------------------------
 #--------------------------------------------------------
 
@@ -83,6 +83,7 @@ config_section = "switcher"                # look up values in this section
 bootmsg_1     = "Reboot Switcher 3, danach bitte warten..."
 bootmsg_2   = "Switcher wird neu gebootet, bitte warten"
 bootmsg_3   = "Switcher wird Shut Down, bitte warten"
+bootmsg_4   = "Switcher Logfiles cleared"
 reboot_thread = 0
 reboot_verlangt = False
 shutdown_verlangt = False
@@ -93,6 +94,10 @@ switcher_version = ""
 general_error = 0
 swi_pid = 0             # pid process switcher
 swser_pid = 0           # pid process swserver
+
+
+logfile_1 = "switcher3.log"
+logfiles = ["switcher3.log.1","switcher3.log.2","switcher3.log.3"]
 
 
 anzahl_dosen_definiert = 0
@@ -935,7 +940,36 @@ def set_dosen():
     return render_template('status.html',  show_reboot = False, error_text_1 = text_1, error_text_2 = "Switcher3 wird neu gebootet")      
    
 
+#----------------------------------------------
+# Callback für clear logfiles  Neuin Novembern2022
+# Clear Button wurde geklickt   
+#--------------------------------------------
+@app.route('/clear.html', methods=['GET', 'POST'])
+def removelog():
 
+    myprint.myprint (DEBUG_LEVEL0,  progname + "clear Switcher3 Logfiles") 
+
+    # Base file switcher3.log nur leeren, bleibt bestehen !
+    try:
+        f=open(logfile_1,'w').close()
+    except:
+       # print ("error file1")
+       pass
+    finally:
+        pass
+
+    # die restlichen Logfile entfernen 
+    for file in logfiles:
+        try:
+            os.remove(file) 
+        except:
+            myprint.myprint (DEBUG_LEVEL0,  progname + "File {} not found". format(file))
+        finally:
+            pass
+
+    myprint.myprint (DEBUG_LEVEL0,  progname + "Switcher3 Logfiles cleared") 
+
+    return render_template('status.html', show_reboot = False, error_text_1 = bootmsg_4, error_text_2 = "")
 
 
 
