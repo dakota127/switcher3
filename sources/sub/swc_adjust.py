@@ -161,7 +161,10 @@ class CalcAdjust (MyPrint):
     def _convTime(self, min_in):
           
         c = min_in % 60         # c reminder is minutes  
-        b = (min_in - c) // 60  # calc hour of the day
+        b = round((min_in - c) // 60)  # calc hour of the day
+        print ("-----<<")
+        print (b)
+        print (c)
       
         f = str(c)
         e = str(b)
