@@ -31,7 +31,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
 
    <sequence>
   	<ON>21.35</ON>
-  	<OFF>23.57</OFF>
+  	<OFF>23.10</OFF>
   </sequence>
    
    </tag>
@@ -44,7 +44,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   
    <sequence>
   	<ON>21.35</ON>
-  	<OFF>23.57</OFF>
+  	<OFF>23.10</OFF>
   </sequence>
   </tag>
   
@@ -56,7 +56,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   
    <sequence>
   	<ON>21.35</ON>
-  	<OFF>23.57</OFF>
+  	<OFF>23.10</OFF>
   </sequence>
   </tag>
   
@@ -68,7 +68,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   
    <sequence>
   	<ON>21.35</ON>
-  	<OFF>23.57</OFF>
+  	<OFF>23.10</OFF>
   </sequence>
    </tag>
    
@@ -80,7 +80,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   
    <sequence>
   	<ON>21.35</ON>
-  	<OFF>23.57</OFF>
+  	<OFF>23.10</OFF>
   </sequence>
   </tag>
 
@@ -92,7 +92,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   
    <sequence>
   	<ON>21.35</ON>
-  	<OFF>23.57</OFF>
+  	<OFF>23.10</OFF>
   </sequence>
   </tag>
   
@@ -104,7 +104,7 @@ device Nummer 1  Wohnzimmer***************************** device 1
   
    <sequence>
   	<ON>21.35</ON>
-  	<OFF>23.57</OFF>
+  	<OFF>23.10</OFF>
   </sequence>
   </tag>
 
@@ -351,7 +351,7 @@ device Nummer 4  Arbeits******************************* device 4
   
    <sequence>
   	<ON>22.05</ON>
-  	<OFF>23.42</OFF>
+  	<OFF>22.55</OFF>
   </sequence>
    </tag>
    
@@ -363,7 +363,7 @@ device Nummer 4  Arbeits******************************* device 4
   </sequence>
  
    <sequence>
-  	<ON>22.12</ON>
+  	<ON>22.30</ON>
   	<OFF>23.09</OFF>
   </sequence>
   </tag>
@@ -376,52 +376,52 @@ device Nummer 4  Arbeits******************************* device 4
   </sequence>
  
    <sequence>
-  	<ON>21.40</ON>
-  	<OFF>21.57</OFF>
+  	<ON>22.00</ON>
+  	<OFF>23.02</OFF>
   </sequence>
    <sequence>
-  	<ON>22.12</ON>
-  	<OFF>23.09</OFF>
+  	<ON>23.12</ON>
+  	<OFF>23.25</OFF>
   </sequence>
   </tag>
 
 <tag nummer = "3">
  <sequence>
   	<ON>00.05</ON>
-  	<OFF>00.17</OFF>
+  	<OFF>00.12</OFF>
   </sequence>
  
    <sequence>
-  	<ON>22.12</ON>
-  	<OFF>23.09</OFF>
+  	<ON>22.10</ON>
+  	<OFF>22.55</OFF>
   </sequence>
    </tag>
    
 <tag nummer = "4">
  <sequence>
-  	<ON>00.05</ON>
-  	<OFF>00.17</OFF>
+  	<ON>00.15</ON>
+  	<OFF>00.25</OFF>
   </sequence>
 
    <sequence>
-  	<ON>22.12</ON>
-  	<OFF>23.09</OFF>
+  	<ON>22.55</ON>
+  	<OFF>23.45</OFF>
   </sequence>
   </tag>
 
 <tag nummer = "5">
  <sequence>
-  	<ON>00.05</ON>
-  	<OFF>00.17</OFF>
+  	<ON>00.20</ON>
+  	<OFF>00.35</OFF>
   </sequence>
  
    <sequence>
-  	<ON>21.00</ON>
-  	<OFF>21.18</OFF>
+  	<ON>22.05</ON>
+  	<OFF>22.58</OFF>
   </sequence>
    <sequence>
-  	<ON>22.12</ON>
-  	<OFF>23.09</OFF>
+  	<ON>23.12</ON>
+  	<OFF>23.25</OFF>
   </sequence>
   </tag>
   
@@ -432,8 +432,8 @@ device Nummer 4  Arbeits******************************* device 4
   </sequence>
  
    <sequence>
-  	<ON>22.12</ON>
-  	<OFF>23.09</OFF>
+  	<ON>22.35</ON>
+  	<OFF>23.58</OFF>
   </sequence>
   </tag>
 

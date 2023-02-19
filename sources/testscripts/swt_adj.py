@@ -48,7 +48,7 @@ progname = "swt_adj"
 # dies jedoch nur, wenn parm w NICHT angegeben ist.
 actionList = [ 
                 ["21.15",1275,30,"21.15",1,1],
-                ["21.35",1305,30,"21.35",1,0],
+                ["21.35",1295,30,"21.35",1,0],
                 ["21.45",0,0,"21.45",1,1],
                 ["21.55",0,0,"21.55",1,0],
                 ["22.10",0,0,"22.10",2,1],
@@ -116,7 +116,7 @@ def setup():
     global actioncalc, myprint, week
 
     today = datetime.now()
-    week = int(today.strftime("%V"))
+    week = int(today.strftime("%V"))        # benutze aktuelle woche
    
     path = os.path.dirname(os.path.realpath(__file__))    # current path
 # create Instance of MyPrint Class 
@@ -160,6 +160,7 @@ if __name__ == '__main__':
     # here we run over all weeks of the year an show the adjust minutes for every week
     # wir nehmen eine fiktive Aktion
     aktion =   ["21.35",1295,30,"21.35",1,1]
+    print ("definierte action   :   {}".format(aktion))
     myprint.myprint (DEBUG_LEVEL0, progname + " ---->Laufe über alle Wochen des Jahres für definierte Action <------")
     myprint.myprint (DEBUG_LEVEL0, progname + " ---->Achtung, Sommer-Winterzeit entspr. Laufzeit des Programms <----")
     for we in range (1,52,1):
