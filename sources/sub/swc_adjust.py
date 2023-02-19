@@ -162,10 +162,7 @@ class CalcAdjust (MyPrint):
           
         c = min_in % 60         # c reminder is minutes  
         b = round((min_in - c) // 60)  # calc hour of the day
-        print ("-----<<")
-        print (b)
-        print (c)
-      
+    
         f = str(c)
         e = str(b)
         if c < 10: f = "0" + str(c)
