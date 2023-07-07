@@ -161,13 +161,13 @@ def find_vonbis(saison):
         if debug:
             print ("Kein bis datum gefunden")
 
-    if saison.find("Zwischen") is not -1:
+    if saison.find("Zwischen") != -1:
         if found > 0:          # Zwischen wurde gefunden
             error.append(7)
         else:
             pass
     
-    if saison.find("Sommer") is not -1  or saison.find("Winter") is not -1 :
+    if saison.find("Sommer") != -1  or saison.find("Winter") != -1 :
         if found < 2:          # Zwischen wurde gefunden
             error.append(6)   
         else:
