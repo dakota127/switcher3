@@ -47,7 +47,7 @@ DEBUG_LEVEL0 = 0
 DEBUG_LEVEL1 = 1
 DEBUG_LEVEL2 = 2
 DEBUG_LEVEL3 = 3      
-WAIT_STATUS_MELDUNG = 3         # von früher, muss nun klein ein   
+WAIT_STATUS_MELDUNG = 10         # von früher, muss nun klein ein   (Feb 2024 auf 10 gesetzt)
 
 
 # messages to frontend
