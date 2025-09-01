@@ -16,6 +16,7 @@ All Code in Python. New Version uses Python logging with RotatingFileHandler.
 Documentation and code on GitHub. 
 Documentation (pdf, >35 pages in Docu folder) is in German, with English Abstract.  
 
+Last change August 2025, adjust switch times had errors. 
 Free to use, modify, and distribute with proper attribution.
 Frei für jedermann, vollständige Quellangabe vorausgesetzt.
 
