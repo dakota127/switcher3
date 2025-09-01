@@ -148,12 +148,13 @@ class MySequencer(threading.Thread, MyPrint):
         self.list_tage  = [ [] for z in range (7)]          # list has 7 members: one for every day of the week
         self.list_device= [ [] for z in range (7)]          # list has 7 members: one for every day of the week                               
         self.list_zimmer =[]                                # list of all rooms
-        self.list_tage_new = None
+        self.list_tage_new = []       
         self.list_device_new = None
         # ------------------------
         self.list_aktionen_past =[]
         self.list_aktionen_zukunft =[] 
         self.total_aktionen_protag = []
+        self.adjust_list_tag =[]            
         self.status_currtime=""              # fuer Statusanzeige
         self.do_adjustTime = 0                  # 1: adjust times, 0: nichts ajustieren
         self.do_adjustDaylight_saving = 0       # 1 : adjust daylight saving time, 0: nichts machen
@@ -182,7 +183,7 @@ class MySequencer(threading.Thread, MyPrint):
         self._do_setup()            # do setup sequencer
         
         self.actioncalc = CalcAdjust(self.debug)     # instanz von CalcAdjust erstellen 
-        
+        self. temp_action = []         # temporäre action list
         self.myprint (DEBUG_LEVEL0 ,"\t" + progname +  "object created: {}".format(self.actioncalc))
         time.sleep(.1)       # initial wait 
         self.myprint (DEBUG_LEVEL1, "\t" + progname + "_init done")
@@ -217,15 +218,15 @@ class MySequencer(threading.Thread, MyPrint):
 
       #  print (liste)
         for n in liste[weekday]:                      # loop über alle Aktionen dieses Tages
-            self.myprint (DEBUG_LEVEL3,   "\t" + progname + "extrakt aktion: {}".format(n))				# ist aktio
+            self.myprint (DEBUG_LEVEL1,   "\t" + progname + "extrakt aktion: {}".format(n))				# ist aktio
         
             if (n[4] <= max_dose):                      # nehme nur jene die kleiner/glich sind
                 if hhmm_tag[0] > n[0]:					# hhmm_tag[0] sind Stunden.Minuten, check Actions times to current time
                     new_list_vergangen.append(n)		# addiere zur Liste vergangene Aktionen
-##                    print ("vergangen: {}".format(n))
+                    self.myprint (DEBUG_LEVEL1,   "\t" + progname + "ist vergangene action")				# ist aktio
                 else:								
                     new_list_zukunft.append(n)			# addiere zur Liste der zukünftigen Aktionen
-##                    print ("zukunft: {}".format(n))
+                    self.myprint (DEBUG_LEVEL1,   "\t" + progname + "ist zukünftige action")				# ist aktio
 
 
         return (new_list_vergangen, new_list_zukunft)	# gebe beide Listen zurück
@@ -251,7 +252,7 @@ class MySequencer(threading.Thread, MyPrint):
 
             # no new day yet, continue...    
             time.sleep(SLEEPTIME_DONE)
-            self.myprint (DEBUG_LEVEL1,   "\t" + progname + "Timemarching warte auf neuen tag, immer noch tag {} / {}".format(hhmm_tag[1], hhmm_tag[0]))
+            self.myprint (DEBUG_LEVEL3,   "\t" + progname + "Timemarching warte auf neuen tag, immer noch tag {} / {}".format(hhmm_tag[1], hhmm_tag[0]))
 
             self.do_stuff_regular()              # do regular stuff
 
@@ -309,6 +310,7 @@ class MySequencer(threading.Thread, MyPrint):
     #  ---------------------------------------------------------------------------------------
     def _adjust_switchtimes (self, list_in):
 
+       
         self.myprint (DEBUG_LEVEL0, "\t" + progname + "_adjust_switchtimes called")
         
         self.today = datetime.now()
@@ -321,7 +323,8 @@ class MySequencer(threading.Thread, MyPrint):
         # so machen wir das hier 
         # wenn beides nicht verlangt ist, geben wir einfach die bestehende Liste zurück ohne Aenderung
         # den init() call machen wir trotzdem, damit wir die Daten bekommen
-        self.daylight_saving_season, self.adjust_minutes, faktor, self.dates = self.actioncalc.adjust_init (0)               # init call
+        # folgens weg im August 2025  <<--------------
+       # self.daylight_saving_season, self.adjust_minutes, faktor, self.dates = self.actioncalc.adjust_init (0)               # init call
     
         if (self.do_adjustTime == 0) and (self.do_adjustDaylight_saving == 0):             # Nov 21
             return (list_in)            # nichts verlangt, also zurück, wir haben die Liste
@@ -335,28 +338,32 @@ class MySequencer(threading.Thread, MyPrint):
         #print ("++++++++++++++++++++++++")
         #print (self.daylight_saving_season)
 
-        adjust_list_tag     = [ [] for z in range (7)]     # NEUE BIG Liste ueber alle Tage  
-
+        self.adjust_list_tag.clear()       # clear hilfs-Liste ueber alle Tage  August 2025
+        self.adjust_list_tag     = [ [] for z in range (7)]     # prefill list
         #---------------------------------------------------------------------------
         # now let us iterate over all days and over all devices and over all actions per day  in list_in 
         for wochentag, tag in enumerate (list_in):            # loop über alle 8 Tage
-        
+            
+            self.myprint (DEBUG_LEVEL1,  "\t" + progname + "Mache Tag: {}". format(wochentag))     # August 2025
         #   for tag in list_in:
         #        for device in tag:
             for action in tag:
-                new_action, minutes = self.actioncalc.adjust_time (action )      # adjust schalt zeit (minutes not used here)
+                self.temp_action = action.copy()             # wir machen eine kopie der action
+                                                             # die originale action darf nicht verändert werden (August 2025)
+                new_action, minutes = self.actioncalc.adjust_time (self.temp_action )     # adjust schalt zeit (rueckgabe minutes not used here)
+                                                                               
                #   append the updated (or unchanged) action to the two lists
-                adjust_list_tag [wochentag].append (new_action)
+                self.adjust_list_tag [wochentag].append (new_action)
 
         # now we need to sort the day list according to action time
-        for wochentag, tag in enumerate (adjust_list_tag):
-            adjust_list_tag[wochentag].sort(key=itemgetter(1))
+        for wochentag, tag in enumerate (self.adjust_list_tag):
+            self.adjust_list_tag[wochentag].sort(key=itemgetter(1))
 
 
         if self.debug > 2:
             for wochentag, tag in enumerate (adjust_list_tag):
                 print ("neue Liste (Tag_liste) tag: {}".format(wochentag))
-                for aktion in adjust_list_tag[wochentag]:
+                for aktion in self.adjust_list_tag[wochentag]:
                     print (aktion)            
 
 
@@ -365,7 +372,7 @@ class MySequencer(threading.Thread, MyPrint):
        
     
         # wir geben eine neue Liste mit geänderten Aktionen zurück
-        return (adjust_list_tag)
+        return (self.adjust_list_tag)
 
 
     #---------------------------------------------------------------
@@ -435,6 +442,8 @@ class MySequencer(threading.Thread, MyPrint):
         self.start_tag = int(hhmm_tag[1])                        # heutiger wochentag, starte damit, loop bis tag 6
 
         # Note: --> die Liste self.list_tage  ist statisch - sie wird beim Start des Switchers gefüllt und bleibt danach unverändert !!
+        self.list_tage_new.clear()              #    clear list August 2025
+        self.myprint (DEBUG_LEVEL0, "\t" + progname + "call _adjust_switchtimes at start")
         self.list_tage_new = self._adjust_switchtimes (self.list_tage)              # adjust SCHALTZEITEN WENN NÖTIG
 
         
@@ -622,8 +631,11 @@ class MySequencer(threading.Thread, MyPrint):
                 
                 self.myprint (DEBUG_LEVEL0,   "\t" + progname + "Neuer Tag, adjust times and send midnight event")              
                 # wenn neuer Tag da ist, werden die Aktionslisten dieses neuen Tages erstellt   
-                # Note: --> die Liste self.list_tage  ist statisch - sie wird beim Start des Switchers gefüllt und bleibt danach unverändert !! 
+                # Note: --> die Liste self.list_tage  ist statisch - sie wird beim Start des Switchers gefüllt und bleibt danach unverändert !!
+                self.list_tage_new.clear        # clear the old list    August 2025
                 self.list_tage_new = self._adjust_switchtimes (self.list_tage)              # adjust SCHALTZEITEN WENN NÖTIG, erstelle neue Liste
+                self.list_aktionen_past.clear()             # August 2025
+                self.list_aktionen_zukunft.clear()          # August 2025
                 self.list_aktionen_past, self.list_aktionen_zukunft = self._aktionen_pro_tag (self.list_tage_new, self.wochentag ,self.anz_dosen_config)
                 self.status_anzactions_done = 0                       # anzahl getaner Aktionen pro Tag
                                    

@@ -9,7 +9,6 @@ nano switcher3.service
 nano swserver3.service
 
 
-
 File for swserver3
 
 ------------------------

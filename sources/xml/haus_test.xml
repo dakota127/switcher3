@@ -1,0 +1,321 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE html 
+ PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
+
+<!--
+    Control Datei für switcher3 by Peter K. Boxler, August 2021
+    Pro Dose (max 4) sind für jeden Wochentag (0=Sonntag bis 6=Samstag)
+     beliebige Sequenzen definierbar. Eine Sequenz besteht je aus Einschalten/Ausschalten
+     zu bestimmten Zeitpunkten (HHMM)
+     
+    Ist Input-File für die Python Applikation switcher3.py und swlist3.py
+
+    Mit 5 devices (Dosen) 
+-->
+<aktionen>
+<file_id>Haus_Test 2 Devices</file_id>
+
+<!--
+device Nummer 1  Wohnzimmer***************************** device 1 
+-->
+
+<device name = "Vorderer Raum">
+<device_nr> 1 </device_nr>
+
+<tag nummer = "0">
+  <sequence>
+  	<ON>01.20</ON>
+  	<OFF>01.40</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.40</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>21.55</ON>
+  	<OFF>22.55</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+   </tag>
+   
+<tag nummer = "1">
+  <sequence>
+  	<ON>01.20</ON>
+  	<OFF>01.40</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.40</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>21.55</ON>
+  	<OFF>22.55</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+     
+  </tag>
+  
+<tag nummer = "2">
+  <sequence>
+  	<ON>01.20</ON>
+  	<OFF>01.40</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.40</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>21.55</ON>
+  	<OFF>22.55</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+     
+  </tag>
+  
+<tag nummer = "3">
+  <sequence>
+  	<ON>01.20</ON>
+  	<OFF>01.40</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.40</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>21.55</ON>
+  	<OFF>22.55</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+     
+   </tag>
+   
+<tag nummer = "4">
+  <sequence>
+  	<ON>01.20</ON>
+  	<OFF>01.40</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.40</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>21.55</ON>
+  	<OFF>22.55</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+     
+  </tag>
+
+<tag nummer = "5">
+  <sequence>
+  	<ON>01.20</ON>
+  	<OFF>01.40</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.40</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>21.55</ON>
+  	<OFF>22.55</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+  </tag>
+  
+<tag nummer = "6">
+  <sequence>
+  	<ON>01.20</ON>
+  	<OFF>01.40</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.40</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>21.55</ON>
+  	<OFF>22.55</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+  </tag>
+
+</device>
+<!--
+device Nummer 2  hinterer Raum *************************** device 2 
+-->
+
+<device name = "Hinterer Raum">
+<device_nr> 2 </device_nr>
+
+<tag nummer = "0">
+  <sequence>
+  	<ON>01.50</ON>
+  	<OFF>02.10</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.30</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.10</ON>
+  	<OFF>22.25</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+   </tag>
+
+<tag nummer = "1">
+ <sequence>
+  	<ON>01.50</ON>
+  	<OFF>02.10</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.30</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.10</ON>
+  	<OFF>22.25</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+  </tag>
+  
+<tag nummer = "2">
+ <sequence>
+  	<ON>01.50</ON>
+  	<OFF>02.10</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.30</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.10</ON>
+  	<OFF>22.25</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+  </tag>
+  
+<tag nummer = "3">
+ <sequence>
+  	<ON>01.50</ON>
+  	<OFF>02.10</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.30</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.10</ON>
+  	<OFF>22.25</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+   </tag>
+   
+<tag nummer = "4">
+ <sequence>
+  	<ON>01.50</ON>
+  	<OFF>02.10</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.30</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.10</ON>
+  	<OFF>22.25</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+  </tag>
+  
+  <tag nummer = "5">
+ <sequence>
+  	<ON>01.50</ON>
+  	<OFF>02.10</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.30</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.10</ON>
+  	<OFF>22.25</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+  </tag>
+<tag nummer = "6">
+ <sequence>
+  	<ON>01.50</ON>
+  	<OFF>02.10</OFF>
+  </sequence>
+  
+  <sequence>
+  	<ON>21.30</ON>
+  	<OFF>21.50</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.10</ON>
+  	<OFF>22.25</OFF>
+  </sequence>
+  <sequence>
+  	<ON>22.50</ON>
+  	<OFF>23.15</OFF>
+  </sequence>
+  </tag>
+
+</device>
+
+
+
+</aktionen>

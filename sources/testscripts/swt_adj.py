@@ -143,6 +143,9 @@ if __name__ == '__main__':
 
     # berechne ajustierung für aktuelle Woches des Jahres (Parameter (0))
     daylight_saving_season, min , faktor, dates = actioncalc.adjust_init(0)
+
+    print("adjust_init() bringt zurück: {} / {} / {} / {}".format(daylight_saving_season, min, faktor, dates))
+
     # here all of the defined actions in actionlist are processed
     if allweeks == False:  
         myprint.myprint (DEBUG_LEVEL0, " ---->Adjust definierte Actions für aktuelle Woche")  

@@ -161,8 +161,8 @@ class CalcAdjust (MyPrint):
     def _convTime(self, min_in):
           
         c = min_in % 60         # c reminder is minutes  
-        b = round((min_in - c) // 60)  # calc hour of the day
-    
+        b = (min_in - c) // 60  # calc hour of the day
+      
         f = str(c)
         e = str(b)
         if c < 10: f = "0" + str(c)
@@ -181,7 +181,7 @@ class CalcAdjust (MyPrint):
         self.today = datetime.now()                             
         self.dayofyear = int(self.today.strftime("%j"))      # tag des Jahres ermitteln 
 
-        self.myprint (DEBUG_LEVEL2, progname + "adjust_init called, woche_input:{:2}".format(woche_input))
+        self.myprint (DEBUG_LEVEL1, progname + "adjust_init called, woche_input:{:2}".format(woche_input))
         self.week_of_year = int(self.today.strftime("%V"))    # use %V with Python 3.6 !!                    # woche des Jahres ermitteln
                                                 # see https://bugs.python.org/issue12006
 
@@ -244,7 +244,7 @@ class CalcAdjust (MyPrint):
 
 
         self.myprint (DEBUG_LEVEL0, progname + "Week des Jahres:{} ,adjust minutes:{} ,adjust minutes(total):{}".format(self.week_of_year,self.adjust_time_min,(self.adjust_time_min+self.daylight_saving_minutes)))  
-        self.myprint (DEBUG_LEVEL3, progname + "Evening:{}/{},Morning: {}/{}".format(  \
+        self.myprint (DEBUG_LEVEL0, progname + "Evening:{}/{},Morning: {}/{}".format(  \
                                         self.evening_start_limit,   \
                                         self.evening_ontime, \
                                         self.morning_start_limit,  \
@@ -259,6 +259,7 @@ class CalcAdjust (MyPrint):
 # Public Function calc_adjust 
 #--------------------------------------------
     def adjust_time (self, action):
+
 
     # wird aufgerufen, wenn Schaltzeiten zu modifizieren sind, dies kann sein:
     #
@@ -282,10 +283,11 @@ class CalcAdjust (MyPrint):
     #   0 = ausschalten
     #-------------------------------------------------------------
        
-        self.myprint (DEBUG_LEVEL2, progname + "adjust_time called, action in:{}".format(action))
-        
+        self.myprint (DEBUG_LEVEL1, progname + "adjust_time called, action in:{}".format(action))
+
+
         # dies ist nur für Ausgabe, nicht sehr wichtig hier
-        # wenn parameter week > 0 ist, heisst dies, berechne für die angegebene woche (ist für Testprogramm swt_adj.py)
+        # wenn parameter week > 0 ist, heisst dies, berechne furr die angegebene woche (ist furr Testprogramm swt_adj.py)
         # wenn parameter week == 0 ist, heisst dies, ermittle die aktuelle Woches Jahre
       #  if week > 0:                                # >0 means = take this week
       #      self.myprint (DEBUG_LEVEL2, progname + "adjust_time min:{}".format(self.adjust_time_min + self.daylight_saving_minutes))
@@ -301,37 +303,39 @@ class CalcAdjust (MyPrint):
     
         # is action am Abend und zwischen 18'00 Uhr und dem Abend-Grenzwert (evening_start_limit) ?
         # und ist ontime länger als evening_ontime ?
-        if (action[1] < self.evening_start_limit) and (action[1] > 1080) and (action[2] > self.evening_ontime):
+        if ((action[1] < self.evening_start_limit) and (action[1] > 1080)):
             evening_valid = True                    # yes must be adjusted
             self.myprint (DEBUG_LEVEL3, "\t" + progname + "is valid evening action")
 
         # is action am Morgen und zwischen dem Morgen-Grenzwert und 6 Uhr Morgens ? 
         # # und ist ontime länger als morning_ontime ?   
-        if (action[1] > self.morning_start_limit) and (action[1] < 360) and (action[2] > self.morning_ontime): 
+        if ((action[1] > self.morning_start_limit) and (action[1] < 360)): 
             morning_valid = True                   # yes must be adjusted
             self.myprint (DEBUG_LEVEL3, "\t" + progname + "is valid morning action")
 
+        # alle anpassungen duerfen nur auf der action gemacht werden ..   <---- August 2025
         if evening_valid:
             action[1] = action[1] - self.adjust_time_min - self.daylight_saving_minutes    # adjust switch on time (minutes)
             action [0] = self._convTime(action[1])                       # adjust switch on time (hh.mm)
             changed = True
-            self.myprint (DEBUG_LEVEL3, "\t" + progname + "new evening action:{}".format (action))
+            #self.myprint (DEBUG_LEVEL3, "\t" + progname + "new evening action:{}".format (action))
             
         if morning_valid:
             action[1] = action[1] + self.adjust_time_min + self.daylight_saving_minutes  # adjust switch on time (minutes)
             action [0] = self._convTime(action[1])       # adjust switch on time (hh.mm)
             changed = True
-            self.myprint (DEBUG_LEVEL3, "\t" + progname + "new morning action:{}".format (action))  
+            #self.myprint (DEBUG_LEVEL3, "\t" + progname + "new morning action:{}".format (action))  
    
         if changed:
             self.counter = self.counter + 1
         #    self.myprint (DEBUG_LEVEL1, progname + "modified action: {}".format (action))
             pass
-    # -- process the action given as parameter
+   
 
-        self.myprint (DEBUG_LEVEL2, progname + "adjust_time: new Action2:{}".format(action))
+
+        self.myprint (DEBUG_LEVEL1, progname + "adjust_time: new Action2:{}".format(action))
        
-        # gebe angepasste Aktionsstruktur zurück
+        # gebe angepasste Aktion zurück
         return (action, self.adjust_time_min + self.daylight_saving_minutes)
 
 

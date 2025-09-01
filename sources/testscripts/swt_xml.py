@@ -161,18 +161,7 @@ def find_vonbis(saison):
         if debug:
             print ("Kein bis datum gefunden")
 
-    if saison.find("Zwischen") != -1:
-        if found > 0:          # Zwischen wurde gefunden
-            error.append(7)
-        else:
-            pass
     
-    if saison.find("Sommer") != -1  or saison.find("Winter") != -1 :
-        if found < 2:          # Zwischen wurde gefunden
-            error.append(6)   
-        else:
-            pass    
-            
     return 
   
 #-------------------------------------------
@@ -245,7 +234,6 @@ def runit(filename):
                 if debug:
                     print ("Tagnummer: %s" % tagin)
                 tageliste[dosennummer].append(tagin)
-    
             if debug: 
                 print ("Behandle Sequenzen fuer den Tag")
             sequ = tag.getElementsByTagName("sequence")	
@@ -293,17 +281,22 @@ def runit(filename):
     err = 0
     
  # Test 2:  Tage prüfen    
-    for i in range (maxdosen - dosencounter-1):
-        pass
-        tageliste.pop(0)    
+
+   # for i in range (maxdosen - dosencounter-1):
+   #     print(i, dosencounter)
+   #     pass
+   #     tageliste.pop(0)    
  
 
-    
+    print ("\nPrüfe Tage pro Dose")
+
     for i in range (dosencounter): 
+        i=i+1
         if debug: 
             print ("Tageliste: {}".format(tageliste[i]))
 
         anzt = len(tageliste[i])
+        print ("Anzahl Tage in Dose: {}/{}".format(i,anzt))
         if anzt > 7 or anzt < 7 :
             print ("Gefundene Dose {} hat nicht genau 7 Tage: {}".format(i,anzt))
             error.append(12)

@@ -3,14 +3,15 @@
     Switcher  Temp Sensor Sketch fuer BME280
     mit Deep Sleep
 
+	sendet Sensor Werte via MQTT Meldung.
     topic für switcher wetter ist : 'switcher/wetter/data'
     payload :   indoor/battstatus/sensorstatus/elapsed_time_ms/TEMP/HUM
     oder
     payload :   outdoor/battstatus/sensorstatus/elapsed_time_ms/TEMP/HUM
 
-    Input pin 14 wird benutzt, um indoor oder outdoor zu setzen
-    pin14 low:    outdoor
-    pin14 high:   indoor
+    Input pin 14 wird benutzt, um indoor oder outdoor zu identifizieren
+    pin14 low:    outdoor sensor
+    pin14 high:   indoor sensor
 
     Programmierung gemäss dieser Quelle im Netz
     https://github.com/z2amiller/sensorboard/blob/master/PowerSaving.md

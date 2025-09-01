@@ -45,7 +45,7 @@ import signal
 # ---------------------------------------------------------
 # Change Version of switcher3 here 
 # 
-switcher_version = "3.5"
+switcher_version = "3.7 (Aug.2025)"
 #---------------------------------------------------------
 #--------------------------------------------------------
 
@@ -866,7 +866,7 @@ def runit():
 	            myprint.myprint (DEBUG_LEVEL0 ,progname +  "bin am leben..")
 
             # check mqtt Connection
-            check_mqtt()
+           # check_mqtt()                    #   August 2025
 
         myprint.myprint (DEBUG_LEVEL2 ,progname + "end of big while")
         pass           
